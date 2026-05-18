@@ -139,6 +139,10 @@
   .input-group input { width: 100%; background: var(--glass-bg); border: 1px solid var(--border-soft); padding: 12px 14px; border-radius: 6px; color: var(--text-main); font-size: 14px; outline: none; transition: border-color 0.2s, color 0.8s ease, background 0.8s ease; font-family: inherit; }
   .input-group input:focus { border-color: var(--accent-amber); }
 
+  .wizard-inputs { display: flex; flex-direction: column; gap: 10px; margin: 24px 0; width: 100%; max-width: 400px; margin-left: auto; margin-right: auto; }
+  .wizard-inputs input { background: var(--glass-bg); border: 1px solid var(--border-soft); padding: 14px; border-radius: 8px; color: var(--text-main); font-size: 15px; outline: none; transition: border-color 0.2s, background 0.8s ease; font-family: inherit; width: 100%; text-align: center; }
+  .wizard-inputs input:focus { border-color: var(--accent-amber); }
+
   .controls { display: flex; gap: 10px; margin-top: 24px; flex-wrap: wrap; }
   button { background: transparent; border: 1px solid var(--accent-amber); padding: 12px 20px; border-radius: 6px; color: var(--accent-glow); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; font-family: inherit; }
   button:hover:not(:disabled) { background: var(--accent-amber); color: var(--bg-color); }
@@ -341,7 +345,8 @@
         <div class="card" style="text-align: center; padding: 40px 20px;">
           <div class="card-inner-glow"></div>
           <h2 style="font-family:'Cormorant Garamond',serif; color:var(--accent-glow); font-size:28px; margin-top:0;" id="wizardTitle">Крок 1</h2>
-          <div class="question-text" style="justify-content:center; min-height:100px; font-size:20px; font-weight:600;" id="wizardText"></div>
+          <div class="question-text" style="justify-content:center; min-height:80px; font-size:18px; font-weight:600;" id="wizardText"></div>
+          <div id="wizardInputs" class="wizard-inputs"></div>
           <div class="controls" style="justify-content: center;">
             <button onclick="nextWizardStep()" id="btnWizardNext">Далі</button>
           </div>
@@ -452,6 +457,7 @@ function runBreathPhase() {
   currentPhase = (currentPhase + 1) % 4;
 }
 
+let currentActiveSoothingId = null;
 let currentWizardSteps = [];
 let currentWizardStepIdx = 0;
 
@@ -461,6 +467,7 @@ function openSoothing(catId, itemId) {
   document.getElementById('soothing-breathing').style.display = 'none';
   document.getElementById('soothing-wizard').style.display = 'none';
   
+  currentActiveSoothingId = itemId;
   const item = SOOTHING_DATABASE[catId].items.find(x => x.id === itemId);
   
   if(item.type === 'breathing') {
@@ -484,11 +491,39 @@ function renderWizardStep() {
   document.getElementById('wizardTitle').innerText = s.title;
   document.getElementById('wizardText').innerText = s.text;
   const btn = document.getElementById('btnWizardNext');
+  const inputsContainer = document.getElementById('wizardInputs');
+  
   if(currentWizardStepIdx === currentWizardSteps.length - 1) {
     btn.innerText = "Завершити";
   } else {
     btn.innerText = "Далі";
   }
+
+  inputsContainer.innerHTML = '';
+  btn.disabled = false;
+
+  if (currentActiveSoothingId === 'grounding_54321') {
+    const inputCount = 5 - currentWizardStepIdx;
+    if (inputCount > 0 && inputCount <= 5) {
+      btn.disabled = true;
+      for (let i = 0; i < inputCount; i++) {
+        const inp = document.createElement('input');
+        inp.type = 'text';
+        inp.placeholder = `Запишіть пункт ${i + 1}`;
+        inp.oninput = validateWizardInputs;
+        inputsContainer.appendChild(inp);
+      }
+    }
+  }
+}
+
+function validateWizardInputs() {
+  const inputs = document.querySelectorAll('#wizardInputs input');
+  let allFilled = true;
+  inputs.forEach(inp => {
+    if (inp.value.trim().length === 0) allFilled = false;
+  });
+  document.getElementById('btnWizardNext').disabled = !allFilled;
 }
 
 function nextWizardStep() {
