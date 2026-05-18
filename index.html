@@ -7,15 +7,40 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600&family=Cormorant+Garamond:wght@400;500;600&display=swap');
   
-  :root {
+  :root[data-theme="sunset"] {
     --bg-color: #181714;
     --card-bg: #201D18;
-    --text-muted: #6A5A40;
-    --text-main: #B89870;
+    --text-muted: #827054;
+    --text-main: #C8AB85;
     --accent-amber: #B87A35;
     --accent-glow: #D4A060;
-    --border-soft: rgba(180, 100, 25, 0.15);
-    --radius: 12px;
+    --border-soft: rgba(180, 100, 25, 0.25);
+    --glow-outer: rgba(160, 80, 15, 0.22);
+    --glow-inner: rgba(185, 100, 20, 0.28);
+  }
+
+  :root[data-theme="night"] {
+    --bg-color: #0A0C10;
+    --card-bg: #11141A;
+    --text-muted: #6B7B8C;
+    --text-main: #B4C5D6;
+    --accent-amber: #4F6B9E;
+    --accent-glow: #7A9CE0;
+    --border-soft: rgba(79, 107, 158, 0.25);
+    --glow-outer: rgba(30, 60, 120, 0.22);
+    --glow-inner: rgba(60, 100, 180, 0.28);
+  }
+
+  :root[data-theme="dawn"] {
+    --bg-color: #1A1E24;
+    --card-bg: #22272E;
+    --text-muted: #7A8B99;
+    --text-main: #C2D1DE;
+    --accent-amber: #83A1B5;
+    --accent-glow: #B1D0E6;
+    --border-soft: rgba(131, 161, 181, 0.25);
+    --glow-outer: rgba(100, 140, 160, 0.22);
+    --glow-inner: rgba(130, 180, 200, 0.28);
   }
 
   * { box-sizing: border-box; }
@@ -29,122 +54,117 @@
     font-family: 'Manrope', sans-serif;
     color: var(--text-main);
     overflow-x: hidden;
+    transition: background-color 0.8s ease, color 0.8s ease;
   }
 
-  /* ТЕКСТУРА СВЕТРА ТА ШУМУ */
   .warm-noise { 
-    position: fixed; 
-    inset: 0; 
-    opacity: 0.04; 
+    position: fixed; inset: 0; opacity: 0.04; 
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); 
-    background-size: 180px 180px; 
-    pointer-events: none; 
-    z-index: 1; 
+    background-size: 180px 180px; pointer-events: none; z-index: 1; 
   }
   
   .grain-overlay { 
-    position: fixed; 
-    inset: 0; 
+    position: fixed; inset: 0; 
     background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.007) 2px, rgba(255,255,255,0.007) 4px); 
-    pointer-events: none; 
-    z-index: 1; 
+    pointer-events: none; z-index: 1; 
   }
 
-  /* СВІТІННЯ ЗАХОДУ СОНЦЯ */
-  .hero-glow-outer { position: fixed; bottom: -60px; left: 50%; transform: translateX(-50%); width: 520px; height: 160px; background: radial-gradient(ellipse, rgba(160, 80, 15, 0.22) 0%, rgba(120, 50, 5, 0.08) 50%, transparent 75%); pointer-events: none; z-index: 2; }
-  .hero-glow-inner { position: fixed; bottom: -20px; left: 50%; transform: translateX(-50%); width: 260px; height: 80px; background: radial-gradient(ellipse, rgba(185, 100, 20, 0.28) 0%, transparent 70%); pointer-events: none; z-index: 2; }
+  .hero-glow-outer { position: fixed; bottom: -60px; left: 50%; transform: translateX(-50%); width: 520px; height: 160px; background: radial-gradient(ellipse, var(--glow-outer) 0%, rgba(120, 50, 5, 0.08) 50%, transparent 75%); pointer-events: none; z-index: 2; transition: background 0.8s ease; }
+  .hero-glow-inner { position: fixed; bottom: -20px; left: 50%; transform: translateX(-50%); width: 260px; height: 80px; background: radial-gradient(ellipse, var(--glow-inner) 0%, transparent 70%); pointer-events: none; z-index: 2; transition: background 0.8s ease; }
 
-  /* НАВІГАЦІЯ */
-  .nav { position: relative; z-index: 10; display: flex; justify-content: space-between; align-items: center; padding: 18px 28px; border-bottom: 0.5px solid var(--border-soft); background: rgba(22, 20, 17, 0.92); }
-  .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 18px; color: var(--accent-amber); letter-spacing: 0.08em; font-weight: 500; }
-  .nav-links { display: flex; gap: 24px; flex-wrap: wrap; }
-  .nav-links a { font-size: 11px; color: var(--text-muted); text-decoration: none; letter-spacing: 0.06em; font-weight: 500; text-transform: uppercase; cursor: pointer; transition: color 0.2s ease; }
+  .nav { position: relative; z-index: 10; display: flex; justify-content: space-between; align-items: center; padding: 18px 28px; border-bottom: 0.5px solid var(--border-soft); background: rgba(0, 0, 0, 0.2); transition: border-color 0.8s ease; }
+  .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 18px; color: var(--accent-amber); letter-spacing: 0.08em; font-weight: 600; transition: color 0.8s ease; }
+  .nav-links { display: flex; gap: 24px; flex-wrap: wrap; align-items: center; }
+  .nav-links a { font-size: 11px; color: var(--text-muted); text-decoration: none; letter-spacing: 0.06em; font-weight: 600; text-transform: uppercase; cursor: pointer; transition: color 0.2s ease; }
   .nav-links a:hover, .nav-links a.active { color: var(--accent-glow); }
 
-  /* КОНТЕНТ ТА СЕКЦІЇ */
+  .theme-slider-container { display: flex; align-items: center; gap: 10px; margin-left: 10px; }
+  .theme-icon { font-size: 12px; opacity: 0.6; }
+  .theme-slider { -webkit-appearance: none; width: 60px; height: 4px; border-radius: 2px; background: var(--border-soft); outline: none; transition: background 0.8s ease; }
+  .theme-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 12px; height: 12px; border-radius: 50%; background: var(--accent-glow); cursor: pointer; transition: background 0.8s ease; }
+
   .site-wrap { position: relative; z-index: 5; max-width: 800px; margin: 0 auto; padding: 40px 24px 100px 24px; }
   .site-section { display: none; }
   .site-section.active { display: block; }
 
-  /* ДИЗАЙН ТЕКСТУ */
-  .hero-subtitle { font-size: 11px; color: #A06828; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 14px; font-weight: 500; }
-  .hero-title { font-family: 'Cormorant Garamond', serif; font-size: 46px; color: var(--accent-glow); font-weight: 400; line-height: 1.1; margin: 0 0 20px; }
-  .hero-desc { font-size: 15px; color: #8A7E6A; max-width: 500px; line-height: 1.7; font-weight: 300; }
-  .section-label { font-size: 10px; color: var(--text-muted); letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 16px; font-weight: 500; }
+  .hero-subtitle { font-size: 11px; color: var(--accent-amber); letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 14px; font-weight: 600; transition: color 0.8s ease; }
+  .hero-title { font-family: 'Cormorant Garamond', serif; font-size: 46px; color: var(--accent-glow); font-weight: 400; line-height: 1.1; margin: 0 0 20px; transition: color 0.8s ease; }
+  .hero-desc { font-size: 15px; color: var(--text-muted); max-width: 500px; line-height: 1.7; font-weight: 400; transition: color 0.8s ease; }
+  .section-label { font-size: 10px; color: var(--text-muted); letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 16px; font-weight: 600; transition: color 0.8s ease; }
 
-  /* КАРТКИ ТА ФОРМИ */
-  .card { background: rgba(255, 160, 40, 0.015); border: 0.5px solid var(--border-soft); border-radius: 10px; overflow: hidden; margin-bottom: 16px; position: relative; padding: 28px; transition: border-color 0.2s ease; }
-  .card-inner-glow { position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(185, 100, 20, 0.25), transparent); }
+  .card { background: var(--card-bg); border: 1px solid var(--border-soft); border-radius: 10px; overflow: hidden; margin-bottom: 16px; position: relative; padding: 28px; transition: background 0.8s ease, border-color 0.8s ease; }
+  .card-inner-glow { position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--accent-amber), transparent); opacity: 0.5; transition: background 0.8s ease; }
   
-  .card-header-test { display: flex; align-items: center; gap: 14px; padding-bottom: 16px; border-bottom: 0.5px solid rgba(180, 100, 25, 0.12); margin-bottom: 20px; }
-  .card-badge { width: 36px; height: 36px; background: rgba(165, 85, 15, 0.15); border: 0.5px solid rgba(165, 85, 15, 0.3); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: var(--accent-amber); flex-shrink: 0; }
-  .card-title { font-size: 15px; color: var(--accent-glow); font-weight: 500; }
-  .card-sub { font-size: 12px; color: #52463A; font-weight: 300; margin-top: 4px; line-height: 1.5; }
+  .card-header-test { display: flex; align-items: center; gap: 14px; padding-bottom: 16px; border-bottom: 1px solid var(--border-soft); margin-bottom: 20px; transition: border-color 0.8s ease; }
+  .card-badge { width: 36px; height: 36px; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-soft); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: var(--accent-amber); flex-shrink: 0; transition: color 0.8s ease, border-color 0.8s ease; }
+  .card-title { font-size: 15px; color: var(--accent-glow); font-weight: 600; transition: color 0.8s ease; }
+  .card-sub { font-size: 13px; color: var(--text-muted); font-weight: 400; margin-top: 4px; line-height: 1.5; transition: color 0.8s ease; }
 
-  /* КАТАЛОГ ТЕСТІВ */
   .test-catalog-grid { display: grid; gap: 16px; margin-top: 24px; }
   .test-card { cursor: pointer; }
-  .test-card:hover { border-color: rgba(180, 100, 25, 0.35); background: rgba(255, 160, 40, 0.03); }
+  .test-card:hover { border-color: var(--accent-amber); background: rgba(255, 255, 255, 0.02); }
   #active-test-container { display: none; }
-  .back-btn { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-muted); cursor: pointer; margin-bottom: 24px; transition: color 0.2s; border: none; background: none; padding: 0; font-family: inherit; }
+  .back-btn { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-muted); cursor: pointer; margin-bottom: 24px; transition: color 0.2s; border: none; background: none; padding: 0; font-family: inherit; font-weight: 600; }
   .back-btn:hover { color: var(--accent-amber); }
 
-  /* ІНТЕРФЕЙС ТЕСТУ */
-  .question-num { font-size: 12px; color: #524638; margin-bottom: 10px; font-weight: 500; }
-  .question-text { font-size: 16px; color: #C4B29A; line-height: 1.6; margin-bottom: 24px; min-height: 60px; display: flex; align-items: center; }
+  .question-num { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; font-weight: 600; transition: color 0.8s ease; }
+  .question-text { font-size: 16px; color: var(--text-main); line-height: 1.6; margin-bottom: 24px; min-height: 60px; display: flex; align-items: center; font-weight: 500; transition: color 0.8s ease; }
   
   .scale-row { display: flex; gap: 8px; align-items: center; justify-content: space-between; }
   .scale-item { flex: 1; display: flex; flex-direction: column; align-items: center; position: relative; }
   .scale-item input { position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer; margin: 0; }
-  .scale-item label { width: 100%; aspect-ratio: 1; max-width: 42px; background: rgba(180, 90, 15, 0.04); border: 0.5px solid rgba(180, 90, 15, 0.15); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 13px; color: var(--text-muted); transition: all 0.15s ease; cursor: pointer; }
-  .scale-item input:checked + label { background: rgba(165, 85, 15, 0.22); border-color: var(--accent-amber); color: var(--accent-glow); font-weight: 600; }
+  .scale-item label { width: 100%; aspect-ratio: 1; max-width: 42px; background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-soft); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 14px; color: var(--text-muted); transition: all 0.2s ease; cursor: pointer; font-weight: 500; }
+  .scale-item input:checked + label { background: rgba(255, 255, 255, 0.08); border-color: var(--accent-amber); color: var(--accent-glow); font-weight: 700; box-shadow: 0 0 10px rgba(0,0,0,0.2); }
   
   .scale-hint-row { display: flex; justify-content: space-between; margin-top: 12px; }
-  .scale-hint { font-size: 10px; color: #42382E; font-weight: 300; }
+  .scale-hint { font-size: 11px; color: var(--text-muted); font-weight: 500; transition: color 0.8s ease; }
 
-  /* ПОЛЯ ВВОДУ ТА КНОПКИ */
+  .bdi-scale { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+  .bdi-scale label { display: flex; align-items: center; padding: 14px 18px; border-radius: 8px; background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-soft); cursor: pointer; user-select: none; font-size: 15px; line-height: 1.4; transition: all 0.2s ease; text-align: left; font-weight: 500; color: var(--text-main); }
+  .bdi-scale input { display: none; }
+  .bdi-scale input:checked + label { background: rgba(255, 255, 255, 0.08); border-color: var(--accent-amber); color: var(--accent-glow); font-weight: 600; }
+  .bdi-scale label:hover { background: rgba(255, 255, 255, 0.05); }
+
   .input-group { margin: 24px 0; }
-  .input-group label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; }
-  .input-group input { width: 100%; background: rgba(22, 20, 17, 0.6); border: 0.5px solid var(--border-soft); padding: 12px 14px; border-radius: 6px; color: #fff; font-size: 14px; outline: none; transition: border-color 0.2s; }
+  .input-group label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+  .input-group input { width: 100%; background: rgba(0, 0, 0, 0.2); border: 1px solid var(--border-soft); padding: 12px 14px; border-radius: 6px; color: var(--text-main); font-size: 14px; outline: none; transition: border-color 0.2s, color 0.8s ease; font-family: inherit; }
   .input-group input:focus { border-color: var(--accent-amber); }
 
   .controls { display: flex; gap: 10px; margin-top: 24px; flex-wrap: wrap; }
-  button { background: rgba(184, 122, 53, 0.15); border: 0.5px solid var(--accent-amber); padding: 12px 20px; border-radius: 6px; color: var(--accent-glow); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; font-family: inherit; }
-  button:hover:not(:disabled) { background: rgba(184, 122, 53, 0.25); color: #fff; }
-  button:disabled { opacity: 0.2; cursor: not-allowed; }
-  .btn-ghost { background: transparent; border-color: rgba(180, 100, 25, 0.15); color: var(--text-muted); }
+  button { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--accent-amber); padding: 12px 20px; border-radius: 6px; color: var(--accent-glow); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; font-family: inherit; }
+  button:hover:not(:disabled) { background: var(--accent-amber); color: var(--bg-color); }
+  button:disabled { opacity: 0.3; cursor: not-allowed; }
+  .btn-ghost { background: transparent; border-color: var(--border-soft); color: var(--text-muted); }
   .btn-ghost:hover:not(:disabled) { border-color: var(--accent-amber); color: var(--text-main); }
 
-  /* РЕЗУЛЬТАТИ ТА ДОГОВІР */
-  .resultBox { margin-top: 28px; display: none; border-top: 0.5px solid var(--border-soft); padding-top: 24px; }
+  .resultBox { margin-top: 28px; display: none; border-top: 1px solid var(--border-soft); padding-top: 24px; }
   table { width: 100%; border-collapse: collapse; margin-top: 12px; }
-  th, td { padding: 12px 8px; text-align: left; border-bottom: 0.5px solid rgba(180, 100, 25, 0.08); font-size: 14px; }
-  th { font-family: 'Cormorant Garamond', serif; font-size: 16px; color: var(--text-muted); font-weight: 500; }
-  .schema-descriptions { margin-top: 24px; padding: 16px; background: rgba(22, 20, 17, 0.4); border-radius: 6px; font-size: 13px; line-height: 1.6; color: #8A7E6A; border: 0.5px solid rgba(180, 100, 25, 0.05); }
+  th, td { padding: 12px 8px; text-align: left; border-bottom: 1px solid var(--border-soft); font-size: 14px; transition: border-color 0.8s ease; }
+  th { font-family: 'Cormorant Garamond', serif; font-size: 18px; color: var(--text-muted); font-weight: 600; }
+  .schema-descriptions { margin-top: 24px; padding: 16px; background: rgba(0, 0, 0, 0.2); border-radius: 6px; font-size: 14px; line-height: 1.6; color: var(--text-muted); border: 1px solid var(--border-soft); font-weight: 400; }
 
-  .contract-text { font-size: 14px; line-height: 1.7; color: #9E8E76; }
-  .contract-text h3 { font-family: 'Cormorant Garamond', serif; font-size: 20px; color: var(--accent-glow); margin: 24px 0 10px 0; font-weight: 400; }
+  .contract-text { font-size: 14px; line-height: 1.7; color: var(--text-muted); transition: color 0.8s ease; }
+  .contract-text h3 { font-family: 'Cormorant Garamond', serif; font-size: 20px; color: var(--accent-glow); margin: 24px 0 10px 0; font-weight: 500; transition: color 0.8s ease; }
   .contract-text ul { padding-left: 18px; margin: 8px 0; }
   .contract-text li { margin-bottom: 6px; }
 
-  .price-tag { font-family: 'Cormorant Garamond', serif; font-size: 24px; color: var(--accent-glow); margin-bottom: 20px; }
+  .price-tag { font-family: 'Cormorant Garamond', serif; font-size: 24px; color: var(--accent-glow); margin-bottom: 20px; transition: color 0.8s ease; }
 
-  /* ВІДЖЕТ ДИХАННЯ ПО КВАДРАТУ */
   .breathe-widget { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 0; min-height: 320px; position: relative; }
-  .breathe-circle { width: 140px; height: 140px; border-radius: 50%; background: radial-gradient(circle, rgba(184, 122, 53, 0.3) 0%, transparent 70%); box-shadow: 0 0 40px rgba(184, 122, 53, 0.1); border: 1px solid rgba(184, 122, 53, 0.1); display: flex; align-items: center; justify-content: center; position: relative; transition: transform 4s linear, opacity 4s linear, box-shadow 4s linear; opacity: 0.6; }
-  .breathe-text { font-family: 'Cormorant Garamond', serif; font-size: 22px; color: var(--accent-glow); font-weight: 500; position: absolute; text-align: center; z-index: 10; transition: opacity 0.5s ease; }
+  .breathe-circle { width: 140px; height: 140px; border-radius: 50%; background: radial-gradient(circle, var(--accent-amber) 0%, transparent 70%); box-shadow: 0 0 40px rgba(0,0,0,0.1); border: 1px solid var(--border-soft); display: flex; align-items: center; justify-content: center; position: relative; transition: transform 4s linear, opacity 4s linear, box-shadow 4s linear, background 0.8s ease, border-color 0.8s ease; opacity: 0.6; }
+  .breathe-text { font-family: 'Cormorant Garamond', serif; font-size: 22px; color: var(--accent-glow); font-weight: 600; position: absolute; text-align: center; z-index: 10; transition: opacity 0.5s ease, color 0.8s ease; }
   
-  /* Фази анімації керуються через класи */
-  .phase-inhale { transform: scale(1.8); opacity: 1; box-shadow: 0 0 60px rgba(184, 122, 53, 0.3); }
-  .phase-hold1 { transform: scale(1.8); opacity: 0.8; box-shadow: 0 0 40px rgba(184, 122, 53, 0.2); }
-  .phase-exhale { transform: scale(1); opacity: 0.5; box-shadow: 0 0 20px rgba(184, 122, 53, 0.05); }
-  .phase-hold2 { transform: scale(1); opacity: 0.4; box-shadow: 0 0 10px rgba(184, 122, 53, 0.02); }
+  .phase-inhale { transform: scale(1.8); opacity: 1; box-shadow: 0 0 60px var(--border-soft); }
+  .phase-hold1 { transform: scale(1.8); opacity: 0.8; box-shadow: 0 0 40px var(--border-soft); }
+  .phase-exhale { transform: scale(1); opacity: 0.5; box-shadow: 0 0 20px rgba(0,0,0,0.05); }
+  .phase-hold2 { transform: scale(1); opacity: 0.4; box-shadow: 0 0 10px rgba(0,0,0,0.02); }
 
   @media(max-width: 600px) {
     .hero-title { font-size: 34px; }
-    .scale-item label { max-width: 36px; height: 36px; font-size: 11px; }
+    .scale-item label { max-width: 36px; height: 36px; font-size: 13px; }
     .controls button { width: 100%; }
     .nav { padding: 14px 18px; flex-direction: column; gap: 12px; }
+    .theme-slider-container { margin-left: 0; width: 100%; justify-content: center; margin-top: 10px; }
   }
 </style>
 </head>
@@ -163,6 +183,12 @@
     <a onclick="showSection('consultations')" id="nav-consultations">Консультації</a>
     <a onclick="showSection('tests')" id="nav-tests">Тести</a>
     <a onclick="showSection('soothing')" id="nav-soothing">Самозаспокоєння</a>
+    
+    <div class="theme-slider-container">
+      <span class="theme-icon">🌇</span>
+      <input type="range" id="themeSlider" class="theme-slider" min="0" max="2" value="0" step="1" oninput="changeTheme(this.value)">
+      <span class="theme-icon">🌅</span>
+    </div>
   </div>
 </nav>
 
@@ -216,10 +242,10 @@
 
   <section id="tests" class="site-section">
     <div class="section-label">Діагностичний блок</div>
-    <h1 class="hero-title">Дослідження схем</h1>
+    <h1 class="hero-title">Дослідження стану</h1>
     
     <div id="test-catalog">
-      <div class="desc" style="font-size: 14px; line-height: 1.6; color: var(--text-muted);">
+      <div class="hero-desc" style="margin-bottom: 24px;">
         Обери інструмент для діагностики. Усі результати обробляються локально та конфіденційно зберігаються лише для подальшої терапевтичної роботи.
       </div>
       
@@ -234,7 +260,18 @@
             </div>
           </div>
         </div>
+
+        <div class="card test-card" onclick="openTest('bdi')">
+          <div class="card-inner-glow"></div>
+          <div class="card-header-test" style="margin-bottom: 8px; padding-bottom: 0; border: none;">
+            <div class="card-badge">BDI</div>
+            <div>
+              <div class="card-title">Шкала депресії Бека</div>
+              <div class="card-sub">Дослідження поточного емоційного та фізичного стану. 21 питання. Вимагає близько 5 хвилин.</div>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
 
     <div id="active-test-container">
@@ -243,11 +280,11 @@
       <div class="card">
         <div class="card-inner-glow"></div>
         <div class="card-header-test">
-          <div class="card-badge" id="activeTestBadge">YSQ</div>
+          <div class="card-badge" id="activeTestBadge">TEST</div>
           <div style="flex:1;">
-            <div class="card-title" id="qCounter">Питання 1 / 90</div>
-            <div style="height: 2px; background: rgba(180,100,25,0.08); margin-top:8px; border-radius:2px; overflow:hidden; width:100px;">
-              <div id="progressInner" style="height:100%; background:var(--accent-amber); width:0%; transition: width 0.2s ease;"></div>
+            <div class="card-title" id="qCounter">Питання 1</div>
+            <div style="height: 2px; background: rgba(255,255,255,0.05); margin-top:8px; border-radius:2px; overflow:hidden; width:100px;">
+              <div id="progressInner" style="height:100%; background:var(--accent-amber); width:0%; transition: width 0.3s ease;"></div>
             </div>
           </div>
           <div>
@@ -260,13 +297,13 @@
 
           <div class="input-group">
             <label for="clientName">Твоє ім'я або псевдонім (для терапевта):</label>
-            <input type="text" id="clientName" placeholder="Наприклад: Олександр К. або User_32">
+            <input type="text" id="clientName" placeholder="Наприклад: Олександр К.">
           </div>
 
           <div class="controls">
             <button type="button" id="btnNext">Далі</button>
-            <button type="button" class="btn-ghost" id="btnFinish">Завершити і надіслати</button>
-            <button type="button" class="btn-ghost" style="opacity: 0.4;" id="btnReset">Скинути</button>
+            <button type="button" class="btn-ghost" id="btnFinish" style="display:none;">Завершити і надіслати</button>
+            <button type="button" class="btn-ghost" id="btnReset">Скинути</button>
           </div>
         </form>
 
@@ -275,8 +312,8 @@
           <table id="resultTable">
             <thead>
               <tr>
-                <th>Шкала</th>
-                <th>Сума балів</th>
+                <th>Шкала / Показник</th>
+                <th>Бал</th>
                 <th>Рівень</th>
               </tr>
             </thead>
@@ -313,18 +350,23 @@
 
 <script>
 // ==========================================
+// 0. ТЕМА І СЛАЙДЕР
+// ==========================================
+function changeTheme(val) {
+  const themes = ['sunset', 'night', 'dawn'];
+  document.documentElement.setAttribute('data-theme', themes[val]);
+}
+document.documentElement.setAttribute('data-theme', 'sunset');
+
+// ==========================================
 // 1. НАВІГАЦІЯ
 // ==========================================
 function showSection(sectionId) {
   document.querySelectorAll('.site-section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
-  
   document.getElementById(sectionId).classList.add('active');
   document.getElementById('nav-' + sectionId).classList.add('active');
-  
-  // Якщо переходимо в інший розділ, скидаємо дихання
   if(sectionId !== 'soothing' && isBreathing) toggleBreathing();
-  
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -333,7 +375,7 @@ function showSection(sectionId) {
 // ==========================================
 let isBreathing = false;
 let breathInterval = null;
-let currentPhase = 0; // 0: вдих, 1: затримка, 2: видих, 3: затримка
+let currentPhase = 0;
 
 const breathPhases = [
   { text: "Вдих...", class: "phase-inhale" },
@@ -348,7 +390,6 @@ const bBtn = document.getElementById('btnBreatheToggle');
 
 function toggleBreathing() {
   if (isBreathing) {
-    // Зупинка
     isBreathing = false;
     clearInterval(breathInterval);
     bCircle.className = 'breathe-circle';
@@ -356,56 +397,31 @@ function toggleBreathing() {
     bBtn.innerText = "Почати вправу";
     bBtn.classList.remove('btn-ghost');
   } else {
-    // Старт
     isBreathing = true;
     currentPhase = 0;
     bBtn.innerText = "Зупинити";
     bBtn.classList.add('btn-ghost');
     runBreathPhase();
-    breathInterval = setInterval(runBreathPhase, 4000); // 4 секунди на фазу
+    breathInterval = setInterval(runBreathPhase, 4000);
   }
 }
 
 function runBreathPhase() {
   const phase = breathPhases[currentPhase];
   bCircle.className = `breathe-circle ${phase.class}`;
-  
   bText.style.opacity = 0;
-  setTimeout(() => {
-    bText.innerText = phase.text;
-    bText.style.opacity = 1;
-  }, 200);
-
+  setTimeout(() => { bText.innerText = phase.text; bText.style.opacity = 1; }, 200);
   currentPhase = (currentPhase + 1) % 4;
 }
 
 // ==========================================
-// 3. АРХІТЕКТУРА ТЕСТІВ (КАТАЛОГ)
+// 3. АРХІТЕКТУРА ТЕСТІВ ТА ДАНІ
 // ==========================================
 let activeTestId = null;
+let activeQuestions = [];
+let currentIndex = 0;
+let answers = {};
 
-function openTest(testId) {
-  activeTestId = testId;
-  document.getElementById('test-catalog').style.display = 'none';
-  document.getElementById('active-test-container').style.display = 'block';
-  
-  if (testId === 'ysq_s3') {
-    document.getElementById('activeTestBadge').innerText = 'YSQ';
-    resetTest(true); // Форсоване скидання інтерфейсу
-  }
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function closeTest() {
-  activeTestId = null;
-  document.getElementById('active-test-container').style.display = 'none';
-  document.getElementById('test-catalog').style.display = 'block';
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-// ==========================================
-// 4. ЛОГІКА ОПИТУВАЛЬНИКА YSQ-S3
-// ==========================================
 const schemaMapping = {
   "Емоційна депривація (ED)": [1, 19, 37, 55, 73], "Покинутість / Нестабільність (AB)": [2, 20, 38, 56, 74],
   "Недовіра / Очікування зловживань (MA)": [3, 21, 39, 57, 75], "Соціальна ізоляція / Відчуженість (SI)": [4, 22, 40, 58, 76],
@@ -418,7 +434,7 @@ const schemaMapping = {
   "Недостатній самоконтроль (IS)": [17, 35, 53, 71, 89], "Пунітивність (Покарання) (PU)": [18, 36, 54, 72, 90]
 };
 
-const questions = [
+const questionsYSQ = [
   { id:1, text:"Я не отримую від інших людей тепла, турботи та любові, яких хочу." },
   { id:2, text:"Мене ніхто по-справжньому не розуміє і не намагається розділити мої почуття та потреби." },
   { id:3, text:"Більшу частину свого життя я не відчував(ла), що є хтось, хто хотів би бути поруч зі мною." },
@@ -511,7 +527,7 @@ const questions = [
   { id:90, text:"Поганих людей треба карати." }
 ];
 
-for (const s in schemaMapping) { schemaMapping[s].forEach(id => { const q = questions.find(x=>x.id===id); if(q) q.schema = s; }); }
+for (const s in schemaMapping) { schemaMapping[s].forEach(id => { const q = questionsYSQ.find(x=>x.id===id); if(q) q.schema = s; }); }
 
 const schemaDescriptionsText = {
   "Емоційна депривація (ED)": "Відчуття браку тепла, турботи, підтримки та розуміння.",
@@ -534,8 +550,30 @@ const schemaDescriptionsText = {
   "Пунітивність (Покарання) (PU)": "Нетерпимість, схильність карати за помилки."
 };
 
-let currentIndex = 0;
-let answers = {};
+const questionsBDI = [
+  { id: 1, title: "Настрій", options: [ { v: 0, t: "Я не почуваюся засмученим." }, { v: 1, t: "Я почуваюся засмученим." }, { v: 2, t: "Я весь час засмучений і не можу позбутися цього." }, { v: 3, t: "Я настільки засмучений і нещасливий, що не можу це витримати." }] },
+  { id: 2, title: "Песимізм", options: [ { v: 0, t: "Я не хвилююся за своє майбутнє." }, { v: 1, t: "Я відчуваю, що мене нічого не чекає в майбутньому." }, { v: 2, t: "Я відчуваю, що нічого не можу чекати від майбутнього." }, { v: 3, t: "Майбутнє здається мені безнадійним, і ситуація не може покращитися." }] },
+  { id: 3, title: "Відчуття невдачі", options: [ { v: 0, t: "Я не відчуваю себе невдахою." }, { v: 1, t: "Я відчуваю, що мав більше невдач, ніж інші люди." }, { v: 2, t: "Коли я оглядаюся на своє життя, я бачу лише низку невдач." }, { v: 3, t: "Я відчуваю себе повним невдахою як особистість." }] },
+  { id: 4, title: "Незадоволеність", options: [ { v: 0, t: "Я отримую стільки ж задоволення від життя, як і раніше." }, { v: 1, t: "Я не отримую стільки задоволення від життя, як раніше." }, { v: 2, t: "Я більше не отримую справжнього задоволення ні від чого." }, { v: 3, t: "Я всім незадоволений або мені все набридло." }] },
+  { id: 5, title: "Почуття провини", options: [ { v: 0, t: "Я не почуваюся винним." }, { v: 1, t: "Я почуваюся винним значну частину часу." }, { v: 2, t: "Я почуваюся винним більшу частину часу." }, { v: 3, t: "Я почуваюся винним постійно." }] },
+  { id: 6, title: "Відчуття покарання", options: [ { v: 0, t: "Я не відчуваю, що мене карають." }, { v: 1, t: "Я відчуваю, що можу бути покараний." }, { v: 2, t: "Я очікую, що буду покараний." }, { v: 3, t: "Я відчуваю, що мене карають." }] },
+  { id: 7, title: "Самоненависть", options: [ { v: 0, t: "Я не розчарований у собі." }, { v: 1, t: "Я розчарований у собі." }, { v: 2, t: "Я відчуваю огиду до себе." }, { v: 3, t: "Я ненавиджу себе." }] },
+  { id: 8, title: "Самозвинувачення", options: [ { v: 0, t: "Я не відчуваю себе гіршим за інших." }, { v: 1, t: "Я критикую себе за свої слабкості або помилки." }, { v: 2, t: "Я весь час звинувачую себе за свої вчинки." }, { v: 3, t: "Я звинувачую себе за все погане, що трапляється." }] },
+  { id: 9, title: "Суїцидальні думки", options: [ { v: 0, t: "Я не думаю про те, щоб заподіяти собі шкоду." }, { v: 1, t: "У мене є думки про самогубство, але я не буду їх здійснювати." }, { v: 2, t: "Я хотів би накласти на себе руки." }, { v: 3, t: "Я б убив себе, якби випала нагода." }] },
+  { id: 10, title: "Плач", options: [ { v: 0, t: "Я плачу не більше, ніж зазвичай." }, { v: 1, t: "Зараз я плачу більше, ніж раніше." }, { v: 2, t: "Я тепер плачу постійно." }, { v: 3, t: "Раніше я міг плакати, а тепер не можу, навіть якщо хочу." }] },
+  { id: 11, title: "Дратівливість", options: [ { v: 0, t: "Я зараз не більш роздратований, ніж зазвичай." }, { v: 1, t: "Я легше дратуюся, ніж раніше." }, { v: 2, t: "Тепер я відчуваю роздратування постійно." }, { v: 3, t: "Мене більше не дратують речі, які дратували раніше (байдужість)." }] },
+  { id: 12, title: "Соціальний інтерес", options: [ { v: 0, t: "Я не втратив інтересу до інших людей." }, { v: 1, t: "Я менше цікавлюся людьми, ніж раніше." }, { v: 2, t: "Я втратив майже весь інтерес до інших людей." }, { v: 3, t: "Я втратив будь-який інтерес до інших людей." }] },
+  { id: 13, title: "Нерішучість", options: [ { v: 0, t: "Я приймаю рішення так само добре, як і раніше." }, { v: 1, t: "Я відкладаю прийняття рішень частіше, ніж раніше." }, { v: 2, t: "Мені важче приймати рішення, ніж раніше." }, { v: 3, t: "Я більше не можу приймати жодних рішень." }] },
+  { id: 14, title: "Образ тіла", options: [ { v: 0, t: "Я не відчуваю, що виглядаю гірше, ніж зазвичай." }, { v: 1, t: "Мене турбує те, що я виглядаю старим або непривабливим." }, { v: 2, t: "Я відчуваю, що в моїй зовнішності відбулися постійні зміни, які роблять мене непривабливим." }, { v: 3, t: "Я вважаю, що я потворний." }] },
+  { id: 15, title: "Працездатність", options: [ { v: 0, t: "Я можу працювати так само добре, як і раніше." }, { v: 1, t: "Мені потрібно додаткове зусилля, щоб почати щось робити." }, { v: 2, t: "Мені потрібно змушувати себе дуже сильно, щоб щось зробити." }, { v: 3, t: "Я зовсім не можу працювати." }] },
+  { id: 16, title: "Сон", options: [ { v: 0, t: "Я сплю так само добре, як і зазвичай." }, { v: 1, t: "Я сплю не так добре, як раніше." }, { v: 2, t: "Я прокидаюся на 1-2 години раніше, ніж зазвичай, і мені важко знову заснути." }, { v: 3, t: "Я прокидаюся на кілька годин раніше, ніж зазвичай, і не можу знову заснути." }] },
+  { id: 17, title: "Втома", options: [ { v: 0, t: "Я втомлююся не більше, ніж зазвичай." }, { v: 1, t: "Я втомлююся легше, ніж раніше." }, { v: 2, t: "Я втомлююся майже від усього, що роблю." }, { v: 3, t: "Я занадто втомлений, щоб щось робити." }] },
+  { id: 18, title: "Апетит", options: [ { v: 0, t: "Мій апетит не гірший, ніж зазвичай." }, { v: 1, t: "Мій апетит не такий хороший, як був." }, { v: 2, t: "Мій апетит зараз набагато гірший." }, { v: 3, t: "У мене зовсім немає апетиту." }] },
+  { id: 19, title: "Втрата ваги", options: [ { v: 0, t: "Я не втратив багато ваги (якщо взагалі втратив) останнім часом." }, { v: 1, t: "Я втратив більше 2 кг." }, { v: 2, t: "Я втратив більше 4 кг." }, { v: 3, t: "Я втратив більше 6 кг." }] },
+  { id: 20, title: "Здоров'я", options: [ { v: 0, t: "Я не турбуюся про своє здоров'я більше, ніж зазвичай." }, { v: 1, t: "Мене турбують фізичні проблеми, такі як болі, розлад шлунку або запор." }, { v: 2, t: "Я дуже стурбований фізичними проблемами, і мені важко думати про щось інше." }, { v: 3, t: "Я настільки стурбований своїми фізичними проблемами, що не можу думати ні про що інше." }] },
+  { id: 21, title: "Лібідо", options: [ { v: 0, t: "Я не помітив жодних змін у своєму інтересі до сексу." }, { v: 1, t: "Я менше цікавлюся сексом, ніж раніше." }, { v: 2, t: "Я зараз набагато менше цікавлюся сексом." }, { v: 3, t: "Я повністю втратив інтерес до сексу." }] }
+];
+
 const qArea = document.getElementById('questionArea');
 const qCounter = document.getElementById('qCounter');
 const progressInner = document.getElementById('progressInner');
@@ -545,43 +583,97 @@ const btnFinish = document.getElementById('btnFinish');
 const btnReset = document.getElementById('btnReset');
 const resultBox = document.getElementById('resultBox');
 
+function openTest(testId) {
+  activeTestId = testId;
+  activeQuestions = (testId === 'ysq_s3') ? questionsYSQ : questionsBDI;
+  
+  document.getElementById('test-catalog').style.display = 'none';
+  document.getElementById('active-test-container').style.display = 'block';
+  document.getElementById('activeTestBadge').innerText = (testId === 'ysq_s3') ? 'YSQ' : 'BDI';
+  
+  resetTest(true);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function closeTest() {
+  activeTestId = null;
+  document.getElementById('active-test-container').style.display = 'none';
+  document.getElementById('test-catalog').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
 function renderQuestion(index){
-  const q = questions[index];
-  qArea.innerHTML = `
-    <div aria-live="polite">
-      <div class="question-num">Твердження ${index+1} із ${questions.length}</div>
-      <div class="question-text">${q.text}</div>
-      <div class="scale-row">
-        ${[1,2,3,4,5,6].map(v => {
-          const checked = (answers[q.id] === v) ? 'checked' : '';
-          return `
-            <div class="scale-item">
-              <input type="radio" id="q${q.id}_v${v}" name="q${q.id}" value="${v}" ${checked} onchange="handleAnswer(${q.id},${v})">
-              <label for="q${q.id}_v${v}">${v}</label>
-            </div>`;
-        }).join('')}
-      </div>
-      <div class="scale-hint-row">
-        <div class="scale-hint">абсолютно не про мене</div>
-        <div class="scale-hint">ідеально описує мене</div>
-      </div>
-    </div>`;
-  qCounter.textContent = `Питання ${index+1} / ${questions.length}`;
-  progressInner.style.width = `${Math.round((index / questions.length) * 100)}%`;
+  const q = activeQuestions[index];
+  
+  if (activeTestId === 'ysq_s3') {
+    qArea.innerHTML = `
+      <div aria-live="polite">
+        <div class="question-num">Твердження ${index+1} із ${activeQuestions.length}</div>
+        <div class="question-text">${q.text}</div>
+        <div class="scale-row">
+          ${[1,2,3,4,5,6].map(v => {
+            const checked = (answers[q.id] === v) ? 'checked' : '';
+            return `
+              <div class="scale-item">
+                <input type="radio" id="q${q.id}_v${v}" name="q${q.id}" value="${v}" ${checked} onchange="handleAnswer(${q.id},${v})">
+                <label for="q${q.id}_v${v}">${v}</label>
+              </div>`;
+          }).join('')}
+        </div>
+        <div class="scale-hint-row">
+          <div class="scale-hint">абсолютно не про мене</div>
+          <div class="scale-hint">ідеально описує мене</div>
+        </div>
+      </div>`;
+  } else if (activeTestId === 'bdi') {
+    const optionsHTML = q.options.map(opt => {
+      const checked = (answers[q.id] === opt.v) ? 'checked' : '';
+      return `
+        <input type="radio" id="q${q.id}_v${opt.v}" name="q${q.id}" value="${opt.v}" ${checked} onchange="handleAnswer(${q.id}, ${opt.v})">
+        <label for="q${q.id}_v${opt.v}">
+          <div style="flex:1;">${opt.t}</div>
+        </label>`;
+    }).join('');
+
+    qArea.innerHTML = `
+      <div aria-live="polite">
+        <div class="question-num">Група ${index+1} із ${activeQuestions.length}: ${q.title}</div>
+        <div class="bdi-scale">
+          ${optionsHTML}
+        </div>
+      </div>`;
+  }
+
+  qCounter.textContent = `Питання ${index+1} / ${activeQuestions.length}`;
+  progressInner.style.width = `${Math.round((index / activeQuestions.length) * 100)}%`;
+  
   btnPrev.disabled = (index === 0);
-  btnNext.textContent = (index === questions.length - 1) ? 'Останнє питання' : 'Далі';
+  
+  const isLast = index === activeQuestions.length - 1;
+  const isAnswered = answers[q.id] !== undefined;
+  
+  if (isLast) {
+    btnNext.style.display = 'none';
+    btnFinish.style.display = 'inline-block';
+  } else {
+    btnNext.style.display = 'inline-block';
+    btnFinish.style.display = 'none';
+  }
 }
 
 function handleAnswer(qid, val){
   answers[qid] = val;
-  if (currentIndex < questions.length - 1) setTimeout(()=>{ currentIndex++; renderQuestion(currentIndex); }, 120);
+  if (currentIndex < activeQuestions.length - 1) {
+    setTimeout(() => { currentIndex++; renderQuestion(currentIndex); }, (activeTestId === 'ysq_s3') ? 120 : 250);
+  }
 }
-function prevQ(){ if(currentIndex > 0){ currentIndex--; renderQuestion(currentIndex); } }
-function nextQ(){ if(currentIndex < questions.length - 1){ currentIndex++; renderQuestion(currentIndex); } }
 
-function calculateResults(){
+function prevQ(){ if(currentIndex > 0){ currentIndex--; renderQuestion(currentIndex); } }
+function nextQ(){ if(currentIndex < activeQuestions.length - 1){ currentIndex++; renderQuestion(currentIndex); } }
+
+function calculateYSQ(){
   const map = {};
-  questions.forEach(q => {
+  activeQuestions.forEach(q => {
     const s = q.schema || "Unknown";
     if(!map[s]) map[s] = {sum:0, count:0};
     const v = answers[q.id];
@@ -590,29 +682,56 @@ function calculateResults(){
   return Object.keys(map).map(k => ({ schema: k, sum: map[k].sum })).sort((a,b)=>b.sum - a.sum);
 }
 
-function getInterpretation(score) {
-  if (score >= 25) return "<span style='color:var(--accent-glow); font-weight:600;'>Високий</span>";
+function getYSQInterpretation(score) {
+  if (score >= 25) return "<span style='color:var(--accent-glow); font-weight:700;'>Високий</span>";
   if (score >= 20) return "Середній";
   if (score >= 10) return "Легкий";
   return "—";
 }
 
+function calculateBDI(){
+  let score = 0;
+  for (let qid in answers) score += answers[qid];
+  let level = "Мінімальна депресія";
+  if (score >= 14 && score <= 19) level = "Легка депресія";
+  if (score >= 20 && score <= 28) level = "Помірна депресія";
+  if (score >= 29) level = "<span style='color:var(--accent-glow); font-weight:700;'>Тяжка депресія</span>";
+  
+  return [
+    { schema: "Загальний бал BDI", sum: score },
+    { schema: "Рівень", sum: level.replace(/<[^>]+>/g, '') },
+    { htmlLevel: level }
+  ];
+}
+
 function showResults(){
-  const results = calculateResults();
   const tbody = document.querySelector('#resultTable tbody');
   tbody.innerHTML = '';
-  results.forEach(r => {
-    if(r.sum > 0) tbody.innerHTML += `<tr><td>${r.schema}</td><td>${r.sum}</td><td>${getInterpretation(r.sum)}</td></tr>`;
-  });
-  
   const descBlock = document.getElementById('schemaDescriptions');
-  const unique = Array.from(new Set(results.map(r=>r.schema)));
-  descBlock.innerHTML = '<b>Короткий довідник шкал вашого профілю:</b><br><br>' + unique.map(n => `<b>${n}:</b> ${schemaDescriptionsText[n]||''}`).join('<br>');
+  
+  let finalPayloadData = [];
+
+  if (activeTestId === 'ysq_s3') {
+    const results = calculateYSQ();
+    results.forEach(r => {
+      if(r.sum > 0) tbody.innerHTML += `<tr><td>${r.schema}</td><td>${r.sum}</td><td>${getYSQInterpretation(r.sum)}</td></tr>`;
+    });
+    const unique = Array.from(new Set(results.map(r=>r.schema)));
+    descBlock.innerHTML = '<b>Короткий довідник шкал вашого профілю:</b><br><br>' + unique.map(n => `<b>${n}:</b> ${schemaDescriptionsText[n]||''}`).join('<br>');
+    finalPayloadData = results;
+  } else if (activeTestId === 'bdi') {
+    const results = calculateBDI();
+    tbody.innerHTML = `
+      <tr><td>Загальний бал</td><td>${results[0].sum}</td><td>${results[2].htmlLevel}</td></tr>
+    `;
+    descBlock.innerHTML = 'Цей результат не є клінічним діагнозом і призначений виключно для ознайомлення в рамках терапевтичної роботи.';
+    finalPayloadData = [ { schema: "Загальний бал", sum: results[0].sum }, { schema: "Рівень", sum: results[1].sum } ];
+  }
   
   resultBox.style.display = 'block';
   progressInner.style.width = '100%';
   
-  saveResultsToGoogleSheet(results);
+  saveResultsToGoogleSheet(finalPayloadData);
 }
 
 function finish() {
@@ -623,10 +742,10 @@ function finish() {
     return;
   }
 
-  const missing = questions.find(q => !answers[q.id]);
+  const missing = activeQuestions.find(q => answers[q.id] === undefined);
   if (missing) {
-    alert(`Питання №${missing.id} пропущене.`);
-    currentIndex = questions.findIndex(q => q.id === missing.id);
+    alert(`Питання пропущене. Будь ласка, оберіть відповідь.`);
+    currentIndex = activeQuestions.findIndex(q => q.id === missing.id);
     renderQuestion(currentIndex);
   } else {
     showResults();
@@ -639,7 +758,7 @@ function resetTest(force = false) {
   const btn = document.getElementById('btnReset');
   if (!force && !resetConfirmation) {
     resetConfirmation = true;
-    btn.innerText = "Точно видалити результати?";
+    btn.innerText = "Точно видалити?";
     btn.style.color = "#ff6b6b";
     setTimeout(() => {
       resetConfirmation = false;
@@ -653,44 +772,48 @@ function resetTest(force = false) {
   resultBox.style.display = 'none';
   progressInner.style.width = '0%';
   document.getElementById('btnFinish').innerText = "Завершити і надіслати";
+  document.getElementById('btnFinish').disabled = false;
+  document.getElementById('btnFinish').style = "";
   renderQuestion(0);
   resetConfirmation = false;
   btn.innerText = "Скинути";
   btn.style.color = "";
 }
 
-// ВІДПРАВКА ДАНИХ З УРАХУВАННЯМ testId ТА ОБРИВУ МЕРЕЖІ
 function saveResultsToGoogleSheet(resultsData) {
   const webAppUrl = 'https://script.google.com/macros/s/AKfycbz8gGc1xBwvypl9Xhs0h6F_h_HKVLq5GBYfZV-saaxkveZoz1esMC9wRjrTIKMVXt9M/exec';
-  const fixedSchemaOrder = [
-    "Емоційна депривація (ED)","Покинутість / Нестабільність (AB)","Недовіра / Очікування зловживань (MA)",
-    "Соціальна ізоляція / Відчуженість (SI)","Дефективність / Сором (DS)","Неуспішність (FA)",
-    "Залежність / Некомпетентність (DI)","Вразливість до шкоди та хвороб (VH)","Злиття / Нерозвинена ідентичність (EM)",
-    "Підкорення (SB)","Сапопожертва (SS)","Пошук схвалення (AS)",
-    "Негативізм / Песимізм (NP)","Емоційне пригнічення (EI)","Жорсткі стандарти / Гіперкритичність (US)",
-    "Привілейованість / Грандіозність (ET)","Недостатній самоконтроль (IS)","Пунітивність (Покарання) (PU)"
-  ];
-  
-  const ordered = fixedSchemaOrder.map(name => {
-    const r = resultsData.find(x => x.schema === name);
-    return r || { schema: name, sum: 0 };
-  });
-  
   const clientName = document.getElementById('clientName').value.trim();
   
-  // Додано testId та timestamp для бекенду
+  let orderedResults = [];
+  
+  if (activeTestId === 'ysq_s3') {
+    const fixedSchemaOrder = [
+      "Емоційна депривація (ED)","Покинутість / Нестабільність (AB)","Недовіра / Очікування зловживань (MA)",
+      "Соціальна ізоляція / Відчуженість (SI)","Дефективність / Сором (DS)","Неуспішність (FA)",
+      "Залежність / Некомпетентність (DI)","Вразливість до шкоди та хвороб (VH)","Злиття / Нерозвинена ідентичність (EM)",
+      "Підкорення (SB)","Сапопожертва (SS)","Пошук схвалення (AS)",
+      "Негативізм / Песимізм (NP)","Емоційне пригнічення (EI)","Жорсткі стандарти / Гіперкритичність (US)",
+      "Привілейованість / Грандіозність (ET)","Недостатній самоконтроль (IS)","Пунітивність (Покарання) (PU)"
+    ];
+    orderedResults = fixedSchemaOrder.map(name => {
+      const r = resultsData.find(x => x.schema === name);
+      return r || { schema: name, sum: 0 };
+    });
+  } else {
+    orderedResults = resultsData;
+  }
+
   const payload = { 
     testId: activeTestId,
     clientName: clientName, 
     timestamp: new Date().toISOString(),
-    results: ordered.map(r => ({ schema: r.schema, sum: r.sum })) 
+    results: orderedResults.map(r => ({ schema: r.schema, sum: r.sum })) 
   };
 
   const btnFinish = document.getElementById('btnFinish');
   btnFinish.innerText = "Відправлення...";
   btnFinish.disabled = true;
 
-  // Використовуємо Promise.race для контролю таймауту (обрив мережі), бо no-cors інакше мовчить
   const fetchPromise = fetch(webAppUrl, {
     method: 'POST',
     mode: 'no-cors',
@@ -699,7 +822,7 @@ function saveResultsToGoogleSheet(resultsData) {
   });
 
   const timeoutPromise = new Promise((_, reject) => 
-    setTimeout(() => reject(new Error('Перевищено час очікування. Перевірте з\'єднання.')), 8000)
+    setTimeout(() => reject(new Error('Timeout')), 8000)
   );
 
   Promise.race([fetchPromise, timeoutPromise])
@@ -713,6 +836,7 @@ function saveResultsToGoogleSheet(resultsData) {
       btnFinish.innerText = "Помилка мережі. Спробуйте ще раз";
       btnFinish.disabled = false;
       btnFinish.style.color = "#ff6b6b";
+      btnFinish.style.borderColor = "#ff6b6b";
     });
 }
 
@@ -720,8 +844,6 @@ btnPrev.addEventListener('click', prevQ);
 btnNext.addEventListener('click', nextQ);
 btnFinish.addEventListener('click', finish);
 btnReset.addEventListener('click', () => resetTest(false));
-
-renderQuestion(0);
 </script>
 </body>
 </html>
