@@ -17,6 +17,8 @@
     --border-soft: rgba(180, 100, 25, 0.25);
     --glow-outer: rgba(160, 80, 15, 0.22);
     --glow-inner: rgba(185, 100, 20, 0.28);
+    --glass-bg: rgba(0, 0, 0, 0.2);
+    --hover-bg: rgba(255, 255, 255, 0.05);
   }
 
   :root[data-theme="night"] {
@@ -29,18 +31,22 @@
     --border-soft: rgba(79, 107, 158, 0.25);
     --glow-outer: rgba(30, 60, 120, 0.22);
     --glow-inner: rgba(60, 100, 180, 0.28);
+    --glass-bg: rgba(0, 0, 0, 0.2);
+    --hover-bg: rgba(255, 255, 255, 0.05);
   }
 
   :root[data-theme="dawn"] {
-    --bg-color: #1A1E24;
-    --card-bg: #22272E;
-    --text-muted: #7A8B99;
-    --text-main: #C2D1DE;
-    --accent-amber: #83A1B5;
-    --accent-glow: #B1D0E6;
-    --border-soft: rgba(131, 161, 181, 0.25);
-    --glow-outer: rgba(100, 140, 160, 0.22);
-    --glow-inner: rgba(130, 180, 200, 0.28);
+    --bg-color: #F4EFE6;
+    --card-bg: #FCFAF6;
+    --text-muted: #8A7A6B;
+    --text-main: #4A4036;
+    --accent-amber: #D64545;
+    --accent-glow: #E63946;
+    --border-soft: rgba(214, 69, 69, 0.2);
+    --glow-outer: rgba(230, 57, 70, 0.12);
+    --glow-inner: rgba(214, 69, 69, 0.18);
+    --glass-bg: rgba(0, 0, 0, 0.03);
+    --hover-bg: rgba(0, 0, 0, 0.03);
   }
 
   * { box-sizing: border-box; }
@@ -58,22 +64,22 @@
   }
 
   .warm-noise { 
-    position: fixed; inset: 0; opacity: 0.04; 
+    position: fixed; inset: 0; opacity: 0.055; 
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); 
     background-size: 180px 180px; pointer-events: none; z-index: 1; 
   }
   
   .grain-overlay { 
     position: fixed; inset: 0; 
-    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.007) 2px, rgba(255,255,255,0.007) 4px); 
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(150,150,150,0.03) 2px, rgba(150,150,150,0.03) 4px); 
     pointer-events: none; z-index: 1; 
   }
 
-  .hero-glow-outer { position: fixed; bottom: -60px; left: 50%; transform: translateX(-50%); width: 520px; height: 160px; background: radial-gradient(ellipse, var(--glow-outer) 0%, rgba(120, 50, 5, 0.08) 50%, transparent 75%); pointer-events: none; z-index: 2; transition: background 0.8s ease; }
+  .hero-glow-outer { position: fixed; bottom: -60px; left: 50%; transform: translateX(-50%); width: 520px; height: 160px; background: radial-gradient(ellipse, var(--glow-outer) 0%, transparent 75%); pointer-events: none; z-index: 2; transition: background 0.8s ease; }
   .hero-glow-inner { position: fixed; bottom: -20px; left: 50%; transform: translateX(-50%); width: 260px; height: 80px; background: radial-gradient(ellipse, var(--glow-inner) 0%, transparent 70%); pointer-events: none; z-index: 2; transition: background 0.8s ease; }
 
-  .nav { position: relative; z-index: 10; display: flex; justify-content: space-between; align-items: center; padding: 18px 28px; border-bottom: 0.5px solid var(--border-soft); background: rgba(0, 0, 0, 0.2); transition: border-color 0.8s ease; }
-  .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 18px; color: var(--accent-amber); letter-spacing: 0.08em; font-weight: 600; transition: color 0.8s ease; }
+  .nav { position: relative; z-index: 10; display: flex; justify-content: space-between; align-items: center; padding: 18px 28px; border-bottom: 0.5px solid var(--border-soft); background: var(--glass-bg); transition: border-color 0.8s ease, background 0.8s ease; }
+  .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 19px; color: var(--accent-amber); letter-spacing: 0.08em; font-weight: 600; transition: color 0.8s ease; }
   .nav-links { display: flex; gap: 24px; flex-wrap: wrap; align-items: center; }
   .nav-links a { font-size: 11px; color: var(--text-muted); text-decoration: none; letter-spacing: 0.06em; font-weight: 600; text-transform: uppercase; cursor: pointer; transition: color 0.2s ease; }
   .nav-links a:hover, .nav-links a.active { color: var(--accent-glow); }
@@ -89,21 +95,22 @@
 
   .hero-subtitle { font-size: 11px; color: var(--accent-amber); letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 14px; font-weight: 600; transition: color 0.8s ease; }
   .hero-title { font-family: 'Cormorant Garamond', serif; font-size: 46px; color: var(--accent-glow); font-weight: 400; line-height: 1.1; margin: 0 0 20px; transition: color 0.8s ease; }
-  .hero-desc { font-size: 15px; color: var(--text-muted); max-width: 500px; line-height: 1.7; font-weight: 400; transition: color 0.8s ease; }
+  .hero-desc { font-size: 15px; color: var(--text-muted); max-width: 500px; line-height: 1.7; font-weight: 500; transition: color 0.8s ease; }
   .section-label { font-size: 10px; color: var(--text-muted); letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 16px; font-weight: 600; transition: color 0.8s ease; }
 
   .card { background: var(--card-bg); border: 1px solid var(--border-soft); border-radius: 10px; overflow: hidden; margin-bottom: 16px; position: relative; padding: 28px; transition: background 0.8s ease, border-color 0.8s ease; }
   .card-inner-glow { position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--accent-amber), transparent); opacity: 0.5; transition: background 0.8s ease; }
   
   .card-header-test { display: flex; align-items: center; gap: 14px; padding-bottom: 16px; border-bottom: 1px solid var(--border-soft); margin-bottom: 20px; transition: border-color 0.8s ease; }
-  .card-badge { width: 36px; height: 36px; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-soft); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: var(--accent-amber); flex-shrink: 0; transition: color 0.8s ease, border-color 0.8s ease; }
+  .card-badge { width: 36px; height: 36px; background: var(--glass-bg); border: 1px solid var(--border-soft); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: var(--accent-amber); flex-shrink: 0; transition: color 0.8s ease, border-color 0.8s ease, background 0.8s ease; }
   .card-title { font-size: 15px; color: var(--accent-glow); font-weight: 600; transition: color 0.8s ease; }
-  .card-sub { font-size: 13px; color: var(--text-muted); font-weight: 400; margin-top: 4px; line-height: 1.5; transition: color 0.8s ease; }
+  .card-sub { font-size: 13px; color: var(--text-muted); font-weight: 500; margin-top: 4px; line-height: 1.5; transition: color 0.8s ease; }
 
-  .test-catalog-grid { display: grid; gap: 16px; margin-top: 24px; }
-  .test-card { cursor: pointer; }
-  .test-card:hover { border-color: var(--accent-amber); background: rgba(255, 255, 255, 0.02); }
-  #active-test-container { display: none; }
+  .catalog-grid { display: grid; gap: 16px; margin-top: 24px; }
+  .clickable-card { cursor: pointer; }
+  .clickable-card:hover { border-color: var(--accent-amber); background: var(--hover-bg); }
+  
+  #active-test-container, #active-soothing-container { display: none; }
   .back-btn { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-muted); cursor: pointer; margin-bottom: 24px; transition: color 0.2s; border: none; background: none; padding: 0; font-family: inherit; font-weight: 600; }
   .back-btn:hover { color: var(--accent-amber); }
 
@@ -113,25 +120,25 @@
   .scale-row { display: flex; gap: 8px; align-items: center; justify-content: space-between; }
   .scale-item { flex: 1; display: flex; flex-direction: column; align-items: center; position: relative; }
   .scale-item input { position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer; margin: 0; }
-  .scale-item label { width: 100%; aspect-ratio: 1; max-width: 42px; background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-soft); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 14px; color: var(--text-muted); transition: all 0.2s ease; cursor: pointer; font-weight: 500; }
-  .scale-item input:checked + label { background: rgba(255, 255, 255, 0.08); border-color: var(--accent-amber); color: var(--accent-glow); font-weight: 700; box-shadow: 0 0 10px rgba(0,0,0,0.2); }
+  .scale-item label { width: 100%; aspect-ratio: 1; max-width: 42px; background: var(--glass-bg); border: 1px solid var(--border-soft); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 14px; color: var(--text-muted); transition: all 0.2s ease; cursor: pointer; font-weight: 500; }
+  .scale-item input:checked + label { background: var(--hover-bg); border-color: var(--accent-amber); color: var(--accent-glow); font-weight: 700; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
   
   .scale-hint-row { display: flex; justify-content: space-between; margin-top: 12px; }
   .scale-hint { font-size: 11px; color: var(--text-muted); font-weight: 500; transition: color 0.8s ease; }
 
-  .bdi-scale { display: flex; flex-direction: column; gap: 10px; width: 100%; }
-  .bdi-scale label { display: flex; align-items: center; padding: 14px 18px; border-radius: 8px; background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-soft); cursor: pointer; user-select: none; font-size: 15px; line-height: 1.4; transition: all 0.2s ease; text-align: left; font-weight: 500; color: var(--text-main); }
-  .bdi-scale input { display: none; }
-  .bdi-scale input:checked + label { background: rgba(255, 255, 255, 0.08); border-color: var(--accent-amber); color: var(--accent-glow); font-weight: 600; }
-  .bdi-scale label:hover { background: rgba(255, 255, 255, 0.05); }
+  .v-scale { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+  .v-scale label { display: flex; align-items: center; padding: 14px 18px; border-radius: 8px; background: var(--glass-bg); border: 1px solid var(--border-soft); cursor: pointer; user-select: none; font-size: 15px; line-height: 1.4; transition: all 0.2s ease; text-align: left; font-weight: 500; color: var(--text-main); }
+  .v-scale input { display: none; }
+  .v-scale input:checked + label { background: var(--hover-bg); border-color: var(--accent-amber); color: var(--accent-glow); font-weight: 600; box-shadow: 0 0 10px rgba(0,0,0,0.05); }
+  .v-scale label:hover { background: var(--hover-bg); }
 
   .input-group { margin: 24px 0; }
   .input-group label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
-  .input-group input { width: 100%; background: rgba(0, 0, 0, 0.2); border: 1px solid var(--border-soft); padding: 12px 14px; border-radius: 6px; color: var(--text-main); font-size: 14px; outline: none; transition: border-color 0.2s, color 0.8s ease; font-family: inherit; }
+  .input-group input { width: 100%; background: var(--glass-bg); border: 1px solid var(--border-soft); padding: 12px 14px; border-radius: 6px; color: var(--text-main); font-size: 14px; outline: none; transition: border-color 0.2s, color 0.8s ease, background 0.8s ease; font-family: inherit; }
   .input-group input:focus { border-color: var(--accent-amber); }
 
   .controls { display: flex; gap: 10px; margin-top: 24px; flex-wrap: wrap; }
-  button { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--accent-amber); padding: 12px 20px; border-radius: 6px; color: var(--accent-glow); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; font-family: inherit; }
+  button { background: transparent; border: 1px solid var(--accent-amber); padding: 12px 20px; border-radius: 6px; color: var(--accent-glow); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; font-family: inherit; }
   button:hover:not(:disabled) { background: var(--accent-amber); color: var(--bg-color); }
   button:disabled { opacity: 0.3; cursor: not-allowed; }
   .btn-ghost { background: transparent; border-color: var(--border-soft); color: var(--text-muted); }
@@ -141,23 +148,27 @@
   table { width: 100%; border-collapse: collapse; margin-top: 12px; }
   th, td { padding: 12px 8px; text-align: left; border-bottom: 1px solid var(--border-soft); font-size: 14px; transition: border-color 0.8s ease; }
   th { font-family: 'Cormorant Garamond', serif; font-size: 18px; color: var(--text-muted); font-weight: 600; }
-  .schema-descriptions { margin-top: 24px; padding: 16px; background: rgba(0, 0, 0, 0.2); border-radius: 6px; font-size: 14px; line-height: 1.6; color: var(--text-muted); border: 1px solid var(--border-soft); font-weight: 400; }
+  .schema-descriptions { margin-top: 24px; padding: 16px; background: var(--glass-bg); border-radius: 6px; font-size: 14px; line-height: 1.6; color: var(--text-muted); border: 1px solid var(--border-soft); font-weight: 500; transition: background 0.8s ease; }
 
   .contract-text { font-size: 14px; line-height: 1.7; color: var(--text-muted); transition: color 0.8s ease; }
-  .contract-text h3 { font-family: 'Cormorant Garamond', serif; font-size: 20px; color: var(--accent-glow); margin: 24px 0 10px 0; font-weight: 500; transition: color 0.8s ease; }
+  .contract-text h3 { font-family: 'Cormorant Garamond', serif; font-size: 20px; color: var(--accent-glow); margin: 24px 0 10px 0; font-weight: 600; transition: color 0.8s ease; }
   .contract-text ul { padding-left: 18px; margin: 8px 0; }
   .contract-text li { margin-bottom: 6px; }
 
   .price-tag { font-family: 'Cormorant Garamond', serif; font-size: 24px; color: var(--accent-glow); margin-bottom: 20px; transition: color 0.8s ease; }
 
   .breathe-widget { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 0; min-height: 320px; position: relative; }
-  .breathe-circle { width: 140px; height: 140px; border-radius: 50%; background: radial-gradient(circle, var(--accent-amber) 0%, transparent 70%); box-shadow: 0 0 40px rgba(0,0,0,0.1); border: 1px solid var(--border-soft); display: flex; align-items: center; justify-content: center; position: relative; transition: transform 4s linear, opacity 4s linear, box-shadow 4s linear, background 0.8s ease, border-color 0.8s ease; opacity: 0.6; }
+  .breathe-circle { width: 140px; height: 140px; border-radius: 50%; background: radial-gradient(circle, var(--accent-amber) 0%, transparent 70%); box-shadow: 0 0 40px rgba(0,0,0,0.05); border: 1px solid var(--border-soft); display: flex; align-items: center; justify-content: center; position: relative; transition: transform 4s linear, opacity 4s linear, box-shadow 4s linear, background 0.8s ease, border-color 0.8s ease; opacity: 0.6; }
   .breathe-text { font-family: 'Cormorant Garamond', serif; font-size: 22px; color: var(--accent-glow); font-weight: 600; position: absolute; text-align: center; z-index: 10; transition: opacity 0.5s ease, color 0.8s ease; }
   
   .phase-inhale { transform: scale(1.8); opacity: 1; box-shadow: 0 0 60px var(--border-soft); }
   .phase-hold1 { transform: scale(1.8); opacity: 0.8; box-shadow: 0 0 40px var(--border-soft); }
-  .phase-exhale { transform: scale(1); opacity: 0.5; box-shadow: 0 0 20px rgba(0,0,0,0.05); }
-  .phase-hold2 { transform: scale(1); opacity: 0.4; box-shadow: 0 0 10px rgba(0,0,0,0.02); }
+  .phase-exhale { transform: scale(1); opacity: 0.5; box-shadow: 0 0 20px rgba(0,0,0,0.02); }
+  .phase-hold2 { transform: scale(1); opacity: 0.4; box-shadow: 0 0 10px rgba(0,0,0,0.01); }
+
+  .wizard-step { display: none; text-align: center; padding: 20px 0; }
+  .wizard-step.active { display: block; animation: fadeIn 0.5s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
   @media(max-width: 600px) {
     .hero-title { font-size: 34px; }
@@ -176,7 +187,7 @@
 <div class="hero-glow-inner"></div>
 
 <nav class="nav">
-  <div class="nav-logo">Ч. Яско</div>
+  <div class="nav-logo">Віталій психолог</div>
   <div class="nav-links">
     <a onclick="showSection('home')" id="nav-home" class="active">Головна</a>
     <a onclick="showSection('about')" id="nav-about">Про мене</a>
@@ -219,23 +230,18 @@
   <section id="consultations" class="site-section">
     <div class="section-label">Умови співпраці</div>
     <h1 class="hero-title">Правила та сеттінг</h1>
-    
     <div class="card">
       <div class="card-inner-glow"></div>
       <div class="price-tag">Вартість сесії: 900 грн / 50 хвилин</div>
-      
       <div class="contract-text">
         <h3>Короткий терапевтичний контракт</h3>
         <p>Для формування безпечного та прогнозованого середовища нашої взаємодії діють наступні правила:</p>
-        
         <h3>1. Конфіденційність</h3>
-        <p>Уся інформація, отримана в процесі сесій, є суворо конфіденційною. Вона не розголошується третім особам, за винятком випадків, передбачених чинним законодавством або професійним етичним кодексом (загроза життю клієнта чи інших людей).</p>
-        
+        <p>Уся інформація, отримана в процесі сесій, є суворо конфіденційною. Вона не розголошується третім особам, за винятком випадків, передбачених чинним законодавством або професійним етичним кодексом.</p>
         <h3>2. Скасування та перенесення зустрічей</h3>
-        <p>Скасувати або перенести заплановану сесію можна не пізніше ніж за 24 години до її початку. Якщо повідомлення про скасування надходить пізніше цього терміну, сесія оплачується у повному обсязі (900 грн), оскільки цей час зарезервований виключно за тобою.</p>
-        
+        <p>Скасувати або перенести заплановану сесію можна не пізніше ніж за 24 години до її початку. Якщо повідомлення про скасування надходить пізніше цього терміну, сесія оплачується у повному обсязі.</p>
         <h3>3. Комунікація</h3>
-        <p>Месенджери використовуються суто для розв'язання організаційних питань (узгодження графіків, перенесення зустрічей). Психотерапевтична робота між сесіями в текстовому форматі не ведеться.</p>
+        <p>Месенджери використовуються суто для розв'язання організаційних питань. Психотерапевтична робота між сесіями в текстовому форматі не ведеться.</p>
       </div>
     </div>
   </section>
@@ -249,25 +255,47 @@
         Обери інструмент для діагностики. Усі результати обробляються локально та конфіденційно зберігаються лише для подальшої терапевтичної роботи.
       </div>
       
-      <div class="test-catalog-grid">
-        <div class="card test-card" onclick="openTest('ysq_s3')">
+      <div class="catalog-grid">
+        <div class="card clickable-card" onclick="openTest('ysq_s3')">
           <div class="card-inner-glow"></div>
           <div class="card-header-test" style="margin-bottom: 8px; padding-bottom: 0; border: none;">
             <div class="card-badge">YSQ</div>
             <div>
               <div class="card-title">Опитувальник схем (YSQ-S3)</div>
-              <div class="card-sub">Повна версія діагностики ранніх дезадаптивних схем. 90 тверджень. Вимагає близько 15 хвилин зосередженої уваги.</div>
+              <div class="card-sub">Повна версія діагностики ранніх дезадаптивних схем. 90 тверджень. ~15 хвилин.</div>
             </div>
           </div>
         </div>
 
-        <div class="card test-card" onclick="openTest('bdi')">
+        <div class="card clickable-card" onclick="openTest('bdi')">
           <div class="card-inner-glow"></div>
           <div class="card-header-test" style="margin-bottom: 8px; padding-bottom: 0; border: none;">
             <div class="card-badge">BDI</div>
             <div>
               <div class="card-title">Шкала депресії Бека</div>
-              <div class="card-sub">Дослідження поточного емоційного та фізичного стану. 21 питання. Вимагає близько 5 хвилин.</div>
+              <div class="card-sub">Дослідження поточного емоційного та фізичного стану. 21 питання. ~5 хвилин.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card clickable-card" onclick="openTest('gad_7')">
+          <div class="card-inner-glow"></div>
+          <div class="card-header-test" style="margin-bottom: 8px; padding-bottom: 0; border: none;">
+            <div class="card-badge">GAD</div>
+            <div>
+              <div class="card-title">Шкала тривоги (GAD-7)</div>
+              <div class="card-sub">Скринінг генералізованого тривожного розладу. 7 питань. ~2 хвилини.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card clickable-card" onclick="openTest('aaq_2')">
+          <div class="card-inner-glow"></div>
+          <div class="card-header-test" style="margin-bottom: 8px; padding-bottom: 0; border: none;">
+            <div class="card-badge">AAQ</div>
+            <div>
+              <div class="card-title">Психологічна гнучкість (AAQ-II)</div>
+              <div class="card-sub">Оцінка рівня емпіричного уникнення в рамках ACT. 7 питань. ~2 хвилини.</div>
             </div>
           </div>
         </div>
@@ -283,7 +311,7 @@
           <div class="card-badge" id="activeTestBadge">TEST</div>
           <div style="flex:1;">
             <div class="card-title" id="qCounter">Питання 1</div>
-            <div style="height: 2px; background: rgba(255,255,255,0.05); margin-top:8px; border-radius:2px; overflow:hidden; width:100px;">
+            <div style="height: 2px; background: var(--glass-bg); margin-top:8px; border-radius:2px; overflow:hidden; width:100px;">
               <div id="progressInner" style="height:100%; background:var(--accent-amber); width:0%; transition: width 0.3s ease;"></div>
             </div>
           </div>
@@ -312,7 +340,7 @@
           <table id="resultTable">
             <thead>
               <tr>
-                <th>Шкала / Показник</th>
+                <th>Показник</th>
                 <th>Бал</th>
                 <th>Рівень</th>
               </tr>
@@ -327,21 +355,51 @@
 
   <section id="soothing" class="site-section">
     <div class="section-label">Заземлення</div>
-    <h1 class="hero-title">Дихання по квадрату</h1>
-    <div class="hero-desc">
-      Базова техніка біологічної саморегуляції. Допомагає знизити рівень емоційної активації та повернути когнітивний контроль через синхронізацію дихального ритму.
+    <h1 class="hero-title">Каталог практик</h1>
+    
+    <div id="soothing-catalog">
+      <div class="hero-desc" style="margin-bottom: 24px;">
+        Базові техніки біологічної та когнітивної саморегуляції для зниження рівня емоційної активації.
+      </div>
+      <div class="catalog-grid">
+        <div class="card clickable-card" onclick="openSoothing('breathing')">
+          <div class="card-inner-glow"></div>
+          <div class="card-title" style="margin-bottom:8px; font-size: 18px;">Дихання по квадрату</div>
+          <div class="card-sub">Регуляція автономної нервової системи через синхронізацію ритму (4-4-4-4).</div>
+        </div>
+        <div class="card clickable-card" onclick="openSoothing('54321')">
+          <div class="card-inner-glow"></div>
+          <div class="card-title" style="margin-bottom:8px; font-size: 18px;">Заземлення 5-4-3-2-1</div>
+          <div class="card-sub">Повернення когнітивного контролю та зв'язку з реальністю через органи чуття.</div>
+        </div>
+      </div>
     </div>
 
-    <div class="card" style="margin-top: 24px; text-align: center;">
-      <div class="card-inner-glow"></div>
+    <div id="active-soothing-container">
+      <button class="back-btn" onclick="closeSoothing()">← Повернутися до каталогу</button>
       
-      <div class="breathe-widget">
-        <div id="breatheText" class="breathe-text">Готові?</div>
-        <div id="breatheCircle" class="breathe-circle"></div>
+      <div id="soothing-breathing" style="display:none;">
+        <div class="card" style="text-align: center;">
+          <div class="card-inner-glow"></div>
+          <div class="breathe-widget">
+            <div id="breatheText" class="breathe-text">Готові?</div>
+            <div id="breatheCircle" class="breathe-circle"></div>
+          </div>
+          <div class="controls" style="justify-content: center; margin-top: 0;">
+            <button id="btnBreatheToggle" onclick="toggleBreathing()">Почати вправу</button>
+          </div>
+        </div>
       </div>
 
-      <div class="controls" style="justify-content: center; margin-top: 0;">
-        <button id="btnBreatheToggle" onclick="toggleBreathing()">Почати вправу</button>
+      <div id="soothing-54321" style="display:none;">
+        <div class="card" style="text-align: center; padding: 40px 20px;">
+          <div class="card-inner-glow"></div>
+          <h2 style="font-family:'Cormorant Garamond',serif; color:var(--accent-glow); font-size:28px; margin-top:0;" id="groundingTitle">Крок 1</h2>
+          <div class="question-text" style="justify-content:center; min-height:100px; font-size:20px; font-weight:600;" id="groundingText"></div>
+          <div class="controls" style="justify-content: center;">
+            <button onclick="nextGrounding()" id="btnGroundingNext">Далі</button>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -349,18 +407,12 @@
 </div>
 
 <script>
-// ==========================================
-// 0. ТЕМА І СЛАЙДЕР
-// ==========================================
 function changeTheme(val) {
   const themes = ['sunset', 'night', 'dawn'];
   document.documentElement.setAttribute('data-theme', themes[val]);
 }
 document.documentElement.setAttribute('data-theme', 'sunset');
 
-// ==========================================
-// 1. НАВІГАЦІЯ
-// ==========================================
 function showSection(sectionId) {
   document.querySelectorAll('.site-section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
@@ -370,20 +422,15 @@ function showSection(sectionId) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ==========================================
-// 2. ВІДЖЕТ "ДИХАННЯ ПО КВАДРАТУ"
-// ==========================================
 let isBreathing = false;
 let breathInterval = null;
 let currentPhase = 0;
-
 const breathPhases = [
   { text: "Вдих...", class: "phase-inhale" },
   { text: "Затримка...", class: "phase-hold1" },
   { text: "Видих...", class: "phase-exhale" },
   { text: "Затримка...", class: "phase-hold2" }
 ];
-
 const bCircle = document.getElementById('breatheCircle');
 const bText = document.getElementById('breatheText');
 const bBtn = document.getElementById('btnBreatheToggle');
@@ -414,9 +461,62 @@ function runBreathPhase() {
   currentPhase = (currentPhase + 1) % 4;
 }
 
-// ==========================================
-// 3. АРХІТЕКТУРА ТЕСТІВ ТА ДАНІ
-// ==========================================
+function openSoothing(type) {
+  document.getElementById('soothing-catalog').style.display = 'none';
+  document.getElementById('active-soothing-container').style.display = 'block';
+  document.getElementById('soothing-breathing').style.display = 'none';
+  document.getElementById('soothing-54321').style.display = 'none';
+  
+  if(type === 'breathing') {
+    document.getElementById('soothing-breathing').style.display = 'block';
+  } else if(type === '54321') {
+    document.getElementById('soothing-54321').style.display = 'block';
+    startGrounding();
+  }
+}
+
+function closeSoothing() {
+  if(isBreathing) toggleBreathing();
+  document.getElementById('active-soothing-container').style.display = 'none';
+  document.getElementById('soothing-catalog').style.display = 'block';
+}
+
+const groundingSteps = [
+  { title: "5 речей", text: "Знайдіть очима 5 предметів, які ви можете побачити навколо себе прямо зараз. Назвіть їх подумки." },
+  { title: "4 відчуття", text: "Зверніть увагу на 4 речі, які ви можете відчути фізично. Наприклад, текстуру одягу, температуру повітря, поверхню під ногами." },
+  { title: "3 звуки", text: "Прислухайтеся і виділіть 3 звуки, які ви зараз чуєте. Це може бути шум за вікном, годинник або ваше дихання." },
+  { title: "2 запахи", text: "Спробуйте відчути 2 запахи у просторі навколо вас." },
+  { title: "1 смак", text: "Відчуйте 1 смак або просто зробіть ковток води і зосередьтесь на відчутті ковтання." },
+  { title: "Завершено", text: "Поверніться до свого дихання. Ви тут і зараз." }
+];
+let currentGroundingStep = 0;
+
+function startGrounding() {
+  currentGroundingStep = 0;
+  renderGrounding();
+}
+
+function renderGrounding() {
+  const s = groundingSteps[currentGroundingStep];
+  document.getElementById('groundingTitle').innerText = s.title;
+  document.getElementById('groundingText').innerText = s.text;
+  const btn = document.getElementById('btnGroundingNext');
+  if(currentGroundingStep === groundingSteps.length - 1) {
+    btn.innerText = "Завершити";
+  } else {
+    btn.innerText = "Далі";
+  }
+}
+
+function nextGrounding() {
+  if(currentGroundingStep < groundingSteps.length - 1) {
+    currentGroundingStep++;
+    renderGrounding();
+  } else {
+    closeSoothing();
+  }
+}
+
 let activeTestId = null;
 let activeQuestions = [];
 let currentIndex = 0;
@@ -435,96 +535,7 @@ const schemaMapping = {
 };
 
 const questionsYSQ = [
-  { id:1, text:"Я не отримую від інших людей тепла, турботи та любові, яких хочу." },
-  { id:2, text:"Мене ніхто по-справжньому не розуміє і не намагається розділити мої почуття та потреби." },
-  { id:3, text:"Більшу частину свого життя я не відчував(ла), що є хтось, хто хотів би бути поруч зі мною." },
-  { id:4, text:"Я не відчуваю, що я особливий(а) для когось." },
-  { id:5, text:"Я не маю сильної та мудрої людини, яка б давала мені поради або вказувала, що робити." },
-  { id:6, text:"Я відчуваю, що більшість людей не здатні любити, піклуватися і бути відданими." },
-  { id:7, text:"Люди, яких я люблю, рано чи пізно покинуть мене." },
-  { id:8, text:"Я чіпляюся за близьких людей, бо боюся, що вони мене залишать." },
-  { id:9, text:"Я не можу розраховувати на підтримку близьких." },
-  { id:10, text:"Я відчуваю, що люди використовують мене у своїх інтересах." },
-  { id:11, text:"Я відчуваю, що не можу розслабитися і показати свою вразливість перед іншими." },
-  { id:12, text:"Якби я зробив(ла) щось не так, мене б зрадили." },
-  { id:13, text:"Я дуже підозріло ставлюся до мотивів інших людей." },
-  { id:14, text:"Я відчуваю, що я не такий(а), як інші люди." },
-  { id:15, text:"Я не вписуюся в жодну компанію." },
-  { id:16, text:"Я почуваюся ізольованим(ою) і самотнім(ою)." },
-  { id:17, text:"Я завжди почуваюся осторонь від будь-якої компанії." },
-  { id:18, text:"Моя родина завжди відрізнялася від інших." },
-  { id:19, text:"В мені є щось таке, що не дозволяє нікому мене полюбити." },
-  { id:20, text:"Я занадто неприйнятний(а), щоб показувати себе справжнього(ю) іншим." },
-  { id:21, text:"Якби мої справжні недоліки стали відомі, я б не зміг(змогла) дивитися людям в очі." },
-  { id:22, text:"Я нікчемний(а)." },
-  { id:23, text:"Жодна людина, яку я поважаю, не змогла б залишатися поруч зі мною, якби дізналася про мене справжнього(ю)." },
-  { id:24, text:"Я не настільки розумний(а) і успішний(а), як мої однолітки." },
-  { id:25, text:"Більшість людей успішніші за мене." },
-  { id:26, text:"Я зазнаю невдачі у всьому, за що беруся." },
-  { id:27, text:"Я менш талановитий(а), ніж інші." },
-  { id:28, text:"Я відчуваю себе приниженим(ою) у порівнянні з іншими." },
-  { id:29, text:"Я не можу впоратися з повсякденними справами самостійно." },
-  { id:30, text:"Я відчуваю себе некомпетентною(ою) людиною." },
-  { id:31, text:"Мені потрібна допомога інших, щоб вижити." },
-  { id:32, text:"Я вважаю себе залежною людиною." },
-  { id:33, text:"Я не настільки впевнений(а) у своїх судженнях, як інші." },
-  { id:34, text:"Я боюся, що на мене чекає катастрофа (фінансова, медична, кримінальна)." },
-  { id:35, text:"Я боюся, що втрачу всі свої гроші." },
-  { id:36, text:"Я боюся, що в мене розвинеться серйозне захворювання, хоча лікарі не знаходять для цього причин." },
-  { id:37, text:"Я боюся стати жертвою злочину." },
-  { id:38, text:"Я дуже вразливий(а) до хвороб." },
-  { id:39, text:"Я не можу відокремитися від своїх батьків так, як це роблять мої однолітки." },
-  { id:40, text:"Мої батьки і я занадто втручаємося в життя і проблеми одне одного." },
-  { id:41, text:"Мені важко зберігати особистий простір, окремий від батьків/партнера." },
-  { id:42, text:"Я часто відчуваю, що у мене немає власної ідентичності; я — це мій партнер/батьки." },
-  { id:43, text:"Я відчуваю, що моє життя визначають батьки, а не я." },
-  { id:44, text:"Я дозволяю іншим домінувати над собою." },
-  { id:45, text:"У стосунках я дозволяю партнеру вирішувати за мене." },
-  { id:46, text:"Я завжди ставив(ла) потреби інших вище за свої власні." },
-  { id:47, text:"Я боюся, що якщо не підкорюся бажанням інших, мене відкинуть." },
-  { id:48, text:"Я роблю все, щоб уникнути конфліктів." },
-  { id:49, text:"Я завжди був(ла) тією людиною, яка вислуховує проблеми інших." },
-  { id:50, text:"Інші вважають, що я роблю занадто багато для них." },
-  { id:51, text:"Я не можу відмовити, коли інші просять мене про допомогу." },
-  { id:52, text:"Я почуваюся винним(ою), якщо ставлю свої потреби на перше місце." },
-  { id:53, text:"Я хороша людина, бо думаю про інших більше, ніж про себе." },
-  { id:54, text:"Мені потрібно, щоб мене любили всі, кого я знаю." },
-  { id:55, text:"Я так сильно намагаюся вписатися, що іноді не знаю, хто я насправді." },
-  { id:56, text:"Я дуже чутливий(а) до критики та відторгнення." },
-  { id:57, text:"Я так прагну схвалення, що готовий(а) відмовитися від власних потреб." },
-  { id:58, text:"Моя самооцінка залежить від того, як мене сприймають інші." },
-  { id:59, text:"Якщо я припущуся помилки, я заслуговую на жорстку критику." },
-  { id:60, text:"Я не можу пробачити собі помилок." },
-  { id:61, text:"Я сам(а) собі найлютіший критик." },
-  { id:62, text:"Я пред'являю до себе набагато вищі вимоги, ніж до інших." },
-  { id:63, text:"Я не можу розслабитися, поки не зроблю все ідеально." },
-  { id:64, text:"Я відчуваю постійний тиск, щоб досягати більшого." },
-  { id:65, text:"Я повинен(на) бути найкращим(ою) у всьому, що роблю." },
-  { id:66, text:"Я не можу дозволити собі відпочивати, поки не досягну мети." },
-  { id:67, text:"Я не приймаю \"ні\" за відповідь, коли чогось хочу від інших." },
-  { id:68, text:"Я особливий(а), і мені не потрібно дотримуватися правил, як іншим." },
-  { id:69, text:"Мені важко відмовитися від миттєвого задоволення заради довгострокової мети." },
-  { id:70, text:"Я не можу змусити себе робити те, що мені не подобається, навіть якщо знаю, що це для мого блага." },
-  { id:71, text:"Я легко піддаюся імпульсам і емоціям." },
-  { id:72, text:"Якщо я не можу досягти мети, я легко розчаровуюся і здаюся." },
-  { id:73, text:"Мені важко терпіти нудьгу." },
-  { id:74, text:"Мені здається, що немає такої людини, яка б мене вислухала, зрозуміла і підтримала." },
-  { id:75, text:"Я відчуваю, що ніколи не отримаю достатньо любові." },
-  { id:76, text:"Я відчуваю, що люди не були поруч зі мною, коли я їх потребував(ла)." },
-  { id:77, text:"У стосунках я зазвичай той(та), хто дбає більше." },
-  { id:78, text:"Я дуже боюся, що близькі люди помруть або залишать мене." },
-  { id:79, text:"Я настільки переживаю, що люди мене покинуть, що відштовхую їх сам(а)." },
-  { id:80, text:"Я відчуваю, що близькі люди непередбачувані і можуть піти будь-якої миті." },
-  { id:81, text:"Зрештою, я залишуся самотнім(ою)." },
-  { id:82, text:"Якщо хтось поводиться зі мною добре, я підозрюю, що в нього є приховані мотиви." },
-  { id:83, text:"Люди завдадуть мені болю, якщо я не буду обережним(ою)." },
-  { id:84, text:"Краще бути насторожі, інакше люди скористаються мною." },
-  { id:85, text:"Люди, яким я довіряв(ла), зрадили мене." },
-  { id:86, text:"Я не належу до цього світу." },
-  { id:87, text:"Я завжди був(ла) самотнім(ою) у групах." },
-  { id:88, text:"Я відчуваю себе чужим(ою) серед людей." },
-  { id:89, text:"Я відчуваю себе відокремленим(ою) від усього світу." },
-  { id:90, text:"Поганих людей треба карати." }
+  { id:1, text:"Я не отримую від інших людей тепла, турботи та любові, яких хочу." }, { id:2, text:"Мене ніхто по-справжньому не розуміє і не намагається розділити мої почуття та потреби." }, { id:3, text:"Більшу частину свого життя я не відчував(ла), що є хтось, хто хотів би бути поруч зі мною." }, { id:4, text:"Я не відчуваю, що я особливий(а) для когось." }, { id:5, text:"Я не маю сильної та мудрої людини, яка б давала мені поради або вказувала, що робити." }, { id:6, text:"Я відчуваю, що більшість людей не здатні любити, піклуватися і бути відданими." }, { id:7, text:"Люди, яких я люблю, рано чи пізно покинуть мене." }, { id:8, text:"Я чіпляюся за близьких людей, бо боюся, що вони мене залишать." }, { id:9, text:"Я не можу розраховувати на підтримку близьких." }, { id:10, text:"Я відчуваю, що люди використовують мене у своїх інтересах." }, { id:11, text:"Я відчуваю, що не можу розслабитися і показати свою вразливість перед іншими." }, { id:12, text:"Якби я зробив(ла) щось не так, мене б зрадили." }, { id:13, text:"Я дуже підозріло ставлюся до мотивів інших людей." }, { id:14, text:"Я відчуваю, що я не такий(а), як інші люди." }, { id:15, text:"Я не вписуюся в жодну компанію." }, { id:16, text:"Я почуваюся ізольованим(ою) і самотнім(ою)." }, { id:17, text:"Я завжди почуваюся осторонь від будь-якої компанії." }, { id:18, text:"Моя родина завжди відрізнялася від інших." }, { id:19, text:"В мені є щось таке, що не дозволяє нікому мене полюбити." }, { id:20, text:"Я занадто неприйнятний(а), щоб показувати себе справжнього(ю) іншим." }, { id:21, text:"Якби мої справжні недоліки стали відомі, я б не зміг(змогла) дивитися людям в очі." }, { id:22, text:"Я нікчемний(а)." }, { id:23, text:"Жодна людина, яку я поважаю, не змогла б залишатися поруч зі мною, якби дізналася про мене справжнього(ю)." }, { id:24, text:"Я не настільки розумний(а) і успішний(а), як мої однолітки." }, { id:25, text:"Більшість людей успішніші за мене." }, { id:26, text:"Я зазнаю невдачі у всьому, за що беруся." }, { id:27, text:"Я менш талановитий(а), ніж інші." }, { id:28, text:"Я відчуваю себе приниженим(ою) у порівнянні з іншими." }, { id:29, text:"Я не можу впоратися з повсякденними справами самостійно." }, { id:30, text:"Я відчуваю себе некомпетентною(ою) людиною." }, { id:31, text:"Мені потрібна допомога інших, щоб вижити." }, { id:32, text:"Я вважаю себе залежною людиною." }, { id:33, text:"Я не настільки впевнений(а) у своїх судженнях, як інші." }, { id:34, text:"Я боюся, що на мене чекає катастрофа (фінансова, медична, кримінальна)." }, { id:35, text:"Я боюся, що втрачу всі свої гроші." }, { id:36, text:"Я боюся, що в мене розвинеться серйозне захворювання, хоча лікарі не знаходять для цього причин." }, { id:37, text:"Я боюся стати жертвою злочину." }, { id:38, text:"Я дуже вразливий(а) до хвороб." }, { id:39, text:"Я не можу відокремитися від своїх батьків так, як це роблять мої однолітки." }, { id:40, text:"Мої батьки і я занадто втручаємося в життя і проблеми одне одного." }, { id:41, text:"Мені важко зберігати особистий простір, окремий від батьків/партнера." }, { id:42, text:"Я часто відчуваю, що у мене немає власної ідентичності; я — це мій партнер/батьки." }, { id:43, text:"Я відчуваю, що моє життя визначають батьки, а не я." }, { id:44, text:"Я дозволяю іншим домінувати над собою." }, { id:45, text:"У стосунках я дозволяю партнеру вирішувати за мене." }, { id:46, text:"Я завжди ставив(ла) потреби інших вище за свої власні." }, { id:47, text:"Я боюся, що якщо не підкорюся бажанням інших, мене відкинуть." }, { id:48, text:"Я роблю все, щоб уникнути конфліктів." }, { id:49, text:"Я завжди був(ла) тією людиною, яка вислуховує проблеми інших." }, { id:50, text:"Інші вважають, що я роблю занадто багато для них." }, { id:51, text:"Я не можу відмовити, коли інші просять мене про допомогу." }, { id:52, text:"Я почуваюся винним(ою), якщо ставлю свої потреби на перше місце." }, { id:53, text:"Я хороша людина, бо думаю про інших більше, ніж про себе." }, { id:54, text:"Мені потрібно, щоб мене любили всі, кого я знаю." }, { id:55, text:"Я так сильно намагаюся вписатися, що іноді не знаю, хто я насправді." }, { id:56, text:"Я дуже чутливий(а) до критики та відторгнення." }, { id:57, text:"Я так прагну схвалення, що готовий(а) відмовитися від власних потреб." }, { id:58, text:"Моя самооцінка залежить від того, як мене сприймають інші." }, { id:59, text:"Якщо я припущуся помилки, я заслуговую на жорстку критику." }, { id:60, text:"Я не можу пробачити собі помилок." }, { id:61, text:"Я сам(а) собі найлютіший критик." }, { id:62, text:"Я пред'являю до себе набагато вищі вимоги, ніж до інших." }, { id:63, text:"Я не можу розслабитися, поки не зроблю все ідеально." }, { id:64, text:"Я відчуваю постійний тиск, щоб досягати більшого." }, { id:65, text:"Я повинен(на) бути найкращим(ою) у всьому, що роблю." }, { id:66, text:"Я не можу дозволити собі відпочивати, поки не досягну мети." }, { id:67, text:"Я не приймаю \"ні\" за відповідь, коли чогось хочу від інших." }, { id:68, text:"Я особливий(а), і мені не потрібно дотримуватися правил, як іншим." }, { id:69, text:"Мені важко відмовитися від миттєвого задоволення заради довгострокової мети." }, { id:70, text:"Я не можу змусити себе робити те, що мені не подобається, навіть якщо знаю, що це для мого блага." }, { id:71, text:"Я легко піддаюся імпульсам і емоціям." }, { id:72, text:"Якщо я не можу досягти мети, я легко розчаровуюся і здаюся." }, { id:73, text:"Мені важко терпіти нудьгу." }, { id:74, text:"Мені здається, що немає такої людини, яка б мене вислухала, зрозуміла і підтримала." }, { id:75, text:"Я відчуваю, що ніколи не отримаю достатньо любові." }, { id:76, text:"Я відчуваю, що люди не були поруч зі мною, коли я їх потребував(ла)." }, { id:77, text:"У стосунках я зазвичай той(та), хто дбає більше." }, { id:78, text:"Я дуже боюся, що близькі люди помруть або залишать мене." }, { id:79, text:"Я настільки переживаю, що люди мене покинуть, що відштовхую їх сам(а)." }, { id:80, text:"Я відчуваю, що близькі люди непередбачувані і можуть піти будь-якої миті." }, { id:81, text:"Зрештою, я залишуся самотнім(ою)." }, { id:82, text:"Якщо хтось поводиться зі мною добре, я підозрюю, що в нього є приховані мотиви." }, { id:83, text:"Люди завдадуть мені болю, якщо я не буду обережним(ою)." }, { id:84, text:"Краще бути насторожі, інакше люди скористаються мною." }, { id:85, text:"Люди, яким я довіряв(ла), зрадили мене." }, { id:86, text:"Я не належу до цього світу." }, { id:87, text:"Я завжди був(ла) самотнім(ою) у групах." }, { id:88, text:"Я відчуваю себе чужим(ою) серед людей." }, { id:89, text:"Я відчуваю себе відокремленим(ою) від усього світу." }, { id:90, text:"Поганих людей треба карати." }
 ];
 
 for (const s in schemaMapping) { schemaMapping[s].forEach(id => { const q = questionsYSQ.find(x=>x.id===id); if(q) q.schema = s; }); }
@@ -574,6 +585,26 @@ const questionsBDI = [
   { id: 21, title: "Лібідо", options: [ { v: 0, t: "Я не помітив жодних змін у своєму інтересі до сексу." }, { v: 1, t: "Я менше цікавлюся сексом, ніж раніше." }, { v: 2, t: "Я зараз набагато менше цікавлюся сексом." }, { v: 3, t: "Я повністю втратив інтерес до сексу." }] }
 ];
 
+const questionsGAD = [
+  { id: 1, title: "Питання 1", text: "Нервозність, тривожність або відчуття напруженості.", options: [ {v:0, t:"Зовсім ні"}, {v:1, t:"Кілька днів"}, {v:2, t:"Більше половини днів"}, {v:3, t:"Майже щодня"} ] },
+  { id: 2, title: "Питання 2", text: "Нездатність зупинити або контролювати занепокоєння.", options: [ {v:0, t:"Зовсім ні"}, {v:1, t:"Кілька днів"}, {v:2, t:"Більше половини днів"}, {v:3, t:"Майже щодня"} ] },
+  { id: 3, title: "Питання 3", text: "Надмірне занепокоєння з різних приводів.", options: [ {v:0, t:"Зовсім ні"}, {v:1, t:"Кілька днів"}, {v:2, t:"Більше половини днів"}, {v:3, t:"Майже щодня"} ] },
+  { id: 4, title: "Питання 4", text: "Проблеми з розслабленням.", options: [ {v:0, t:"Зовсім ні"}, {v:1, t:"Кілька днів"}, {v:2, t:"Більше половини днів"}, {v:3, t:"Майже щодня"} ] },
+  { id: 5, title: "Питання 5", text: "Сильне занепокоєння, через яке важко сидіти на місці.", options: [ {v:0, t:"Зовсім ні"}, {v:1, t:"Кілька днів"}, {v:2, t:"Більше половини днів"}, {v:3, t:"Майже щодня"} ] },
+  { id: 6, title: "Питання 6", text: "Легке роздратування або спалахи гніву.", options: [ {v:0, t:"Зовсім ні"}, {v:1, t:"Кілька днів"}, {v:2, t:"Більше половини днів"}, {v:3, t:"Майже щодня"} ] },
+  { id: 7, title: "Питання 7", text: "Відчуття страху, ніби має статися щось жахливе.", options: [ {v:0, t:"Зовсім ні"}, {v:1, t:"Кілька днів"}, {v:2, t:"Більше половини днів"}, {v:3, t:"Майже щодня"} ] }
+];
+
+const questionsAAQ = [
+  { id:1, text:"Мої болісні переживання та спогади заважають мені жити так, як я б хотів(ла)." },
+  { id:2, text:"Я боюся своїх почуттів." },
+  { id:3, text:"Я хвилююся через те, що не можу контролювати свої тривоги та почуття." },
+  { id:4, text:"Мої болісні спогади заважають мені жити повноцінним життям." },
+  { id:5, text:"Емоції створюють проблеми в моєму житті." },
+  { id:6, text:"Мені здається, що більшість людей справляються зі своїм життям краще за мене." },
+  { id:7, text:"Тривоги заважають моєму успіху." }
+];
+
 const qArea = document.getElementById('questionArea');
 const qCounter = document.getElementById('qCounter');
 const progressInner = document.getElementById('progressInner');
@@ -585,11 +616,14 @@ const resultBox = document.getElementById('resultBox');
 
 function openTest(testId) {
   activeTestId = testId;
-  activeQuestions = (testId === 'ysq_s3') ? questionsYSQ : questionsBDI;
+  if(testId === 'ysq_s3') activeQuestions = questionsYSQ;
+  else if(testId === 'bdi') activeQuestions = questionsBDI;
+  else if(testId === 'gad_7') activeQuestions = questionsGAD;
+  else if(testId === 'aaq_2') activeQuestions = questionsAAQ;
   
   document.getElementById('test-catalog').style.display = 'none';
   document.getElementById('active-test-container').style.display = 'block';
-  document.getElementById('activeTestBadge').innerText = (testId === 'ysq_s3') ? 'YSQ' : 'BDI';
+  document.getElementById('activeTestBadge').innerText = testId.split('_')[0].toUpperCase();
   
   resetTest(true);
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -605,13 +639,18 @@ function closeTest() {
 function renderQuestion(index){
   const q = activeQuestions[index];
   
-  if (activeTestId === 'ysq_s3') {
+  if (activeTestId === 'ysq_s3' || activeTestId === 'aaq_2') {
+    const scaleMax = (activeTestId === 'ysq_s3') ? 6 : 7;
+    const hints = (activeTestId === 'ysq_s3') 
+      ? ['абсолютно не про мене', 'ідеально описує мене'] 
+      : ['ніколи не правда', 'завжди правда'];
+      
     qArea.innerHTML = `
       <div aria-live="polite">
         <div class="question-num">Твердження ${index+1} із ${activeQuestions.length}</div>
         <div class="question-text">${q.text}</div>
         <div class="scale-row">
-          ${[1,2,3,4,5,6].map(v => {
+          ${Array.from({length: scaleMax}, (_, i) => i + 1).map(v => {
             const checked = (answers[q.id] === v) ? 'checked' : '';
             return `
               <div class="scale-item">
@@ -621,11 +660,11 @@ function renderQuestion(index){
           }).join('')}
         </div>
         <div class="scale-hint-row">
-          <div class="scale-hint">абсолютно не про мене</div>
-          <div class="scale-hint">ідеально описує мене</div>
+          <div class="scale-hint">${hints[0]}</div>
+          <div class="scale-hint">${hints[1]}</div>
         </div>
       </div>`;
-  } else if (activeTestId === 'bdi') {
+  } else if (activeTestId === 'bdi' || activeTestId === 'gad_7') {
     const optionsHTML = q.options.map(opt => {
       const checked = (answers[q.id] === opt.v) ? 'checked' : '';
       return `
@@ -635,10 +674,14 @@ function renderQuestion(index){
         </label>`;
     }).join('');
 
+    const titlePrefix = activeTestId === 'bdi' ? 'Група' : 'Питання';
+    const extraText = q.text ? `<div class="question-text" style="margin-bottom:16px; min-height:auto;">${q.text}</div>` : '';
+
     qArea.innerHTML = `
       <div aria-live="polite">
-        <div class="question-num">Група ${index+1} із ${activeQuestions.length}: ${q.title}</div>
-        <div class="bdi-scale">
+        <div class="question-num">${titlePrefix} ${index+1} із ${activeQuestions.length}: ${q.title}</div>
+        ${extraText}
+        <div class="v-scale">
           ${optionsHTML}
         </div>
       </div>`;
@@ -650,8 +693,6 @@ function renderQuestion(index){
   btnPrev.disabled = (index === 0);
   
   const isLast = index === activeQuestions.length - 1;
-  const isAnswered = answers[q.id] !== undefined;
-  
   if (isLast) {
     btnNext.style.display = 'none';
     btnFinish.style.display = 'inline-block';
@@ -664,7 +705,7 @@ function renderQuestion(index){
 function handleAnswer(qid, val){
   answers[qid] = val;
   if (currentIndex < activeQuestions.length - 1) {
-    setTimeout(() => { currentIndex++; renderQuestion(currentIndex); }, (activeTestId === 'ysq_s3') ? 120 : 250);
+    setTimeout(() => { currentIndex++; renderQuestion(currentIndex); }, (activeTestId === 'ysq_s3' || activeTestId === 'aaq_2') ? 120 : 250);
   }
 }
 
@@ -682,13 +723,6 @@ function calculateYSQ(){
   return Object.keys(map).map(k => ({ schema: k, sum: map[k].sum })).sort((a,b)=>b.sum - a.sum);
 }
 
-function getYSQInterpretation(score) {
-  if (score >= 25) return "<span style='color:var(--accent-glow); font-weight:700;'>Високий</span>";
-  if (score >= 20) return "Середній";
-  if (score >= 10) return "Легкий";
-  return "—";
-}
-
 function calculateBDI(){
   let score = 0;
   for (let qid in answers) score += answers[qid];
@@ -696,19 +730,49 @@ function calculateBDI(){
   if (score >= 14 && score <= 19) level = "Легка депресія";
   if (score >= 20 && score <= 28) level = "Помірна депресія";
   if (score >= 29) level = "<span style='color:var(--accent-glow); font-weight:700;'>Тяжка депресія</span>";
-  
   return [
-    { schema: "Загальний бал BDI", sum: score },
+    { schema: "Загальний бал", sum: score },
     { schema: "Рівень", sum: level.replace(/<[^>]+>/g, '') },
     { htmlLevel: level }
   ];
+}
+
+function calculateGAD(){
+  let score = 0;
+  for (let qid in answers) score += answers[qid];
+  let level = "Мінімальна тривога";
+  if (score >= 5 && score <= 9) level = "Легка тривога";
+  if (score >= 10 && score <= 14) level = "Помірна тривога";
+  if (score >= 15) level = "<span style='color:var(--accent-glow); font-weight:700;'>Тяжка тривога</span>";
+  return [
+    { schema: "Загальний бал", sum: score },
+    { schema: "Рівень", sum: level.replace(/<[^>]+>/g, '') },
+    { htmlLevel: level }
+  ];
+}
+
+function calculateAAQ(){
+  let score = 0;
+  for (let qid in answers) score += answers[qid];
+  let level = score > 24 ? "<span style='color:var(--accent-glow); font-weight:700;'>Висока негнучкість (уникнення)</span>" : "Нормальна психологічна гнучкість";
+  return [
+    { schema: "Загальний бал", sum: score },
+    { schema: "Рівень", sum: level.replace(/<[^>]+>/g, '') },
+    { htmlLevel: level }
+  ];
+}
+
+function getYSQInterpretation(score) {
+  if (score >= 25) return "<span style='color:var(--accent-glow); font-weight:700;'>Високий</span>";
+  if (score >= 20) return "Середній";
+  if (score >= 10) return "Легкий";
+  return "—";
 }
 
 function showResults(){
   const tbody = document.querySelector('#resultTable tbody');
   tbody.innerHTML = '';
   const descBlock = document.getElementById('schemaDescriptions');
-  
   let finalPayloadData = [];
 
   if (activeTestId === 'ysq_s3') {
@@ -719,11 +783,13 @@ function showResults(){
     const unique = Array.from(new Set(results.map(r=>r.schema)));
     descBlock.innerHTML = '<b>Короткий довідник шкал вашого профілю:</b><br><br>' + unique.map(n => `<b>${n}:</b> ${schemaDescriptionsText[n]||''}`).join('<br>');
     finalPayloadData = results;
-  } else if (activeTestId === 'bdi') {
-    const results = calculateBDI();
-    tbody.innerHTML = `
-      <tr><td>Загальний бал</td><td>${results[0].sum}</td><td>${results[2].htmlLevel}</td></tr>
-    `;
+  } else {
+    let results = [];
+    if (activeTestId === 'bdi') results = calculateBDI();
+    if (activeTestId === 'gad_7') results = calculateGAD();
+    if (activeTestId === 'aaq_2') results = calculateAAQ();
+    
+    tbody.innerHTML = `<tr><td>Загальний бал</td><td>${results[0].sum}</td><td>${results[2].htmlLevel}</td></tr>`;
     descBlock.innerHTML = 'Цей результат не є клінічним діагнозом і призначений виключно для ознайомлення в рамках терапевтичної роботи.';
     finalPayloadData = [ { schema: "Загальний бал", sum: results[0].sum }, { schema: "Рівень", sum: results[1].sum } ];
   }
@@ -741,7 +807,6 @@ function finish() {
     nameInput.focus();
     return;
   }
-
   const missing = activeQuestions.find(q => answers[q.id] === undefined);
   if (missing) {
     alert(`Питання пропущене. Будь ласка, оберіть відповідь.`);
@@ -785,7 +850,6 @@ function saveResultsToGoogleSheet(resultsData) {
   const clientName = document.getElementById('clientName').value.trim();
   
   let orderedResults = [];
-  
   if (activeTestId === 'ysq_s3') {
     const fixedSchemaOrder = [
       "Емоційна депривація (ED)","Покинутість / Нестабільність (AB)","Недовіра / Очікування зловживань (MA)",
@@ -821,9 +885,7 @@ function saveResultsToGoogleSheet(resultsData) {
     body: JSON.stringify(payload),
   });
 
-  const timeoutPromise = new Promise((_, reject) => 
-    setTimeout(() => reject(new Error('Timeout')), 8000)
-  );
+  const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 8000));
 
   Promise.race([fetchPromise, timeoutPromise])
     .then(() => {
@@ -832,7 +894,6 @@ function saveResultsToGoogleSheet(resultsData) {
       btnFinish.style.borderColor = "var(--accent-amber)";
     })
     .catch(err => {
-      console.error(err);
       btnFinish.innerText = "Помилка мережі. Спробуйте ще раз";
       btnFinish.disabled = false;
       btnFinish.style.color = "#ff6b6b";
