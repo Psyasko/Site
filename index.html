@@ -98,6 +98,19 @@
   .hero-desc { font-size: 15px; color: var(--text-muted); max-width: 500px; line-height: 1.7; font-weight: 500; transition: color 0.8s ease; }
   .section-label { font-size: 10px; color: var(--text-muted); letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 16px; font-weight: 600; transition: color 0.8s ease; }
 
+  .theme-photo-container { width: 100%; height: auto; margin: 28px 0; border-radius: 10px; overflow: hidden; border: 1px solid var(--border-soft); transition: border-color 0.8s ease; }
+  .theme-photo { display: none; width: 100%; height: 100%; max-height: 380px; object-fit: cover; }
+  :root[data-theme="sunset"] .photo-sunset { display: block; }
+  :root[data-theme="night"] .photo-night { display: block; }
+  :root[data-theme="dawn"] .photo-dawn { display: block; }
+
+  .action-grid { display: flex; gap: 14px; margin-top: 36px; width: 100%; }
+  .action-card-btn { flex: 1; padding: 22px 14px; background: var(--card-bg); border: 1px solid var(--border-soft); border-radius: 8px; color: var(--text-main); font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; cursor: pointer; transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); text-align: center; display: flex; align-items: center; justify-content: center; min-height: 64px; }
+  
+  :root[data-theme="sunset"] .action-card-btn:hover { border-color: var(--accent-amber); color: var(--accent-glow); box-shadow: 0 0 20px rgba(184, 122, 53, 0.25), inset 0 0 12px rgba(212, 160, 96, 0.1); transform: translateY(-2px); }
+  :root[data-theme="night"] .action-card-btn:hover { border-color: var(--accent-amber); color: var(--accent-glow); box-shadow: 0 0 22px rgba(122, 156, 224, 0.3), inset 0 0 10px rgba(122, 156, 224, 0.15); transform: translateY(-2px); }
+  :root[data-theme="dawn"] .action-card-btn:hover { border-color: #E63946; color: #E63946; box-shadow: 0 0 18px rgba(230, 57, 70, 0.35), 0 0 30px rgba(255, 183, 3, 0.2); background: rgba(230, 57, 70, 0.02); transform: translateY(-2px); }
+
   .card { background: var(--card-bg); border: 1px solid var(--border-soft); border-radius: 10px; overflow: hidden; margin-bottom: 16px; position: relative; padding: 28px; transition: background 0.8s ease, border-color 0.8s ease; }
   .card-inner-glow { position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--accent-amber), transparent); opacity: 0.5; transition: background 0.8s ease; }
   
@@ -150,6 +163,10 @@
   .btn-ghost { background: transparent; border-color: var(--border-soft); color: var(--text-muted); }
   .btn-ghost:hover:not(:disabled) { border-color: var(--accent-amber); color: var(--text-main); }
 
+  .feedback-box { text-align: center; padding: 20px 0; }
+  .feedback-title { font-family: 'Cormorant Garamond', serif; font-size: 26px; color: var(--accent-glow); margin-bottom: 12px; font-weight: 500; }
+  .feedback-desc { font-size: 14px; color: var(--text-muted); margin-bottom: 24px; font-weight: 500; }
+
   .resultBox { margin-top: 28px; display: none; border-top: 1px solid var(--border-soft); padding-top: 24px; }
   table { width: 100%; border-collapse: collapse; margin-top: 12px; }
   th, td { padding: 12px 8px; text-align: left; border-bottom: 1px solid var(--border-soft); font-size: 14px; transition: border-color 0.8s ease; }
@@ -162,6 +179,10 @@
   .contract-text li { margin-bottom: 6px; }
 
   .price-tag { font-family: 'Cormorant Garamond', serif; font-size: 24px; color: var(--accent-glow); margin-bottom: 20px; transition: color 0.8s ease; }
+
+  .diploma-section { margin-top: 40px; border-top: 1px solid var(--border-soft); padding-top: 30px; }
+  .diploma-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; margin-top: 20px; }
+  .diploma-card { aspect-ratio: 1.414; background: var(--glass-bg); border: 1px dashed var(--border-soft); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 13px; font-weight: 500; text-align: center; padding: 16px; }
 
   .breathe-widget { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 0; min-height: 320px; position: relative; }
   .breathe-circle { width: 140px; height: 140px; border-radius: 50%; background: radial-gradient(circle, var(--accent-amber) 0%, transparent 70%); box-shadow: 0 0 40px rgba(0,0,0,0.05); border: 1px solid var(--border-soft); display: flex; align-items: center; justify-content: center; position: relative; transition: transform 4s linear, opacity 4s linear, box-shadow 4s linear, background 0.8s ease, border-color 0.8s ease; opacity: 0.6; }
@@ -178,6 +199,8 @@
     .controls button { width: 100%; }
     .nav { padding: 14px 18px; flex-direction: column; gap: 12px; }
     .theme-slider-container { margin-left: 0; width: 100%; justify-content: center; margin-top: 10px; }
+    .action-grid { flex-direction: column; gap: 10px; }
+    .action-card-btn { width: 100%; min-height: 56px; }
   }
 </style>
 <script src="tests-data.js"></script>
@@ -215,19 +238,42 @@
     <div class="hero-desc">
       Цифровий кабінет психотерапевта. Платформа для глибокої та системної роботи з власною особистістю, тривалих структурних змін та виходу з дезадаптивних життєвих сценаріїв.
     </div>
+
+    <div class="theme-photo-container">
+      <img src="photo-sunset.jpg" alt="Захід сонця" class="theme-photo photo-sunset">
+      <img src="photo-night.jpg" alt="Ніч" class="theme-photo photo-night">
+      <img src="photo-dawn.jpg" alt="Світанок" class="theme-photo photo-dawn">
+    </div>
+
+    <div class="action-grid">
+      <div class="action-card-btn" onclick="showSection('consultations')">Записатись на консультацію</div>
+      <div class="action-card-btn" onclick="showSection('soothing')">Відновити спокій</div>
+      <div class="action-card-btn" onclick="showSection('tests')">ПToggle пройти тести</div>
+      <div class="action-card-btn" onclick="showSection('about')">Про мене</div>
+    </div>
   </section>
 
   <section id="about" class="site-section">
     <div class="section-label">Спеціалізація</div>
     <h1 class="hero-title">Терапевтичний підхід</h1>
     <div class="hero-desc">
-      <p>Я спираюся на сучасні доказові методы психотерапії із чіткою методологічною базою. Практикую в рамках:</p>
+      <p>Я спираюся на сучасні доказові методи психотерапії із чіткою методологічною базою. Практикую в рамках:</p>
       <ul style="padding-left: 20px; margin: 16px 0; line-height: 1.8;">
         <li>Когнітивно-поведінкової терапії (КПТ)</li>
         <li>Терапії прийняття та відповідальності (ACT)</li>
         <li>Схема-терапії</li>
       </ul>
       <p>Робота орієнтована на розвиток психологічної гнучкості, усвідомлення глибинних паттернів поведінки та формування твоєї повної терапевтичної автономії.</p>
+    </div>
+
+    <div class="diploma-section">
+      <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 22px; color: var(--accent-glow); font-weight: 500; margin: 0 0 8px 0;">Освіта та сертифікація</h3>
+      <div class="hero-desc">Документи, що підтверджують кваліфікацію та проходження підготовки у доказових модальностях.</div>
+      <div class="diploma-grid">
+        <div class="diploma-card">Місце під диплом про вищу психологічну освіту</div>
+        <div class="diploma-card">Місце під сертифікат базового курсу КПТ</div>
+        <div class="diploma-card">Місце під сертифікат Схема-терапії / ACT</div>
+      </div>
     </div>
   </section>
 
@@ -337,6 +383,7 @@
           </div>
           <div class="controls" style="justify-content: center; margin-top: 0;">
             <button id="btnBreatheToggle" onclick="toggleBreathing()">Почати вправу</button>
+            <button id="btnBreatheFinish" class="btn-ghost" style="display:none;" onclick="showSoothingFeedback()">Завершити</button>
           </div>
         </div>
       </div>
@@ -349,6 +396,19 @@
           <div id="wizardInputs" class="wizard-inputs"></div>
           <div class="controls" style="justify-content: center;">
             <button onclick="nextWizardStep()" id="btnWizardNext">Далі</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="soothing-feedback" style="display:none;">
+        <div class="card feedback-box">
+          <div class="card-inner-glow"></div>
+          <div class="feedback-title">Вправу завершено</div>
+          <div class="feedback-desc">Оціни свій поточний стан та обери подальшу дію:</div>
+          <div class="controls" style="justify-content: center; gap: 12px;">
+            <button onclick="closeSoothing()">Мені стало краще</button>
+            <button class="btn-ghost" onclick="repeatCurrentSoothing()">Треба ще, повторити</button>
+            <button class="btn-ghost" onclick="closeSoothing()">Спробувати інші техніки</button>
           </div>
         </div>
       </div>
@@ -373,7 +433,8 @@ function showSection(sectionId) {
   document.querySelectorAll('.site-section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
   document.getElementById(sectionId).classList.add('active');
-  document.getElementById('nav-' + sectionId).classList.add('active');
+  const navLink = document.getElementById('nav-' + sectionId);
+  if (navLink) navLink.classList.add('active');
   if(sectionId !== 'soothing' && isBreathing) toggleBreathing();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -430,6 +491,7 @@ const breathPhases = [
 const bCircle = document.getElementById('breatheCircle');
 const bText = document.getElementById('breatheText');
 const bBtn = document.getElementById('btnBreatheToggle');
+const bFinishBtn = document.getElementById('btnBreatheFinish');
 
 function toggleBreathing() {
   if (isBreathing) {
@@ -439,11 +501,13 @@ function toggleBreathing() {
     bText.innerText = "Готові?";
     bBtn.innerText = "Почати вправу";
     bBtn.classList.remove('btn-ghost');
+    bFinishBtn.style.display = 'inline-block';
   } else {
     isBreathing = true;
     currentPhase = 0;
     bBtn.innerText = "Зупинити";
     bBtn.classList.add('btn-ghost');
+    bFinishBtn.style.display = 'none';
     runBreathPhase();
     breathInterval = setInterval(runBreathPhase, 4000);
   }
@@ -457,6 +521,7 @@ function runBreathPhase() {
   currentPhase = (currentPhase + 1) % 4;
 }
 
+let currentCatId = null;
 let currentActiveSoothingId = null;
 let currentWizardSteps = [];
 let currentWizardStepIdx = 0;
@@ -466,12 +531,15 @@ function openSoothing(catId, itemId) {
   document.getElementById('active-soothing-container').style.display = 'block';
   document.getElementById('soothing-breathing').style.display = 'none';
   document.getElementById('soothing-wizard').style.display = 'none';
+  document.getElementById('soothing-feedback').style.display = 'none';
   
+  currentCatId = catId;
   currentActiveSoothingId = itemId;
   const item = SOOTHING_DATABASE[catId].items.find(x => x.id === itemId);
   
   if(item.type === 'breathing') {
     document.getElementById('soothing-breathing').style.display = 'block';
+    bFinishBtn.style.display = 'none';
   } else if(item.type === 'wizard') {
     document.getElementById('soothing-wizard').style.display = 'block';
     currentWizardSteps = item.steps;
@@ -484,6 +552,17 @@ function closeSoothing() {
   if(isBreathing) toggleBreathing();
   document.getElementById('active-soothing-container').style.display = 'none';
   document.getElementById('soothing-catalog').style.display = 'block';
+}
+
+function showSoothingFeedback() {
+  if(isBreathing) toggleBreathing();
+  document.getElementById('soothing-breathing').style.display = 'none';
+  document.getElementById('soothing-wizard').style.display = 'none';
+  document.getElementById('soothing-feedback').style.display = 'block';
+}
+
+function repeatCurrentSoothing() {
+  openSoothing(currentCatId, currentActiveSoothingId);
 }
 
 function renderWizardStep() {
@@ -531,7 +610,7 @@ function nextWizardStep() {
     currentWizardStepIdx++;
     renderWizardStep();
   } else {
-    closeSoothing();
+    showSoothingFeedback();
   }
 }
 
