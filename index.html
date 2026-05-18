@@ -156,12 +156,13 @@
 
   .input-group { margin: 24px 0; }
   .input-group label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
-  .input-group input { width: 100%; background: var(--glass-bg); border: 1px solid var(--border-soft); padding: 12px 14px; border-radius: 6px; color: var(--text-main); font-size: 14px; outline: none; transition: border-color 0.2s, color 0.8s ease, background 0.8s ease; font-family: inherit; }
-  .input-group input:focus { border-color: var(--accent-amber); }
+  .input-group input, textarea { width: 100%; background: var(--glass-bg); border: 1px solid var(--border-soft); padding: 12px 14px; border-radius: 6px; color: var(--text-main); font-size: 14px; outline: none; transition: border-color 0.2s, color 0.8s ease, background 0.8s ease; font-family: inherit; resize: vertical; }
+  .input-group input:focus, textarea:focus { border-color: var(--accent-amber); }
 
-  .wizard-inputs { display: flex; flex-direction: column; gap: 10px; margin: 24px 0; width: 100%; max-width: 400px; margin-left: auto; margin-right: auto; }
-  .wizard-inputs input { background: var(--glass-bg); border: 1px solid var(--border-soft); padding: 14px; border-radius: 8px; color: var(--text-main); font-size: 15px; outline: none; transition: border-color 0.2s, background 0.8s ease; font-family: inherit; width: 100%; text-align: center; }
-  .wizard-inputs input:focus { border-color: var(--accent-amber); }
+  .wizard-inputs { display: flex; flex-direction: column; gap: 10px; margin: 24px 0; width: 100%; max-width: 500px; margin-left: auto; margin-right: auto; }
+  .wizard-inputs input, .wizard-inputs textarea { background: var(--glass-bg); border: 1px solid var(--border-soft); padding: 14px; border-radius: 8px; color: var(--text-main); font-size: 15px; outline: none; transition: border-color 0.2s, background 0.8s ease; font-family: inherit; width: 100%; text-align: center; }
+  .wizard-inputs input:focus, .wizard-inputs textarea:focus { border-color: var(--accent-amber); }
+  .wizard-inputs textarea { text-align: left; min-height: 80px; resize: none; }
 
   .controls { display: flex; gap: 10px; margin-top: 24px; flex-wrap: wrap; }
   button { background: transparent; border: 1px solid var(--accent-amber); padding: 12px 20px; border-radius: 6px; color: var(--accent-glow); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; font-family: inherit; }
@@ -173,6 +174,8 @@
   .feedback-box { text-align: center; padding: 20px 0; }
   .feedback-title { font-family: 'Cormorant Garamond', serif; font-size: 26px; color: var(--accent-glow); margin-bottom: 12px; font-weight: 500; }
   .feedback-desc { font-size: 14px; color: var(--text-muted); margin-bottom: 24px; font-weight: 500; }
+  
+  .feedback-result-textarea { width: 100%; max-width: 500px; height: 160px; margin: 16px auto; background: var(--glass-bg); border: 1px solid var(--border-soft); color: var(--text-main); font-family: inherit; font-size: 14px; padding: 16px; border-radius: 8px; line-height: 1.6; resize: none; display: block; }
 
   .resultBox { margin-top: 28px; display: none; border-top: 1px solid var(--border-soft); padding-top: 24px; }
   table { width: 100%; border-collapse: collapse; margin-top: 12px; }
@@ -194,11 +197,14 @@
   .breathe-widget { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 0; min-height: 320px; position: relative; }
   .breathe-circle { width: 140px; height: 140px; border-radius: 50%; background: radial-gradient(circle, var(--accent-amber) 0%, transparent 70%); box-shadow: 0 0 40px rgba(0,0,0,0.05); border: 1px solid var(--border-soft); display: flex; align-items: center; justify-content: center; position: relative; transition: transform 4s linear, opacity 4s linear, box-shadow 4s linear, background 0.8s ease, border-color 0.8s ease; opacity: 0.6; }
   .breathe-text { font-family: 'Cormorant Garamond', serif; font-size: 22px; color: var(--accent-glow); font-weight: 600; position: absolute; text-align: center; z-index: 10; transition: opacity 0.5s ease, color 0.8s ease; }
+  .breathe-counter { margin-top: 40px; font-size: 13px; font-weight: 600; letter-spacing: 0.1em; color: var(--text-muted); text-transform: uppercase; }
   
   .phase-inhale { transform: scale(1.8); opacity: 1; box-shadow: 0 0 60px var(--border-soft); }
   .phase-hold1 { transform: scale(1.8); opacity: 0.8; box-shadow: 0 0 40px var(--border-soft); }
   .phase-exhale { transform: scale(1); opacity: 0.5; box-shadow: 0 0 20px rgba(0,0,0,0.02); }
   .phase-hold2 { transform: scale(1); opacity: 0.4; box-shadow: 0 0 10px rgba(0,0,0,0.01); }
+
+  .pmr-timer-text { font-size: 56px; font-weight: 300; font-family: 'Manrope', sans-serif; margin: 20px 0; color: var(--accent-glow); transition: color 0.3s ease; }
 
   @media(max-width: 768px) {
     .nav { padding: 14px 20px; flex-direction: column; gap: 14px; text-align: center; }
@@ -395,9 +401,21 @@
             <div id="breatheText" class="breathe-text">Готові?</div>
             <div id="breatheCircle" class="breathe-circle"></div>
           </div>
-          <div class="controls" style="justify-content: center; margin-top: 0;">
+          <div id="breatheCounter" class="breathe-counter"></div>
+          <div class="controls" style="justify-content: center; margin-top: 24px;">
             <button id="btnBreatheToggle" onclick="toggleBreathing()">Почати вправу</button>
-            <button id="btnBreatheFinish" class="btn-ghost" style="display:none;" onclick="showSoothingFeedback()">Завершити</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="soothing-pmr" style="display:none;">
+        <div class="card" style="text-align: center; padding: 40px 20px;">
+          <div class="card-inner-glow"></div>
+          <h2 id="pmrGroupLabel" style="font-family:'Cormorant Garamond',serif; color:var(--accent-glow); font-size:28px; margin-top:0;">М'язова група</h2>
+          <div id="pmrInstruction" class="question-text" style="justify-content:center; min-height:60px; font-weight:600; text-align: center;">Натисни старт для початку</div>
+          <div id="pmrTimer" class="pmr-timer-text">00</div>
+          <div class="controls" style="justify-content: center;">
+            <button id="btnPmrToggle" onclick="togglePMR()">Почати</button>
           </div>
         </div>
       </div>
@@ -419,10 +437,18 @@
           <div class="card-inner-glow"></div>
           <div class="feedback-title">Вправу завершено</div>
           <div class="feedback-desc">Оціни свій поточний стан та обери подальшу дію:</div>
+          
+          <div id="feedbackResultContainer" style="display:none; margin-bottom: 24px;">
+            <textarea id="feedbackTextarea" class="feedback-result-textarea" readonly></textarea>
+            <div class="controls" style="justify-content: center; margin-top: 10px;">
+              <button onclick="copyWizardText()" style="font-size: 11px; padding: 8px 16px;">📋 Скопіювати текст</button>
+            </div>
+          </div>
+
           <div class="controls" style="justify-content: center; gap: 12px;">
             <button onclick="closeSoothing()">Мені стало краще</button>
-            <button class="btn-ghost" onclick="repeatCurrentSoothing()">Треба ще, повторити</button>
-            <button class="btn-ghost" onclick="closeSoothing()">Спробувати інші техніки</button>
+            <button class="btn-ghost" onclick="repeatCurrentSoothing()">Повторити ще раз</button>
+            <button class="btn-ghost" onclick="closeSoothing()">Інші техніки</button>
           </div>
         </div>
       </div>
@@ -432,6 +458,16 @@
 </div>
 
 <script>
+// --- GLOBAL CONSTANTS & INIT ---
+const YSQ_SCHEMAS = [
+  "Емоційна депривація (ED)", "Покинутість / Нестабільність (AB)", "Недовіра / Очікування зловживань (MA)",
+  "Соціальна ізоляція / Відчуженість (SI)", "Дефективність / Сором (DS)", "Неуспішність (FA)",
+  "Залежність / Некомпетентність (DI)", "Вразливість до шкоди та хвороб (VH)", "Злиття / Нерозвинена ідентичність (EM)",
+  "Підкорення (SB)", "Сапопожертва (SS)", "Пошук схвалення (AS)",
+  "Негативізм / Песимізм (NP)", "Емоційне пригнічення (EI)", "Жорсткі стандарти / Гіперкритичність (US)",
+  "Привілейованість / Грандіозність (ET)", "Недостатній самоконтроль (IS)", "Пунітивність (Покарання) (PU)"
+];
+
 window.addEventListener('DOMContentLoaded', () => {
   renderTestCatalog();
   renderSoothingCatalog();
@@ -440,13 +476,8 @@ window.addEventListener('DOMContentLoaded', () => {
 function changeTheme(val) {
   const themes = ['sunset', 'night', 'dawn'];
   document.documentElement.setAttribute('data-theme', themes[val]);
-  
   document.querySelectorAll('.theme-btn').forEach((btn, idx) => {
-    if(idx === parseInt(val)) {
-      btn.classList.add('active');
-    } else {
-      btn.classList.remove('active');
-    }
+    btn.classList.toggle('active', idx === parseInt(val));
   });
 }
 document.documentElement.setAttribute('data-theme', 'sunset');
@@ -457,7 +488,11 @@ function showSection(sectionId) {
   document.getElementById(sectionId).classList.add('active');
   const navLink = document.getElementById('nav-' + sectionId);
   if (navLink) navLink.classList.add('active');
-  if(sectionId !== 'soothing' && isBreathing) toggleBreathing();
+  
+  if (sectionId !== 'soothing') {
+    if (isBreathing) toggleBreathing();
+    if (isPMR) togglePMR();
+  }
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -476,8 +511,7 @@ function renderTestCatalog() {
             <div class="card-sub">${t.instruction.substring(0, 95)}...</div>
           </div>
         </div>
-      </div>
-    `;
+      </div>`;
   }
 }
 
@@ -493,29 +527,107 @@ function renderSoothingCatalog() {
           <div class="card-inner-glow"></div>
           <div class="card-title" style="margin-bottom:8px; font-size: 18px;">${item.title}</div>
           <div class="card-sub">${item.sub}</div>
-        </div>
-      `;
+        </div>`;
     });
     html += `</div>`;
     container.innerHTML += html;
   }
 }
 
+// --- SOOTHING CONTROLLER ---
+let currentCatId = null;
+let currentActiveSoothingId = null;
+let currentSoothingItem = null;
+
+function openSoothing(catId, itemId) {
+  document.getElementById('soothing-catalog').style.display = 'none';
+  document.getElementById('active-soothing-container').style.display = 'block';
+  
+  document.getElementById('soothing-breathing').style.display = 'none';
+  document.getElementById('soothing-wizard').style.display = 'none';
+  document.getElementById('soothing-pmr').style.display = 'none';
+  document.getElementById('soothing-feedback').style.display = 'none';
+  
+  currentCatId = catId;
+  currentActiveSoothingId = itemId;
+  currentSoothingItem = SOOTHING_DATABASE[catId].items.find(x => x.id === itemId);
+  
+  if (currentSoothingItem.type === 'breathing') {
+    document.getElementById('soothing-breathing').style.display = 'block';
+    targetCycles = currentSoothingItem.cyclesTarget || 6;
+    currentCycle = 1;
+    document.getElementById('breatheCounter').innerText = `Цикл 1 з ${targetCycles}`;
+  } else if (currentSoothingItem.type === 'wizard') {
+    document.getElementById('soothing-wizard').style.display = 'block';
+    currentWizardSteps = currentSoothingItem.steps;
+    currentWizardStepIdx = 0;
+    wizardAnswers = [];
+    renderWizardStep();
+  } else if (currentSoothingItem.type === 'pmr') {
+    document.getElementById('soothing-pmr').style.display = 'block';
+    pmrSteps = currentSoothingItem.steps;
+    currentPmrStep = 0;
+    document.getElementById('pmrGroupLabel').innerText = currentSoothingItem.title;
+    document.getElementById('pmrInstruction').innerText = "Натисніть «Почати», щоб слідувати інструкціям на екрані.";
+    document.getElementById('pmrTimer').innerText = "00";
+    document.getElementById('pmrTimer').style.color = "var(--accent-glow)";
+  }
+}
+
+function closeSoothing() {
+  if (isBreathing) toggleBreathing();
+  if (isPMR) togglePMR();
+  document.getElementById('active-soothing-container').style.display = 'none';
+  document.getElementById('soothing-catalog').style.display = 'block';
+}
+
+function showSoothingFeedback() {
+  if (isBreathing) toggleBreathing();
+  if (isPMR) togglePMR();
+  
+  document.getElementById('soothing-breathing').style.display = 'none';
+  document.getElementById('soothing-wizard').style.display = 'none';
+  document.getElementById('soothing-pmr').style.display = 'none';
+  document.getElementById('soothing-feedback').style.display = 'block';
+
+  const resContainer = document.getElementById('feedbackResultContainer');
+  if (currentActiveSoothingId === 'safe_place') {
+    resContainer.style.display = 'block';
+    document.getElementById('feedbackTextarea').value = 
+      `🌿 Моє безпечне місце:\n\n👁️ Я бачу: ${wizardAnswers[0] || '-'}\n🎧 Я чую: ${wizardAnswers[1] || '-'}\n🤚 Я відчуваю: ${wizardAnswers[2] || '-'}\n\n✨ Мій емоційний стан тут: ${wizardAnswers[3] || '-'}`;
+  } else if (currentActiveSoothingId === 'values_card') {
+    resContainer.style.display = 'block';
+    document.getElementById('feedbackTextarea').value = 
+      `🧭 Моя картка цінностей:\n\nУ стосунках я хочу бути: ${wizardAnswers[0] || '-'}\nУ діяльності для мене важливо: ${wizardAnswers[1] || '-'}\nМоє ставлення до себе: ${wizardAnswers[2] || '-'}\nМій життєвий вектор: ${wizardAnswers[3] || '-'}`;
+  } else {
+    resContainer.style.display = 'none';
+  }
+}
+
+function repeatCurrentSoothing() {
+  openSoothing(currentCatId, currentActiveSoothingId);
+}
+
+// --- BREATHING LOGIC ---
 let isBreathing = false;
 let breathInterval = null;
 let currentPhase = 0;
+let currentCycle = 1;
+let targetCycles = 6;
+
 const breathPhases = [
   { text: "Вдих...", class: "phase-inhale" },
   { text: "Затримка...", class: "phase-hold1" },
   { text: "Видих...", class: "phase-exhale" },
   { text: "Затримка...", class: "phase-hold2" }
 ];
-const bCircle = document.getElementById('breatheCircle');
-const bText = document.getElementById('breatheText');
-const bBtn = document.getElementById('btnBreatheToggle');
-const bFinishBtn = document.getElementById('btnBreatheFinish');
 
 function toggleBreathing() {
+  const bCircle = document.getElementById('breatheCircle');
+  const bText = document.getElementById('breatheText');
+  const bBtn = document.getElementById('btnBreatheToggle');
+  const bCounter = document.getElementById('breatheCounter');
+
   if (isBreathing) {
     isBreathing = false;
     clearInterval(breathInterval);
@@ -523,19 +635,34 @@ function toggleBreathing() {
     bText.innerText = "Готові?";
     bBtn.innerText = "Почати вправу";
     bBtn.classList.remove('btn-ghost');
-    bFinishBtn.style.display = 'inline-block';
+    bCounter.innerText = `Цикл 1 з ${targetCycles}`;
   } else {
     isBreathing = true;
     currentPhase = 0;
+    currentCycle = 1;
     bBtn.innerText = "Зупинити";
     bBtn.classList.add('btn-ghost');
-    bFinishBtn.style.display = 'none';
+    bCounter.innerText = `Цикл ${currentCycle} з ${targetCycles}`;
     runBreathPhase();
     breathInterval = setInterval(runBreathPhase, 4000);
   }
 }
 
 function runBreathPhase() {
+  const bCircle = document.getElementById('breatheCircle');
+  const bText = document.getElementById('breatheText');
+  const bCounter = document.getElementById('breatheCounter');
+
+  if (currentPhase === 0) {
+    if (currentCycle > targetCycles) {
+      toggleBreathing();
+      showSoothingFeedback();
+      return;
+    }
+    bCounter.innerText = `Цикл ${currentCycle} з ${targetCycles}`;
+    currentCycle++;
+  }
+
   const phase = breathPhases[currentPhase];
   bCircle.className = `breathe-circle ${phase.class}`;
   bText.style.opacity = 0;
@@ -543,49 +670,77 @@ function runBreathPhase() {
   currentPhase = (currentPhase + 1) % 4;
 }
 
-let currentCatId = null;
-let currentActiveSoothingId = null;
-let currentWizardSteps = [];
-let currentWizardStepIdx = 0;
+// --- PMR LOGIC ---
+let isPMR = false;
+let pmrInterval = null;
+let pmrSteps = [];
+let currentPmrStep = 0;
+let pmrTimeLeft = 0;
+let isTension = true;
 
-function openSoothing(catId, itemId) {
-  document.getElementById('soothing-catalog').style.display = 'none';
-  document.getElementById('active-soothing-container').style.display = 'block';
-  document.getElementById('soothing-breathing').style.display = 'none';
-  document.getElementById('soothing-wizard').style.display = 'none';
-  document.getElementById('soothing-feedback').style.display = 'none';
-  
-  currentCatId = catId;
-  currentActiveSoothingId = itemId;
-  const item = SOOTHING_DATABASE[catId].items.find(x => x.id === itemId);
-  
-  if(item.type === 'breathing') {
-    document.getElementById('soothing-breathing').style.display = 'block';
-    bFinishBtn.style.display = 'none';
-  } else if(item.type === 'wizard') {
-    document.getElementById('soothing-wizard').style.display = 'block';
-    currentWizardSteps = item.steps;
-    currentWizardStepIdx = 0;
-    renderWizardStep();
+function togglePMR() {
+  const btn = document.getElementById('btnPmrToggle');
+  if (isPMR) {
+    isPMR = false;
+    clearInterval(pmrInterval);
+    btn.innerText = "Почати";
+    btn.classList.remove('btn-ghost');
+    document.getElementById('pmrInstruction').innerText = "Зупинено.";
+    document.getElementById('pmrTimer').innerText = "00";
+    document.getElementById('pmrTimer').style.color = "var(--accent-glow)";
+  } else {
+    isPMR = true;
+    currentPmrStep = 0;
+    isTension = true;
+    btn.innerText = "Зупинити";
+    btn.classList.add('btn-ghost');
+    startPmrPhase();
   }
 }
 
-function closeSoothing() {
-  if(isBreathing) toggleBreathing();
-  document.getElementById('active-soothing-container').style.display = 'none';
-  document.getElementById('soothing-catalog').style.display = 'block';
+function startPmrPhase() {
+  if (currentPmrStep >= pmrSteps.length) {
+    togglePMR();
+    showSoothingFeedback();
+    return;
+  }
+  
+  const stepData = pmrSteps[currentPmrStep];
+  document.getElementById('pmrGroupLabel').innerText = stepData.label;
+  
+  if (isTension) {
+    document.getElementById('pmrInstruction').innerText = `НАПРУЖИТИ: ${stepData.text}`;
+    document.getElementById('pmrTimer').style.color = "#E63946"; // Red alert
+    pmrTimeLeft = currentSoothingItem.tensionDuration || 5;
+  } else {
+    document.getElementById('pmrInstruction').innerText = "РОЗСЛАБИТИ: Зробіть глибокий видих і відпустіть усю напругу.";
+    document.getElementById('pmrTimer').style.color = "var(--accent-glow)"; // Calm glow
+    pmrTimeLeft = currentSoothingItem.relaxationDuration || 10;
+  }
+  
+  document.getElementById('pmrTimer').innerText = pmrTimeLeft.toString().padStart(2, '0');
+  
+  clearInterval(pmrInterval);
+  pmrInterval = setInterval(() => {
+    pmrTimeLeft--;
+    document.getElementById('pmrTimer').innerText = pmrTimeLeft.toString().padStart(2, '0');
+    if (pmrTimeLeft <= 0) {
+      clearInterval(pmrInterval);
+      if (isTension) {
+        isTension = false;
+      } else {
+        isTension = true;
+        currentPmrStep++;
+      }
+      startPmrPhase();
+    }
+  }, 1000);
 }
 
-function showSoothingFeedback() {
-  if(isBreathing) toggleBreathing();
-  document.getElementById('soothing-breathing').style.display = 'none';
-  document.getElementById('soothing-wizard').style.display = 'none';
-  document.getElementById('soothing-feedback').style.display = 'block';
-}
-
-function repeatCurrentSoothing() {
-  openSoothing(currentCatId, currentActiveSoothingId);
-}
+// --- WIZARD LOGIC ---
+let currentWizardSteps = [];
+let currentWizardStepIdx = 0;
+let wizardAnswers = [];
 
 function renderWizardStep() {
   const s = currentWizardSteps[currentWizardStepIdx];
@@ -594,16 +749,23 @@ function renderWizardStep() {
   const btn = document.getElementById('btnWizardNext');
   const inputsContainer = document.getElementById('wizardInputs');
   
-  if(currentWizardStepIdx === currentWizardSteps.length - 1) {
-    btn.innerText = "Завершити";
-  } else {
-    btn.innerText = "Далі";
-  }
-
+  btn.innerText = (currentWizardStepIdx === currentWizardSteps.length - 1) ? "Завершити" : "Далі";
   inputsContainer.innerHTML = '';
   btn.disabled = false;
 
-  if (currentActiveSoothingId === 'grounding_54321') {
+  if (s.inputType === 'text') {
+    btn.disabled = true;
+    const tarea = document.createElement('textarea');
+    tarea.placeholder = s.placeholder || 'Ваша відповідь...';
+    tarea.rows = 3;
+    tarea.value = wizardAnswers[currentWizardStepIdx] || '';
+    tarea.oninput = () => {
+      wizardAnswers[currentWizardStepIdx] = tarea.value;
+      btn.disabled = tarea.value.trim().length === 0;
+    };
+    inputsContainer.appendChild(tarea);
+    if(tarea.value.trim().length > 0) btn.disabled = false;
+  } else if (currentActiveSoothingId === 'grounding_54321') {
     const inputCount = 5 - currentWizardStepIdx;
     if (inputCount > 0 && inputCount <= 5) {
       btn.disabled = true;
@@ -621,14 +783,12 @@ function renderWizardStep() {
 function validateWizardInputs() {
   const inputs = document.querySelectorAll('#wizardInputs input');
   let allFilled = true;
-  inputs.forEach(inp => {
-    if (inp.value.trim().length === 0) allFilled = false;
-  });
+  inputs.forEach(inp => { if (inp.value.trim().length === 0) allFilled = false; });
   document.getElementById('btnWizardNext').disabled = !allFilled;
 }
 
 function nextWizardStep() {
-  if(currentWizardStepIdx < currentWizardSteps.length - 1) {
+  if (currentWizardStepIdx < currentWizardSteps.length - 1) {
     currentWizardStepIdx++;
     renderWizardStep();
   } else {
@@ -636,20 +796,19 @@ function nextWizardStep() {
   }
 }
 
+function copyWizardText() {
+  const text = document.getElementById('feedbackTextarea');
+  text.select();
+  document.execCommand('copy');
+  alert('Текст скопійовано у буфер обміну!');
+}
+
+// --- TEST LOGIC ---
 let activeTestId = null;
 let currentTestDef = null;
 let activeQuestions = [];
 let currentIndex = 0;
 let answers = {};
-
-const qArea = document.getElementById('questionArea');
-const qCounter = document.getElementById('qCounter');
-const progressInner = document.getElementById('progressInner');
-const btnPrev = document.getElementById('btnPrev');
-const btnNext = document.getElementById('btnNext');
-const btnFinish = document.getElementById('btnFinish');
-const btnReset = document.getElementById('btnReset');
-const resultBox = document.getElementById('resultBox');
 
 function openTest(testId) {
   activeTestId = testId;
@@ -675,11 +834,11 @@ function closeTest() {
 
 function renderQuestion(index){
   const q = activeQuestions[index];
+  const qArea = document.getElementById('questionArea');
   
   if (currentTestDef.type === 'horizontal') {
     const scaleMax = currentTestDef.scaleMax;
     const hints = currentTestDef.hints;
-      
     qArea.innerHTML = `
       <div aria-live="polite">
         <div class="question-num">Твердження ${index+1} із ${activeQuestions.length}</div>
@@ -717,24 +876,20 @@ function renderQuestion(index){
       <div aria-live="polite">
         <div class="question-num">${titlePrefix} ${index+1} із ${activeQuestions.length} ${titleText ? ': '+titleText : ''}</div>
         ${extraText}
-        <div class="v-scale">
-          ${optionsHTML}
-        </div>
+        <div class="v-scale">${optionsHTML}</div>
       </div>`;
   }
 
-  qCounter.textContent = `Питання ${index+1} / ${activeQuestions.length}`;
-  progressInner.style.width = `${Math.round((index / activeQuestions.length) * 100)}%`;
+  document.getElementById('qCounter').textContent = `Питання ${index+1} / ${activeQuestions.length}`;
+  document.getElementById('progressInner').style.width = `${Math.round((index / activeQuestions.length) * 100)}%`;
+  document.getElementById('btnPrev').disabled = (index === 0);
   
-  btnPrev.disabled = (index === 0);
-  
-  const isLast = index === activeQuestions.length - 1;
-  if (isLast) {
-    btnNext.style.display = 'none';
-    btnFinish.style.display = 'inline-block';
+  if (index === activeQuestions.length - 1) {
+    document.getElementById('btnNext').style.display = 'none';
+    document.getElementById('btnFinish').style.display = 'inline-block';
   } else {
-    btnNext.style.display = 'inline-block';
-    btnFinish.style.display = 'none';
+    document.getElementById('btnNext').style.display = 'inline-block';
+    document.getElementById('btnFinish').style.display = 'none';
   }
 }
 
@@ -748,61 +903,61 @@ function handleAnswer(qid, val){
 function prevQ(){ if(currentIndex > 0){ currentIndex--; renderQuestion(currentIndex); } }
 function nextQ(){ if(currentIndex < activeQuestions.length - 1){ currentIndex++; renderQuestion(currentIndex); } }
 
+// --- CALCULATIONS ---
 function calculateYSQ(){
   const map = {};
+  YSQ_SCHEMAS.forEach(s => map[s] = 0);
   activeQuestions.forEach(q => {
-    const s = q.schema || "Unknown";
-    if(!map[s]) map[s] = {sum:0, count:0};
+    // Формула для математичного розподілу схем по порядку 1-18
+    const schemaName = YSQ_SCHEMAS[(q.id - 1) % 18];
     const v = answers[q.id];
-    if(v){ map[s].sum += v; map[s].count++; }
+    if(v) map[schemaName] += v;
   });
-  return Object.keys(map).map(k => ({ schema: k, sum: map[k].sum })).sort((a,b)=>b.sum - a.sum);
+  return Object.keys(map).map(k => ({ schema: k, sum: map[k] })).sort((a,b)=>b.sum - a.sum);
 }
 
-function calculateBDI(){
-  let score = 0;
-  for (let qid in answers) score += answers[qid];
-  let level = "Мінімальна депресія";
-  if (score >= 14 && score <= 19) level = "Легка депресія";
-  if (score >= 20 && score <= 28) level = "Помірна депресія";
-  if (score >= 29) level = "<span style='color:var(--accent-glow); font-weight:700;'>Тяжка депресія</span>";
+function calculatePCL5(){
+  let total = 0, b = 0, c = 0, d = 0, e = 0;
+  for (let id in answers) {
+    let v = answers[id];
+    total += v;
+    if (id <= 5) b += v;
+    else if (id <= 7) c += v;
+    else if (id <= 14) d += v;
+    else e += v;
+  }
+  let level = total >= 31 ? "<span style='color:var(--accent-glow); font-weight:700;'>Висока ймовірність ПТСР</span>" : "Нижче клінічного порогу";
   return [
-    { schema: "Загальний бал", sum: score },
-    { schema: "Рівень", sum: level.replace(/<[^>]+>/g, '') },
-    { htmlLevel: level }
+    { schema: "Загальний бал (ПТСР)", sum: total, htmlLevel: level },
+    { schema: "Кластер B (Вторгнення)", sum: b, htmlLevel: "" },
+    { schema: "Кластер C (Уникнення)", sum: c, htmlLevel: "" },
+    { schema: "Кластер D (Когніції/Настрій)", sum: d, htmlLevel: "" },
+    { schema: "Кластер E (Гіперактивація)", sum: e, htmlLevel: "" }
   ];
 }
 
-function calculateGAD(){
-  let score = 0;
-  for (let qid in answers) score += answers[qid];
-  let level = "Мінімальна тривога";
-  if (score >= 5 && score <= 9) level = "Легка тривога";
-  if (score >= 10 && score <= 14) level = "Помірна тривога";
-  if (score >= 15) level = "<span style='color:var(--accent-glow); font-weight:700;'>Тяжка тривога</span>";
+function calculateSMQ(){
+  let activeModes = [];
+  let total = 0;
+  for (let id in answers) {
+    let v = answers[id];
+    total += v;
+    if (v >= 4) activeModes.push(`№${id} (${v}б)`);
+  }
   return [
-    { schema: "Загальний бал", sum: score },
-    { schema: "Рівень", sum: level.replace(/<[^>]+>/g, '') },
-    { htmlLevel: level }
+    { schema: "Загальний бал режимів", sum: total, htmlLevel: activeModes.length > 0 ? "Є виражені режими" : "Стабільний стан" },
+    { schema: "Активні режими (від 4 балів)", sum: activeModes.length, htmlLevel: activeModes.join(", ") }
   ];
 }
 
-function calculateAAQ(){
+function calculateGenericScore(thresholds, isAAQ = false){
   let score = 0;
   for (let qid in answers) score += answers[qid];
-  let level = score > 24 ? "<span style='color:var(--accent-glow); font-weight:700;'>Висока негнучкість (уникнення)</span>" : "Нормальна психологічна гнучкість";
+  let levelStr = thresholds.find(t => score >= t.min && score <= t.max).text;
+  if(isAAQ) levelStr = score > 24 ? "<span style='color:var(--accent-glow); font-weight:700;'>Висока негнучкість (уникнення)</span>" : "Нормальна психологічна гнучкість";
   return [
-    { schema: "Загальний бал", sum: score },
-    { schema: "Рівень", sum: level.replace(/<[^>]+>/g, '') },
-    { htmlLevel: level }
+    { schema: "Загальний бал", sum: score, htmlLevel: levelStr }
   ];
-}
-
-function getYSQInterpretation(score) {
-  if (score >= 25) return "<span style='color:var(--accent-glow); font-weight:700;'>Високий</span>";
-  if (score >= 20) return "Середній";
-  if (score >= 10) return "Легкий";
-  return "—";
 }
 
 function showResults(){
@@ -814,25 +969,34 @@ function showResults(){
   if (activeTestId === 'ysq_s3') {
     const results = calculateYSQ();
     results.forEach(r => {
-      if(r.sum > 0) tbody.innerHTML += `<tr><td>${r.schema}</td><td>${r.sum}</td><td>${getYSQInterpretation(r.sum)}</td></tr>`;
+      let lvl = r.sum >= 25 ? "<span style='color:var(--accent-glow); font-weight:700;'>Високий</span>" : (r.sum >= 20 ? "Середній" : (r.sum >= 10 ? "Легкий" : "—"));
+      if(r.sum > 0) tbody.innerHTML += `<tr><td>${r.schema}</td><td>${r.sum}</td><td>${lvl}</td></tr>`;
     });
-    const unique = Array.from(new Set(results.map(r=>r.schema)));
-    descBlock.innerHTML = '<b>Короткий довідник шкал вашого профілю:</b><br><br>' + unique.map(n => `<b>${n}:</b> ${SCHEMA_DESCRIPTIONS[n]||''}`).join('<br>');
+    descBlock.innerHTML = 'Результат згенеровано на основі математичного циклу шкал Янга.';
+    finalPayloadData = results;
+  } else if (activeTestId === 'pcl_5') {
+    const results = calculatePCL5();
+    results.forEach(r => tbody.innerHTML += `<tr><td>${r.schema}</td><td>${r.sum}</td><td>${r.htmlLevel}</td></tr>`);
+    descBlock.innerHTML = 'Цей результат не є клінічним діагнозом ПТСР, він відображає лише поточну інтенсивність симптомів.';
+    finalPayloadData = results;
+  } else if (activeTestId === 'smq') {
+    const results = calculateSMQ();
+    results.forEach(r => tbody.innerHTML += `<tr><td>${r.schema}</td><td>${r.sum}</td><td>${r.htmlLevel}</td></tr>`);
+    descBlock.innerHTML = 'Показує поточні активні копінги та стани.';
     finalPayloadData = results;
   } else {
     let results = [];
-    if (activeTestId === 'bdi') results = calculateBDI();
-    if (activeTestId === 'gad_7') results = calculateGAD();
-    if (activeTestId === 'aaq_2') results = calculateAAQ();
+    if (activeTestId === 'bdi') results = calculateGenericScore([{min:0,max:13,text:"Мінімальна депресія"},{min:14,max:19,text:"Легка депресія"},{min:20,max:28,text:"Помірна депресія"},{min:29,max:999,text:"<span style='color:var(--accent-glow); font-weight:700;'>Тяжка депресія</span>"}]);
+    if (activeTestId === 'gad_7') results = calculateGenericScore([{min:0,max:4,text:"Мінімальна тривога"},{min:5,max:9,text:"Легка тривога"},{min:10,max:14,text:"Помірна тривога"},{min:15,max:999,text:"<span style='color:var(--accent-glow); font-weight:700;'>Тяжка тривога</span>"}]);
+    if (activeTestId === 'aaq_2') results = calculateGenericScore([{min:0,max:999,text:""}], true);
     
-    tbody.innerHTML = `<tr><td>Загальний бал</td><td>${results[0].sum}</td><td>${results[2].htmlLevel}</td></tr>`;
-    descBlock.innerHTML = 'Цей результат не є клінічним діагнозом і призначений виключно для ознайомлення в рамках терапевтичної роботи.';
-    finalPayloadData = [ { schema: "Загальний бал", sum: results[0].sum }, { schema: "Рівень", sum: results[1].sum } ];
+    tbody.innerHTML = `<tr><td>Загальний бал</td><td>${results[0].sum}</td><td>${results[0].htmlLevel}</td></tr>`;
+    descBlock.innerHTML = 'Результати призначені виключно для ознайомлення в рамках терапевтичної роботи.';
+    finalPayloadData = results;
   }
   
-  resultBox.style.display = 'block';
-  progressInner.style.width = '100%';
-  
+  document.getElementById('resultBox').style.display = 'block';
+  document.getElementById('progressInner').style.width = '100%';
   saveResultsToGoogleSheet(finalPayloadData);
 }
 
@@ -850,7 +1014,7 @@ function finish() {
     renderQuestion(currentIndex);
   } else {
     showResults();
-    resultBox.scrollIntoView({behavior:'smooth'});
+    document.getElementById('resultBox').scrollIntoView({behavior:'smooth'});
   }
 }
 
@@ -861,17 +1025,13 @@ function resetTest(force = false) {
     resetConfirmation = true;
     btn.innerText = "Точно видалити?";
     btn.style.color = "#ff6b6b";
-    setTimeout(() => {
-      resetConfirmation = false;
-      btn.innerText = "Скинути";
-      btn.style.color = "";
-    }, 3000);
+    setTimeout(() => { resetConfirmation = false; btn.innerText = "Скинути"; btn.style.color = ""; }, 3000);
     return;
   }
   answers = {}; currentIndex = 0;
   if(document.getElementById('clientName')) document.getElementById('clientName').value = '';
-  resultBox.style.display = 'none';
-  progressInner.style.width = '0%';
+  document.getElementById('resultBox').style.display = 'none';
+  document.getElementById('progressInner').style.width = '0%';
   document.getElementById('btnFinish').innerText = "Завершити";
   document.getElementById('btnFinish').disabled = false;
   document.getElementById('btnFinish').style = "";
@@ -885,29 +1045,11 @@ function saveResultsToGoogleSheet(resultsData) {
   const webAppUrl = 'https://script.google.com/macros/s/AKfycby04NA-KGSgavNqMXWEMzYDv9B4Xb9pxiocEGJ4IcwKlYxGXPtJss-woKH8kSFEM5js/exec';
   const clientName = document.getElementById('clientName').value.trim();
   
-  let orderedResults = [];
-  if (activeTestId === 'ysq_s3') {
-    const fixedSchemaOrder = [
-      "Емоційна депривація (ED)","Покинутість / Нестабільність (AB)","Недовіра / Очікування зловживань (MA)",
-      "Соціальна ізоляція / Відчуженість (SI)","Дефективність / Сором (DS)","Неуспішність (FA)",
-      "Залежність / Некомпетентність (DI)","Вразливість до шкоди та хвороб (VH)","Злиття / Нерозвинена ідентичність (EM)",
-      "Підкорення (SB)","Сапопожертва (SS)","Пошук схвалення (AS)",
-      "Негативізм / Песимізм (NP)","Емоційне пригнічення (EI)","Жорсткі стандарти / Гіперкритичність (US)",
-      "Привілейованість / Грандіозність (ET)","Недостатній самоконтроль (IS)","Пунітивність (Покарання) (PU)"
-    ];
-    orderedResults = fixedSchemaOrder.map(name => {
-      const r = resultsData.find(x => x.schema === name);
-      return r || { schema: name, sum: 0 };
-    });
-  } else {
-    orderedResults = resultsData;
-  }
-
   const payload = { 
     testId: activeTestId,
     clientName: clientName, 
     timestamp: new Date().toISOString(),
-    results: orderedResults.map(r => ({ schema: r.schema, sum: r.sum })) 
+    results: resultsData.map(r => ({ schema: r.schema, sum: r.sum })) 
   };
 
   const btnFinish = document.getElementById('btnFinish');
@@ -936,10 +1078,10 @@ function saveResultsToGoogleSheet(resultsData) {
     });
 }
 
-btnPrev.addEventListener('click', prevQ);
-btnNext.addEventListener('click', nextQ);
-btnFinish.addEventListener('click', finish);
-btnReset.addEventListener('click', () => resetTest(false));
+document.getElementById('btnPrev').addEventListener('click', prevQ);
+document.getElementById('btnNext').addEventListener('click', nextQ);
+document.getElementById('btnFinish').addEventListener('click', finish);
+document.getElementById('btnReset').addEventListener('click', () => resetTest(false));
 </script>
 </body>
 </html>
