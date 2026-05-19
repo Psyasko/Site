@@ -145,6 +145,7 @@
   .scale-item input { position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer; margin: 0; }
   .scale-item label { width: 100%; aspect-ratio: 1; max-width: 42px; background: var(--glass-bg); border: 1px solid var(--border-soft); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 14px; color: var(--text-muted); transition: all 0.2s ease; cursor: pointer; font-weight: 500; }
   .scale-item input:checked + label { background: var(--hover-bg); border-color: var(--accent-amber); color: var(--accent-glow); font-weight: 700; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+  .scale-item input:focus-visible + label { outline: 2px solid var(--accent-glow); outline-offset: 2px; }
   
   .scale-hint-row { display: flex; justify-content: space-between; margin-top: 12px; }
   .scale-hint { font-size: 11px; color: var(--text-muted); font-weight: 500; transition: color 0.8s ease; }
@@ -398,7 +399,10 @@
           <div id="questionArea"></div>
 
           <div class="input-group">
-            <label for="clientName">Твоє ім'я або псевдонім (для терапевта):</label>
+            <label for="clientName">
+              Твоє ім'я або псевдонім (для терапевта): 
+              <span id="nameError" style="color:var(--accent-amber); display:none; margin-left:8px;">* Обов'язкове поле</span>
+            </label>
             <input type="text" id="clientName" placeholder="Наприклад: Олександр К.">
           </div>
 
@@ -499,7 +503,7 @@
           <div id="feedbackResultContainer" style="display:none; margin-bottom: 24px;">
             <textarea id="feedbackTextarea" class="feedback-result-textarea" readonly></textarea>
             <div class="controls" style="justify-content: center; margin-top: 10px;">
-              <button onclick="copyWizardText()" style="font-size: 11px; padding: 8px 16px;">📋 Скопіювати текст</button>
+              <button onclick="copyWizardText()" id="btnCopyFeedback" style="font-size: 11px; padding: 8px 16px;">📋 Скопіювати текст</button>
             </div>
           </div>
 
@@ -658,6 +662,9 @@ function showSoothingFeedback() {
   } else {
     resContainer.style.display = 'none';
   }
+  
+  const btnCopy = document.getElementById('btnCopyFeedback');
+  if(btnCopy) btnCopy.innerHTML = '📋 Скопіювати текст';
 }
 
 function repeatCurrentSoothing() {
@@ -827,13 +834,21 @@ function renderWizardStep() {
     const inputCount = 5 - currentWizardStepIdx;
     if (inputCount > 0 && inputCount <= 5) {
       btn.disabled = true;
+      if (!Array.isArray(wizardAnswers[currentWizardStepIdx])) {
+          wizardAnswers[currentWizardStepIdx] = [];
+      }
       for (let i = 0; i < inputCount; i++) {
         const inp = document.createElement('input');
         inp.type = 'text';
         inp.placeholder = `Запишіть пункт ${i + 1}`;
-        inp.oninput = validateWizardInputs;
+        inp.value = wizardAnswers[currentWizardStepIdx][i] || '';
+        inp.oninput = (e) => {
+            wizardAnswers[currentWizardStepIdx][i] = e.target.value;
+            validateWizardInputs();
+        };
         inputsContainer.appendChild(inp);
       }
+      validateWizardInputs();
     }
   }
 }
@@ -855,10 +870,16 @@ function nextWizardStep() {
 }
 
 function copyWizardText() {
-  const text = document.getElementById('feedbackTextarea');
-  text.select();
-  document.execCommand('copy');
-  alert('Текст скопійовано у буфер обміну!');
+  const text = document.getElementById('feedbackTextarea').value;
+  const btnCopy = document.getElementById('btnCopyFeedback');
+  
+  navigator.clipboard.writeText(text).then(() => {
+    const originalHTML = btnCopy.innerHTML;
+    btnCopy.innerHTML = '✅ Скопійовано!';
+    setTimeout(() => { btnCopy.innerHTML = originalHTML; }, 2000);
+  }).catch(err => {
+    console.error('Не вдалося скопіювати текст: ', err);
+  });
 }
 
 // --- TEST LOGIC ---
@@ -888,6 +909,12 @@ function closeTest() {
   document.getElementById('active-test-container').style.display = 'none';
   document.getElementById('test-catalog').style.display = 'block';
   window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function updateProgress() {
+  if (!activeQuestions || activeQuestions.length === 0) return;
+  const answeredCount = Object.keys(answers).length;
+  document.getElementById('progressInner').style.width = `${Math.round((answeredCount / activeQuestions.length) * 100)}%`;
 }
 
 function renderQuestion(index){
@@ -939,7 +966,7 @@ function renderQuestion(index){
   }
 
   document.getElementById('qCounter').textContent = `Питання ${index+1} / ${activeQuestions.length}`;
-  document.getElementById('progressInner').style.width = `${Math.round((index / activeQuestions.length) * 100)}%`;
+  updateProgress();
   document.getElementById('btnPrev').disabled = (index === 0);
   
   if (index === activeQuestions.length - 1) {
@@ -953,6 +980,7 @@ function renderQuestion(index){
 
 function handleAnswer(qid, val){
   answers[qid] = val;
+  updateProgress();
   if (currentIndex < activeQuestions.length - 1) {
     setTimeout(() => { currentIndex++; renderQuestion(currentIndex); }, 200);
   }
@@ -966,10 +994,9 @@ function calculateYSQ(){
   const map = {};
   YSQ_SCHEMAS.forEach(s => map[s] = 0);
   activeQuestions.forEach(q => {
-    // Формула для математичного розподілу схем по порядку 1-18
-    const schemaName = YSQ_SCHEMAS[(q.id - 1) % 18];
+    const schemaName = YSQ_SCHEMAS[Math.floor((q.id - 1) / 5)];
     const v = answers[q.id];
-    if(v) map[schemaName] += v;
+    if(v && schemaName) map[schemaName] += v;
   });
   return Object.keys(map).map(k => ({ schema: k, sum: map[k] })).sort((a,b)=>b.sum - a.sum);
 }
@@ -978,10 +1005,11 @@ function calculatePCL5(){
   let total = 0, b = 0, c = 0, d = 0, e = 0;
   for (let id in answers) {
     let v = answers[id];
+    let numId = parseInt(id, 10);
     total += v;
-    if (id <= 5) b += v;
-    else if (id <= 7) c += v;
-    else if (id <= 14) d += v;
+    if (numId <= 5) b += v;
+    else if (numId <= 7) c += v;
+    else if (numId <= 14) d += v;
     else e += v;
   }
   let level = total >= 31 ? "<span style='color:var(--accent-glow); font-weight:700;'>Висока ймовірність ПТСР</span>" : "Нижче клінічного порогу";
@@ -1012,7 +1040,7 @@ function calculateGenericScore(thresholds, isAAQ = false){
   let score = 0;
   for (let qid in answers) score += answers[qid];
   let levelStr = thresholds.find(t => score >= t.min && score <= t.max).text;
-  if(isAAQ) levelStr = score > 24 ? "<span style='color:var(--accent-glow); font-weight:700;'>Висока негнучкість (уникнення)</span>" : "Нормальна психологічна гнучкість";
+  if(isAAQ) levelStr = score > 24 ? "<span style='color:var(--accent-glow); font-weight:700;'>Низька гнучкість / Високе уникнення</span>" : "Нормальна психологічна гнучкість";
   return [
     { schema: "Загальний бал", sum: score, htmlLevel: levelStr }
   ];
@@ -1030,7 +1058,7 @@ function showResults(){
       let lvl = r.sum >= 25 ? "<span style='color:var(--accent-glow); font-weight:700;'>Високий</span>" : (r.sum >= 20 ? "Середній" : (r.sum >= 10 ? "Легкий" : "—"));
       if(r.sum > 0) tbody.innerHTML += `<tr><td>${r.schema}</td><td>${r.sum}</td><td>${lvl}</td></tr>`;
     });
-    descBlock.innerHTML = 'Результат згенеровано на основі математичного циклу шкал Янга.';
+    descBlock.innerHTML = 'Результат згенеровано на основі структурованих шкал Янга.';
     finalPayloadData = results;
   } else if (activeTestId === 'pcl_5') {
     const results = calculatePCL5();
@@ -1060,20 +1088,30 @@ function showResults(){
 
 function finish() {
   const nameInput = document.getElementById('clientName');
+  const nameError = document.getElementById('nameError');
   if (!nameInput || !nameInput.value.trim()) {
-    alert("Будь ласка, введіть Ваше ім'я або псевдонім перед завершенням.");
+    nameError.style.display = 'inline';
+    nameInput.style.borderColor = 'var(--accent-amber)';
     nameInput.focus();
+    nameInput.addEventListener('input', function clearErr() {
+        nameError.style.display = 'none';
+        nameInput.style.borderColor = '';
+        nameInput.removeEventListener('input', clearErr);
+    });
     return;
   }
+
   const missing = activeQuestions.find(q => answers[q.id] === undefined);
   if (missing) {
-    alert(`Питання пропущене. Будь ласка, оберіть відповідь.`);
     currentIndex = activeQuestions.findIndex(q => q.id === missing.id);
     renderQuestion(currentIndex);
-  } else {
-    showResults();
-    document.getElementById('resultBox').scrollIntoView({behavior:'smooth'});
-  }
+    const qNum = document.querySelector('.question-num');
+    if (qNum) qNum.innerHTML += ` <span style="color:var(--accent-amber);">* Оберіть відповідь</span>`;
+    return;
+  } 
+  
+  showResults();
+  document.getElementById('resultBox').scrollIntoView({behavior:'smooth'});
 }
 
 let resetConfirmation = false;
@@ -1087,7 +1125,11 @@ function resetTest(force = false) {
     return;
   }
   answers = {}; currentIndex = 0;
-  if(document.getElementById('clientName')) document.getElementById('clientName').value = '';
+  if(document.getElementById('clientName')) {
+    document.getElementById('clientName').value = '';
+    document.getElementById('clientName').style.borderColor = '';
+    document.getElementById('nameError').style.display = 'none';
+  }
   document.getElementById('resultBox').style.display = 'none';
   document.getElementById('progressInner').style.width = '0%';
   document.getElementById('btnFinish').innerText = "Завершити";
