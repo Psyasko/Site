@@ -4,7 +4,64 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Віталій Психолог — Практика психотерапії</title>
+<!-- Альтернативна структура секції -->
+<section id="home" class="site-section active">
+  <div class="zen-hero">
+    <div class="hero-chip">Твій простір саморефлексії</div>
+    <h1>Глибинна робота<br>з досвідом</h1>
+    <p>Місце, де цифрові інструменти допомагають ставати більш цілісним.</p>
+    
+    <!-- Замість квадратної сітки — «потік» -->
+    <div class="flow-actions">
+      <button class="flow-btn">Консультація</button>
+      <button class="flow-btn">Практики</button>
+      <button class="flow-btn">Аналітика</button>
+    </div>
+  </div>
+</section>
+
 <style>
+  /* Нові стилі для альтернативної версії */
+  .zen-hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 80px 20px;
+  }
+  
+  .hero-chip {
+    padding: 6px 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 20px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .flow-actions {
+    display: flex;
+    gap: 16px;
+    margin-top: 40px;
+  }
+
+  .flow-btn {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 14px 24px;
+    border-radius: 30px;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .flow-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+    border-color: var(--accent-amber);
+  }
+</style>
   @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600&family=Cormorant+Garamond:wght@400;500;600&display=swap');
   
   :root[data-theme="sunset"] {
