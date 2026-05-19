@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="uk">
 <head>
@@ -105,8 +106,20 @@
   .hero-desc { font-size: 15px; color: var(--text-muted); max-width: 540px; line-height: 1.7; font-weight: 500; transition: color 0.8s ease; }
   .section-label { font-size: 10px; color: var(--text-muted); letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 16px; font-weight: 600; transition: color 0.8s ease; }
 
-  .theme-photo-container { width: 100%; height: auto; margin: 32px 0; border-radius: 10px; overflow: hidden; border: 1px solid var(--border-soft); transition: border-color 0.8s ease; max-width: 700px; }
-  .theme-photo { display: none; width: 100%; height: 100%; max-height: 380px; object-fit: cover; }
+  /* Змінений контейнер для фото */
+  .theme-photo-container { 
+    width: 100%; 
+    margin: 32px auto; 
+    max-width: 420px; /* Зробили вужчим для вертикального кадру */
+    -webkit-mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 45%, rgba(0,0,0,0) 100%);
+    mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 45%, rgba(0,0,0,0) 100%);
+  }
+  .theme-photo { 
+    display: none; 
+    width: 100%; 
+    aspect-ratio: 4 / 5; /* Вертикальна пропорція */
+    object-fit: cover; 
+  }
   :root[data-theme="sunset"] .photo-sunset { display: block; }
   :root[data-theme="night"] .photo-night { display: block; }
   :root[data-theme="dawn"] .photo-dawn { display: block; }
@@ -197,9 +210,45 @@
   .messenger-btn:hover { background: var(--hover-bg); border-color: var(--accent-amber); color: var(--accent-glow); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
   .messenger-icon { width: 22px; height: 22px; fill: currentColor; }
 
+  /* Оновлені стилі для дипломів */
   .diploma-section { margin-top: 40px; border-top: 1px solid var(--border-soft); padding-top: 30px; width: 100%; }
   .diploma-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; margin-top: 20px; width: 100%; }
-  .diploma-card { aspect-ratio: 1.414; background: var(--glass-bg); border: 1px dashed var(--border-soft); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 13px; font-weight: 500; text-align: center; padding: 16px; }
+  .diploma-img { 
+    width: 100%; 
+    aspect-ratio: 1.414; /* Пропорція формату A4 */
+    object-fit: cover; 
+    border: 1px solid var(--border-soft); 
+    border-radius: 6px; 
+    cursor: zoom-in; 
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    background: var(--glass-bg);
+    display: block;
+    color: var(--text-muted);
+    font-size: 13px;
+    text-align: center;
+    line-height: 1.5;
+  }
+  .diploma-img:hover { 
+    transform: translateY(-4px); 
+    border-color: var(--accent-glow); 
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15); 
+  }
+
+  /* Стилі для Lightbox (модального вікна дипломів) */
+  .lightbox-overlay { 
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+    background: rgba(0,0,0,0.85); z-index: 1000; 
+    display: none; align-items: center; justify-content: center; 
+    opacity: 0; transition: opacity 0.3s ease; padding: 20px; 
+    backdrop-filter: blur(5px); cursor: zoom-out; 
+  }
+  .lightbox-overlay.active { display: flex; opacity: 1; }
+  .lightbox-img { 
+    max-width: 100%; max-height: 100%; object-fit: contain; 
+    border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+    transform: scale(0.95); transition: transform 0.3s ease; cursor: default; 
+  }
+  .lightbox-overlay.active .lightbox-img { transform: scale(1); }
 
   .breathe-widget { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 0; min-height: 320px; position: relative; }
   .breathe-circle { width: 140px; height: 140px; border-radius: 50%; background: radial-gradient(circle, var(--accent-amber) 0%, transparent 70%); box-shadow: 0 0 40px rgba(0,0,0,0.05); border: 1px solid var(--border-soft); display: flex; align-items: center; justify-content: center; position: relative; transition: transform 4s linear, opacity 4s linear, box-shadow 4s linear, background 0.8s ease, border-color 0.8s ease; opacity: 0.6; }
@@ -295,9 +344,9 @@
         <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 22px; color: var(--accent-glow); font-weight: 500; margin: 0 0 8px 0;">Освіта та сертифікація</h3>
         <div class="hero-desc" style="margin-bottom: 20px;">Документи, що підтверджують кваліфікацію та проходження підготовки у доказових модальностях.</div>
         <div class="diploma-grid">
-          <div class="diploma-card">Місце під диплом про вищу психологічну освіту</div>
-          <div class="diploma-card">Місце під сертифікат базового курсу КПТ</div>
-          <div class="diploma-card">Місце під сертифікат Схема-терапії / ACT</div>
+          <img src="placeholder1.jpg" alt="Місце під диплом про вищу психологічну освіту" class="diploma-img" onclick="openLightbox(this.src)">
+          <img src="placeholder2.jpg" alt="Місце під сертифікат базового курсу КПТ" class="diploma-img" onclick="openLightbox(this.src)">
+          <img src="placeholder3.jpg" alt="Місце під сертифікат Схема-терапії / ACT" class="diploma-img" onclick="openLightbox(this.src)">
         </div>
       </div>
     </div>
@@ -318,39 +367,6 @@
           </a>
           <a href="viber://chat?number=" target="_blank" class="messenger-btn">
             <svg class="messenger-icon" viewBox="0 0 24 24"><path d="M21.572 10.364c-.11-.599-.272-1.186-.482-1.751C19.743 4.887 16.143 2.12 12.186 2.003h-.372c-3.957.117-7.557 2.884-8.904 6.61-.21.565-.372 1.152-.482 1.751C2.33 11.237 2 12.186 2 13.17c0 4.248 3.444 7.692 7.692 7.692h.016c.304 0 .611-.027.915-.08a7.653 7.653 0 004.755 1.218 7.68 7.68 0 005.132-1.957 7.734 7.734 0 002.39-5.599c.005-.138.005-.276.005-.413V13.17c0-.984-.33-1.933-.428-2.806zm-9.386 7.618H9.692a5.706 5.706 0 01-5.692-5.692c0-.77.158-1.517.452-2.203.204-.476.452-.924.733-1.332C6.467 6.368 9.07 4.545 12 4.545h.186c2.93 0 5.533 1.823 6.815 4.21.281.408.529.856.733 1.332.294.686.452 1.433.452 2.203v.861c0 1.33-.428 2.612-1.206 3.655a5.679 5.679 0 01-4.486 2.037l-2.308-1.153a.998.998 0 00-.894 0l-1.312.656.406-.326a2.983 2.983 0 001.077-2.28v-.091a1 1 0 10-2 0v.09a.99.99 0 01-.36.757l-.366.293zM12 7.692c-2.484 0-4.5 2.016-4.5 4.5S9.516 16.692 12 16.692s4.5-2.016 4.5-4.5-2.016-4.5-4.5-4.5zm0 7A2.502 2.502 0 019.5 12 2.502 2.502 0 0112 9.5a2.502 2.502 0 012.5 2.5A2.502 2.502 0 0112 14.692z"/></svg>
-            Viber
-          </a>
-          <a href="https://wa.me/" target="_blank" class="messenger-btn">
-            <svg class="messenger-icon" viewBox="0 0 24 24"><path d="M20.665 3.33a11.996 11.996 0 00-8.665-3.33A12 12 0 00.322 17.653L0 24l6.495-1.704A11.965 11.965 0 0012 24c6.627 0 12-5.373 12-12 0-3.21-1.25-6.22-3.335-8.67zM12 21.996a9.96 9.96 0 01-5.086-1.385l-.364-.216-3.778.991.998-3.682-.236-.375A9.962 9.962 0 012.004 12C2.004 6.486 6.486 2.004 12 2.004c5.514 0 10 4.486 10 9.996 0 5.51-4.486 10-10 10zm5.495-7.512c-.301-.151-1.784-.881-2.062-.981-.278-.101-.482-.151-.683.151-.201.302-.781.981-.957 1.182-.176.201-.352.226-.653.076-1.391-.692-2.457-1.32-3.398-3.076-.176-.302.046-.423.238-.686.151-.202.302-.352.452-.553.151-.202.201-.352.301-.553.101-.201.051-.377-.025-.528-.076-.151-.683-1.648-.936-2.253-.247-.591-.497-.512-.683-.522-.176-.01-.377-.01-.578-.01s-.528.076-.804.377c-.276.302-1.055 1.031-1.055 2.515 0 1.484 1.08 2.918 1.231 3.119.151.201 2.126 3.245 5.148 4.549 1.956.845 2.651.921 3.551.782.748-.116 2.235-.91 2.536-1.787.302-.877.302-1.625.201-1.787-.1-.161-.352-.251-.653-.402z"/></svg>
-            WhatsApp
-          </a>
-          <a href="https://signal.me/" target="_blank" class="messenger-btn">
-             <svg class="messenger-icon" viewBox="0 0 24 24"><path d="M12 0a12 12 0 1012 12A12.013 12.013 0 0012 0zm5.112 16.59c-.456.456-1.127.721-1.78.736h-.066c-.663 0-1.32-.266-1.782-.727l-1.284-1.284a2.535 2.535 0 01-.741-1.794V9.664a2.52 2.52 0 012.52-2.52h3.857a2.52 2.52 0 012.52 2.52v3.858a2.538 2.538 0 01-.74 1.792zM12.923 9.664a1.05 1.05 0 00-1.05 1.05v3.858a1.05 1.05 0 00.308.742l1.284 1.284c.198.198.461.307.741.307.275 0 .533-.105.73-.301a1.054 1.054 0 00.308-.744V9.664a1.05 1.05 0 00-1.05-1.05h-1.27z"/></svg>
-            Signal
-          </a>
-        </div>
-
-        <div class="price-tag">Вартість сесії: 900 грн / 60-75 хвилин</div>
-        <div class="contract-text">
-          <h3>Короткий терапевтичний контракт</h3>
-          <p>Для формування безпечного та прогнозованого середовища нашої взаємодії діють наступні правила:</p>
-          <h3>1. Конфіденційність</h3>
-          <p>Уся інформація, отримана в процесі сесій, є суворо конфіденційною. Вона не розголошується третім особам, за винятком випадків, передбачених чинним законодавством або професійним етичним кодексом.</p>
-          <h3>2. Скасування та перенесення зустрічей</h3>
-          <p>Скасувати або перенести заплановану сесію можна не пізніше ніж за 4 години до її початку. Якщо повідомлення про скасування надходить пізніше цього терміну, сесія оплачується у повному обсязі.</p>
-          <h3>3. Комунікація</h3>
-          <p>Месенджери використовуються суто для розв'язання організаційних питань. Психотерапевтична робота між сесіями в текстовому форматі не ведеться.</p>
-          <h3>4. Ціна</h3>
-          <p>Право рішення щодо зміни ціни на надані послуги залишається за психологом із попередженням мінімум за одну сесію до зміни.</p>
-          
-          <h3 style="margin-top: 32px; border-top: 1px solid var(--border-soft); padding-top: 24px;">Зв'язок для запису</h3>
-          <div class="messenger-grid">
-            <a href="https://t.me/" target="_blank" class="messenger-btn">
-              <svg class="messenger-icon" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.94z"/></svg>
-              Telegram
-            </a>
-            <a href="viber://chat?number=" target="_blank" class="messenger-btn">
-              <svg class="messenger-icon" viewBox="0 0 24 24"><path d="M21.572 10.364c-.11-.599-.272-1.186-.482-1.751C19.743 4.887 16.143 2.12 12.186 2.003h-.372c-3.957.117-7.557 2.884-8.904 6.61-.21.565-.372 1.152-.482 1.751C2.33 11.237 2 12.186 2 13.17c0 4.248 3.444 7.692 7.692 7.692h.016c.304 0 .611-.027.915-.08a7.653 7.653 0 004.755 1.218 7.68 7.68 0 005.132-1.957 7.734 7.734 0 002.39-5.599c.005-.138.005-.276.005-.413V13.17c0-.984-.33-1.933-.428-2.806zm-9.386 7.618H9.692a5.706 5.706 0 01-5.692-5.692c0-.77.158-1.517.452-2.203.204-.476.452-.924.733-1.332C6.467 6.368 9.07 4.545 12 4.545h.186c2.93 0 5.533 1.823 6.815 4.21.281.408.529.856.733 1.332.294.686.452 1.433.452 2.203v.861c0 1.33-.428 2.612-1.206 3.655a5.679 5.679 0 01-4.486 2.037l-2.308-1.153a.998.998 0 00-.894 0l-1.312.656.406-.326a2.983 2.983 0 001.077-2.28v-.091a1 1 0 10-2 0v.09a.99.99 0 01-.36.757l-.366.293zM12 7.692c-2.484 0-4.5 2.016-4.5 4.5S9.516 16.692 12 16.692s4.5-2.016 4.5-4.5-2.016-4.5-4.5-4.5zm0 7A2.502 2.502 0 019.5 12 2.502 2.502 0 0112 9.5a2.502 2.502 0 012.5 2.5A2.502 2.502 0 0112 14.692z"/></svg>
               Viber
             </a>
             <a href="https://wa.me/" target="_blank" class="messenger-btn">
@@ -517,6 +533,10 @@
     </div>
   </section>
 
+</div>
+
+<div id="lightbox" class="lightbox-overlay" onclick="closeLightbox()">
+  <img id="lightboxImg" class="lightbox-img" src="" alt="Zoomed document" onclick="event.stopPropagation()">
 </div>
 
 <script>
@@ -1178,6 +1198,21 @@ function saveResultsToGoogleSheet(resultsData) {
     });
 }
 
+// --- LIGHTBOX LOGIC ---
+function openLightbox(src) {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightboxImg');
+  lbImg.src = src;
+  lb.style.display = 'flex';
+  setTimeout(() => lb.classList.add('active'), 10);
+}
+
+function closeLightbox() {
+  const lb = document.getElementById('lightbox');
+  lb.classList.remove('active');
+  setTimeout(() => lb.style.display = 'none', 300);
+}
+
 document.getElementById('btnPrev').addEventListener('click', prevQ);
 document.getElementById('btnNext').addEventListener('click', nextQ);
 document.getElementById('btnFinish').addEventListener('click', finish);
@@ -1185,3 +1220,5 @@ document.getElementById('btnReset').addEventListener('click', () => resetTest(fa
 </script>
 </body>
 </html>
+
+```
