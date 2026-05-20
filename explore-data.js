@@ -1,6 +1,6 @@
 const REFLECT_DATABASE = {
   identity_and_needs: {
-    categoryTitle: "Дослідження стану та потреб",
+    categoryTitle: "Дослідження стану та потерб",
     items: [
       {
         id: "cocoon_civilian",
@@ -8,17 +8,17 @@ const REFLECT_DATABASE = {
         sub: "Методика шкалованої самооцінки психофізіологічного стану О.М. Кокуна",
         steps: [
           {
-            title: "Тицяй слайдери",
+            title: "Оцінка стану",
             text: "Оціни, наскільки кожен із цих факторів виражений у твоєму житті прямо зараз (від 0 до 10):",
             inputType: "sliders",
             sliders: [
-              { id: "c_safety", label: "Самопочуття", min: 0, max: 10 },
-              { id: "c_routine", label: "Активність", min: 0, max: 10 },
-              { id: "c_social", label: "Настрій", min: 0, max: 10 },
-              { id: "c_cognitive", label: "Працездатність", min: 0, max: 10 },
-              { id: "c_cognitive", label: "Зацікавленість у виконанні своєї діяльності", min: 0, max: 10 },
-              { id: "c_cognitive", label: "Бажання виконувати свою діяльность", min: 0, max: 10 },
-              { id: "c_resource", label: "Впевненість у своїх силах", min: 0, max: 10 }
+              { id: "c_wellbeing", label: "Самопочуття", min: 0, max: 10 },
+              { id: "c_activity", label: "Активність", min: 0, max: 10 },
+              { id: "c_mood", label: "Настрій", min: 0, max: 10 },
+              { id: "c_work_capacity", label: "Працездатність", min: 0, max: 10 },
+              { id: "c_interest", label: "Зацікавленість у виконанні своєї діяльності", min: 0, max: 10 },
+              { id: "c_desire", label: "Бажання виконувати свою діяльність", min: 0, max: 10 },
+              { id: "c_confidence", label: "Впевненість у своїх силах", min: 0, max: 10 }
             ]
           }
         ]
@@ -32,10 +32,10 @@ const REFLECT_DATABASE = {
             title: "Три стовпи психологічного здоров'я",
             text: "Пересунь повзунки відповідно до того, як ти почуваєшся останнім часом:",
             inputType: "sliders",
-            visualType: "triangle", // Маркер для рендерера, що після кроку треба намалювати трикутник
+            visualType: "triangle",
             sliders: [
               { id: "sdt_autonomy", label: "Автономія (Я сам є автором свого життя, мої вибори вільні та відповідають моїм цінностям)", min: 0, max: 10 },
-              { id: "sdt_competence", label: "Компетентність (Я відчуваю ефект від своїх дій, справляюся із задачами, бачу свій майстерність)", min: 0, max: 10 },
+              { id: "sdt_competence", label: "Компетентність (Я відчуваю ефект від своїх дій, справляюся із задачами, бачу свою майстерність)", min: 0, max: 10 },
               { id: "sdt_relatedness", label: "Причетність / Зв'язок (Я відчуваю взаємний зв'язок з іншими, я потрібен і мене приймають)", min: 0, max: 10 }
             ]
           }
