@@ -66,7 +66,7 @@
     font-family: 'Montserrat', sans-serif;
     color: var(--text-main);
     overflow-x: hidden;
-    transition: background-color 0.8s cubic-bezier(0.25, 1, 0.5, 1), color 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+    transition: background-color 1.1s cubic-bezier(0.25, 1, 0.5, 1), color 1.1s cubic-bezier(0.25, 1, 0.5, 1);
   }
 
   .warm-noise { 
@@ -81,16 +81,16 @@
     pointer-events: none; z-index: 1; 
   }
 
-  .hero-glow-outer { position: fixed; bottom: -60px; left: 50%; transform: translateX(-50%); width: 520px; height: 160px; background: radial-gradient(ellipse, var(--glow-outer) 0%, transparent 75%); pointer-events: none; z-index: 2; transition: background 0.8s ease; }
-  .hero-glow-inner { position: fixed; bottom: -20px; left: 50%; transform: translateX(-50%); width: 260px; height: 80px; background: radial-gradient(ellipse, var(--glow-inner) 0%, transparent 70%); pointer-events: none; z-index: 2; transition: background 0.8s ease; }
+  .hero-glow-outer { position: fixed; bottom: -60px; left: 50%; transform: translateX(-50%); width: 520px; height: 160px; background: radial-gradient(ellipse, var(--glow-outer) 0%, transparent 75%); pointer-events: none; z-index: 2; transition: background 1.1s ease; }
+  .hero-glow-inner { position: fixed; bottom: -20px; left: 50%; transform: translateX(-50%); width: 260px; height: 80px; background: radial-gradient(ellipse, var(--glow-inner) 0%, transparent 70%); pointer-events: none; z-index: 2; transition: background 1.1s ease; }
 
-  .nav { position: relative; z-index: 10; display: flex; justify-content: space-between; align-items: center; padding: 18px 28px; border-bottom: 0.5px solid var(--border-soft); background: var(--glass-bg); transition: border-color 0.8s ease, background 0.8s ease; }
-  .nav-logo { font-family: 'Merriweather', serif; font-size: 19px; color: var(--accent-amber); letter-spacing: 0.08em; font-weight: 700; transition: color 0.8s ease; }
+  .nav { position: relative; z-index: 10; display: flex; justify-content: space-between; align-items: center; padding: 18px 28px; border-bottom: 0.5px solid var(--border-soft); background: var(--glass-bg); transition: border-color 1.1s ease, background 1.1s ease; }
+  .nav-logo { font-family: 'Merriweather', serif; font-size: 19px; color: var(--accent-amber); letter-spacing: 0.08em; font-weight: 700; transition: color 1.1s ease; }
   .nav-links { display: flex; gap: 24px; flex-wrap: wrap; align-items: center; }
   .nav-links a { font-size: 11px; color: var(--text-muted); text-decoration: none; letter-spacing: 0.06em; font-weight: 600; text-transform: uppercase; cursor: pointer; transition: color 0.2s ease; }
   .nav-links a:hover, .nav-links a.active { color: var(--accent-glow); }
 
-  .theme-switcher { display: flex; gap: 8px; background: var(--glass-bg); padding: 4px; border-radius: 20px; border: 0.5px solid var(--border-soft); transition: border-color 0.8s ease, background 0.8s ease; }
+  .theme-switcher { display: flex; gap: 8px; background: var(--glass-bg); padding: 4px; border-radius: 20px; border: 0.5px solid var(--border-soft); transition: border-color 1.1s ease, background 1.1s ease; }
   .theme-btn { background: none; border: none; padding: 6px 10px; cursor: pointer; font-size: 13px; border-radius: 14px; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; opacity: 0.4; }
   .theme-btn:hover { opacity: 0.8; background: var(--hover-bg); }
   .theme-btn.active { opacity: 1; background: var(--card-bg); border: 0.5px solid var(--border-soft); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
@@ -103,12 +103,12 @@
   }
   
   .site-section { display: none; }
-  .site-section.active { display: block; animation: fadeIn 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+  .site-section.active { display: block; animation: fadeIn 1.1s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
 
   .home-centered { text-align: center; display: flex; flex-direction: column; align-items: center; }
-  .hero-title { font-family: 'Merriweather', serif; font-size: 42px; color: var(--accent-glow); font-weight: 400; line-height: 1.2; margin: 0 0 12px; transition: color 0.8s ease; }
-  .hero-desc { font-size: 15px; color: var(--text-muted); max-width: 540px; line-height: 1.7; font-weight: 500; transition: color 0.8s ease; margin-bottom: 16px; }
-  .section-label { font-size: 10px; color: var(--text-muted); letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 16px; font-weight: 600; transition: color 0.8s ease; }
+  .hero-title { font-family: 'Merriweather', serif; font-size: 42px; color: var(--accent-glow); font-weight: 400; line-height: 1.2; margin: 0 0 12px; transition: color 1.1s ease; }
+  .hero-desc { font-size: 15px; color: var(--text-muted); max-width: 540px; line-height: 1.7; font-weight: 500; transition: color 1.1s ease; margin-bottom: 16px; }
+  .section-label { font-size: 10px; color: var(--text-muted); letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 16px; font-weight: 600; transition: color 1.1s ease; }
 
   .theme-photo-container { 
     width: 100%; 
@@ -134,13 +134,13 @@
   :root[data-theme="night"] .action-card-btn:hover { background: var(--btn-hover-glow); color: var(--btn-hover-text); border-color: var(--accent-glow); box-shadow: 0 0 26px rgba(122, 156, 224, 0.45), inset 0 0 10px rgba(255, 255, 255, 0.2); transform: translateY(-3px); }
   :root[data-theme="dawn"] .action-card-btn:hover { background: var(--btn-hover-glow); color: var(--btn-hover-text); border-color: #E63946; box-shadow: 0 4px 20px rgba(230, 57, 70, 0.3), 0 2px 30px rgba(241, 165, 69, 0.2); transform: translateY(-3px); }
 
-  .card { background: var(--card-bg); border: 1px solid var(--border-soft); border-radius: 10px; overflow: hidden; margin-bottom: 16px; position: relative; padding: 28px; transition: background 0.8s ease, border-color 0.8s ease; }
-  .card-inner-glow { position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--accent-amber), transparent); opacity: 0.5; transition: background 0.8s ease; }
+  .card { background: var(--card-bg); border: 1px solid var(--border-soft); border-radius: 10px; overflow: hidden; margin-bottom: 16px; position: relative; padding: 28px; transition: background 1.1s ease, border-color 1.1s ease; }
+  .card-inner-glow { position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--accent-amber), transparent); opacity: 0.5; transition: background 1.1s ease; }
   
-  .card-header-test { display: flex; align-items: center; gap: 14px; padding-bottom: 16px; border-bottom: 1px solid var(--border-soft); margin-bottom: 20px; transition: border-color 0.8s ease; }
-  .card-badge { width: 36px; height: 36px; background: var(--glass-bg); border: 1px solid var(--border-soft); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: var(--accent-amber); flex-shrink: 0; transition: color 0.8s ease, border-color 0.8s ease, background 0.8s ease; }
-  .card-title { font-size: 15px; color: var(--accent-glow); font-weight: 600; transition: color 0.8s ease; }
-  .card-sub { font-size: 13px; color: var(--text-muted); font-weight: 500; margin-top: 4px; line-height: 1.5; transition: color 0.8s ease; }
+  .card-header-test { display: flex; align-items: center; gap: 14px; padding-bottom: 16px; border-bottom: 1px solid var(--border-soft); margin-bottom: 20px; transition: border-color 1.1s ease; }
+  .card-badge { width: 36px; height: 36px; background: var(--glass-bg); border: 1px solid var(--border-soft); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: var(--accent-amber); flex-shrink: 0; transition: color 1.1s ease, border-color 1.1s ease, background 1.1s ease; }
+  .card-title { font-size: 15px; color: var(--accent-glow); font-weight: 600; transition: color 1.1s ease; }
+  .card-sub { font-size: 13px; color: var(--text-muted); font-weight: 500; margin-top: 4px; line-height: 1.5; transition: color 1.1s ease; }
 
   .catalog-grid { display: grid; gap: 16px; margin-top: 24px; }
   .clickable-card { cursor: pointer; }
@@ -153,8 +153,8 @@
 
   .test-instruction { font-size: 14px; color: var(--text-main); line-height: 1.6; margin-bottom: 24px; padding: 16px; background: var(--glass-bg); border-radius: 8px; border-left: 3px solid var(--accent-amber); font-weight: 500; }
   
-  .question-num { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; font-weight: 600; transition: color 0.8s ease; }
-  .question-text { font-size: 16px; color: var(--text-main); line-height: 1.6; margin-bottom: 24px; min-height: 60px; display: flex; align-items: center; font-weight: 500; transition: color 0.8s ease; }
+  .question-num { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; font-weight: 600; transition: color 1.1s ease; }
+  .question-text { font-size: 16px; color: var(--text-main); line-height: 1.6; margin-bottom: 24px; min-height: 60px; display: flex; align-items: center; font-weight: 500; transition: color 1.1s ease; }
   
   .scale-row { display: flex; gap: 8px; align-items: center; justify-content: space-between; }
   .scale-item { flex: 1; display: flex; flex-direction: column; align-items: center; position: relative; }
@@ -164,7 +164,7 @@
   .scale-item input:focus-visible + label { outline: 2px solid var(--accent-glow); outline-offset: 2px; }
   
   .scale-hint-row { display: flex; justify-content: space-between; margin-top: 12px; }
-  .scale-hint { font-size: 11px; color: var(--text-muted); font-weight: 500; transition: color 0.8s ease; }
+  .scale-hint { font-size: 11px; color: var(--text-muted); font-weight: 500; transition: color 1.1s ease; }
 
   .v-scale { display: flex; flex-direction: column; gap: 10px; width: 100%; }
   .v-scale label { display: flex; align-items: center; padding: 14px 18px; border-radius: 8px; background: var(--glass-bg); border: 1px solid var(--border-soft); cursor: pointer; user-select: none; font-size: 15px; line-height: 1.4; transition: all 0.2s ease; text-align: left; font-weight: 500; color: var(--text-main); }
@@ -174,11 +174,11 @@
 
   .input-group { margin: 24px 0; }
   .input-group label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
-  .input-group input, textarea { width: 100%; background: var(--glass-bg); border: 1px solid var(--border-soft); padding: 12px 14px; border-radius: 6px; color: var(--text-main); font-size: 14px; outline: none; transition: border-color 0.2s, color 0.8s ease, background 0.8s ease; font-family: inherit; resize: vertical; }
+  .input-group input, textarea { width: 100%; background: var(--glass-bg); border: 1px solid var(--border-soft); padding: 12px 14px; border-radius: 6px; color: var(--text-main); font-size: 14px; outline: none; transition: border-color 0.2s, color 1.1s ease, background 1.1s ease; font-family: inherit; resize: vertical; }
   .input-group input:focus, textarea:focus { border-color: var(--accent-amber); }
 
   .wizard-inputs { display: flex; flex-direction: column; gap: 10px; margin: 24px 0; width: 100%; max-width: 500px; margin-left: auto; margin-right: auto; }
-  .wizard-inputs input, .wizard-inputs textarea { background: var(--glass-bg); border: 1px solid var(--border-soft); padding: 14px; border-radius: 8px; color: var(--text-main); font-size: 15px; outline: none; transition: border-color 0.2s, background 0.8s ease; font-family: inherit; width: 100%; text-align: center; }
+  .wizard-inputs input, .wizard-inputs textarea { background: var(--glass-bg); border: 1px solid var(--border-soft); padding: 14px; border-radius: 8px; color: var(--text-main); font-size: 15px; outline: none; transition: border-color 0.2s, background 1.1s ease; font-family: inherit; width: 100%; text-align: center; }
   .wizard-inputs input:focus, .wizard-inputs textarea:focus { border-color: var(--accent-amber); }
   .wizard-inputs textarea { text-align: left; min-height: 80px; resize: none; }
 
@@ -197,16 +197,16 @@
 
   .resultBox { margin-top: 28px; display: none; border-top: 1px solid var(--border-soft); padding-top: 24px; }
   table { width: 100%; border-collapse: collapse; margin-top: 12px; }
-  th, td { padding: 12px 8px; text-align: left; border-bottom: 1px solid var(--border-soft); font-size: 14px; transition: border-color 0.8s ease; }
+  th, td { padding: 12px 8px; text-align: left; border-bottom: 1px solid var(--border-soft); font-size: 14px; transition: border-color 1.1s ease; }
   th { font-family: 'Merriweather', serif; font-size: 18px; color: var(--text-muted); font-weight: 700; }
-  .schema-descriptions { margin-top: 24px; padding: 16px; background: var(--glass-bg); border-radius: 6px; font-size: 14px; line-height: 1.6; color: var(--text-muted); border: 1px solid var(--border-soft); font-weight: 500; transition: background 0.8s ease; }
+  .schema-descriptions { margin-top: 24px; padding: 16px; background: var(--glass-bg); border-radius: 6px; font-size: 14px; line-height: 1.6; color: var(--text-muted); border: 1px solid var(--border-soft); font-weight: 500; transition: background 1.1s ease; }
 
-  .contract-text { font-size: 14px; line-height: 1.7; color: var(--text-muted); text-align: left; transition: color 0.8s ease; }
-  .contract-text h3 { font-family: 'Merriweather', serif; font-size: 20px; color: var(--accent-glow); margin: 24px 0 10px 0; font-weight: 700; transition: color 0.8s ease; }
+  .contract-text { font-size: 14px; line-height: 1.7; color: var(--text-muted); text-align: left; transition: color 1.1s ease; }
+  .contract-text h3 { font-family: 'Merriweather', serif; font-size: 20px; color: var(--accent-glow); margin: 24px 0 10px 0; font-weight: 700; transition: color 1.1s ease; }
   .contract-text ul { padding-left: 18px; margin: 8px 0; }
   .contract-text li { margin-bottom: 6px; }
 
-  .price-tag { font-family: 'Merriweather', serif; font-size: 24px; color: var(--accent-glow); margin-bottom: 20px; transition: color 0.8s ease; }
+  .price-tag { font-family: 'Merriweather', serif; font-size: 24px; color: var(--accent-glow); margin-bottom: 20px; transition: color 1.1s ease; }
 
   .messenger-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-top: 24px; }
   .messenger-btn { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 12px; background: var(--glass-bg); border: 1px solid var(--border-soft); border-radius: 8px; color: var(--text-main); text-decoration: none; font-size: 14px; font-weight: 600; transition: all 0.3s ease; }
@@ -252,8 +252,8 @@
   .lightbox-overlay.active .lightbox-img { transform: scale(1); }
 
   .breathe-widget { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 0; min-height: 320px; position: relative; }
-  .breathe-circle { width: 140px; height: 140px; border-radius: 50%; background: radial-gradient(circle, var(--accent-amber) 0%, transparent 70%); box-shadow: 0 0 40px rgba(0,0,0,0.05); border: 1px solid var(--border-soft); display: flex; align-items: center; justify-content: center; position: relative; transition: transform 4s linear, opacity 4s linear, box-shadow 4s linear, background 0.8s ease, border-color 0.8s ease; opacity: 0.6; }
-  .breathe-text { font-family: 'Merriweather', serif; font-size: 22px; color: var(--accent-glow); font-weight: 700; position: absolute; text-align: center; z-index: 10; transition: opacity 0.5s ease, color 0.8s ease; }
+  .breathe-circle { width: 140px; height: 140px; border-radius: 50%; background: radial-gradient(circle, var(--accent-amber) 0%, transparent 70%); box-shadow: 0 0 40px rgba(0,0,0,0.05); border: 1px solid var(--border-soft); display: flex; align-items: center; justify-content: center; position: relative; transition: transform 4s linear, opacity 4s linear, box-shadow 4s linear, background 1.1s ease, border-color 1.1s ease; opacity: 0.6; }
+  .breathe-text { font-family: 'Merriweather', serif; font-size: 22px; color: var(--accent-glow); font-weight: 700; position: absolute; text-align: center; z-index: 10; transition: opacity 0.5s ease, color 1.1s ease; }
   .breathe-counter { margin-top: 40px; font-size: 13px; font-weight: 600; letter-spacing: 0.1em; color: var(--text-muted); text-transform: uppercase; }
   
   .phase-inhale { transform: scale(1.8); opacity: 1; box-shadow: 0 0 60px var(--border-soft); }
@@ -272,9 +272,8 @@
     margin-right: auto;
   }
 
-  /* Slider UI for Cocoon */
   .slider-group { margin-bottom: 20px; text-align: left; }
-  .slider-group label { display: flex; justify-content: space-between; font-size: 14px; font-weight: 600; color: var(--text-main); margin-bottom: 8px; }
+  .slider-group label { display: flex; justify-content: space-between; font-size: 14px; font-weight: 600; color: var(--text-main); margin-bottom: 8px; line-height: 1.4; }
   .slider-value { color: var(--accent-glow); }
   input[type="range"] {
     -webkit-appearance: none; width: 100%; height: 6px; background: var(--glass-bg);
@@ -368,7 +367,7 @@
         <h3 style="font-family: 'Merriweather', serif; font-size: 22px; color: var(--accent-glow); font-weight: 700; margin: 0 0 8px 0;">Освіта та сертифікація</h3>
         <div class="hero-desc" style="margin-bottom: 20px;">Документи, що підтверджують кваліфікацію та проходження підготовки у доказових модальностях.</div>
         <div class="diploma-grid">
-          <img src="placeholder1.jpg" alt="Місце під диплом про вищу психологічну освіту" class="diploma-img" onclick="openLightbox(this.src)">
+          <img src="placeholder1.jpg" alt="Місце під диплом про вищу психологічную освіту" class="diploma-img" onclick="openLightbox(this.src)">
           <img src="placeholder2.jpg" alt="Місце під сертифікат базового курсу КПТ" class="diploma-img" onclick="openLightbox(this.src)">
           <img src="placeholder3.jpg" alt="Місце під сертифікат Схема-терапії / ACT" class="diploma-img" onclick="openLightbox(this.src)">
         </div>
@@ -411,8 +410,8 @@
     <div id="explore-dashboard">
       <div class="action-grid" style="margin-top: 32px; gap: 20px;">
         <div class="action-card-btn" onclick="openTestCatalog()" style="flex-direction: column; gap: 8px; padding: 32px 20px;">
-          <span style="font-family: 'Merriweather', serif; font-size: 20px; font-weight: 700; color: var(--accent-glow); text-transform: none;">Пройти тестування</span>
-          <span style="font-size: 12px; color: var(--text-muted); font-weight: 500; text-transform: none; line-height: 1.4;">Дослідити себе методами психодіагностики</span>
+          <span style="font-family: 'Merriweather', serif; font-size: 20px; font-weight: 700; color: var(--accent-glow); text-transform: none;">Об'єктивна діагностика</span>
+          <span style="font-size: 12px; color: var(--text-muted); font-weight: 500; text-transform: none; line-height: 1.4;">Погляд на свій стан через призму клінічних маркерів</span>
         </div>
         <div class="action-card-btn" onclick="openReflectCatalog()" style="flex-direction: column; gap: 8px; padding: 32px 20px;">
           <span style="font-family: 'Merriweather', serif; font-size: 20px; font-weight: 700; color: var(--accent-glow); text-transform: none;">Особиста рефлексія</span>
@@ -494,6 +493,7 @@
           <h2 id="r-wizardTitle" style="font-family:'Merriweather',serif; color:var(--accent-glow); font-size:28px; margin-top:0;">Крок 1</h2>
           <div id="r-wizardText" class="question-text" style="justify-content:center; min-height:80px; font-size:18px; font-weight:600; text-align:center;"></div>
           <div id="r-wizardInputs" class="wizard-inputs"></div>
+          <div id="r-visual-wrapper" style="margin-top:20px; display:none; justify-content:center;"></div>
           <div class="controls" style="justify-content:center;">
             <button onclick="nextReflectStep()" id="r-btnNext">Далі</button>
           </div>
@@ -555,7 +555,7 @@
           
           <div id="pmrOnboarding" style="margin-bottom: 24px;">
             <h2 style="font-family:'Merriweather',serif; color:var(--accent-glow); font-size:26px; margin-top:0;">Прогресивна м'язова релаксація</h2>
-            <p class="hero-desc" style="margin: 0 auto; max-width: 500px; font-size: 15px;">Ця техніка допомагає зняти стрес через фізичне розслаблення. Ми будемо почергово напружувати та відпускати різні зони тіла. Коли таймер стане червоним (5 секунд) — міцно напруж вказану зону. Коли колір зміниться на спокійний (10 секунд) — повністю відпусти напругу і відчуй розслаблення. Сядь зручно, випрями спину. Приготуйся.</p>
+            <p class="hero-desc" style="margin: 0 auto; max-width: 500px; font-size: 15px;">Ця техніка допомагає зняти стрес через фізичне розслаблення. Мы будемо почергово напружувати та відпускати різні зони тіла. Коли таймер стане червоним (5 секунд) — міцно напруж вказану зону. Коли колір зміниться на спокійний (10 секунд) — повністю відпусти напругу і відчуй розслаблення. Сядь зручно, випрями спину. Приготуйся.</p>
             <div class="controls" style="justify-content: center; margin-top: 32px;">
               <button onclick="togglePMR()">Розпочати практику</button>
             </div>
@@ -692,16 +692,19 @@ function showExploreDashboard() {
 function openTestCatalog() {
   document.getElementById('explore-dashboard').style.display = 'none';
   document.getElementById('test-catalog-view').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function openReflectCatalog() {
   document.getElementById('explore-dashboard').style.display = 'none';
   document.getElementById('reflect-catalog-view').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function renderTestCatalog() {
   const container = document.getElementById('test-catalog-container');
   container.innerHTML = '';
+  if (typeof TESTS_DATABASE === 'undefined') return;
 
   const testCategories = [
     { id: 'emotional', title: 'Емоційний стан', tests: ['bdi', 'gad_7'] },
@@ -716,7 +719,7 @@ function renderTestCatalog() {
     let html = `<h3 style="color:var(--accent-glow); font-family: 'Merriweather', serif; font-size: 22px; margin: 32px 0 16px; text-align: left;">${cat.title}</h3><div class="catalog-grid">`;
     
     cat.tests.forEach(testId => {
-      if (TESTS_DATABASE && TESTS_DATABASE[testId]) {
+      if (TESTS_DATABASE[testId]) {
         const t = TESTS_DATABASE[testId];
         usedIds.add(testId);
         hasTests = true;
@@ -739,23 +742,21 @@ function renderTestCatalog() {
 
   let otherHtml = `<h3 style="color:var(--accent-glow); font-family: 'Merriweather', serif; font-size: 22px; margin: 32px 0 16px; text-align: left;">Інші методики</h3><div class="catalog-grid">`;
   let hasOther = false;
-  if (typeof TESTS_DATABASE !== 'undefined') {
-    for (let id in TESTS_DATABASE) {
-      if (!usedIds.has(id)) {
-        const t = TESTS_DATABASE[id];
-        hasOther = true;
-        otherHtml += `
-            <div class="card clickable-card" onclick="openTest('${id}')">
-              <div class="card-inner-glow"></div>
-              <div class="card-header-test" style="margin-bottom: 8px; padding-bottom: 0; border: none;">
-                <div class="card-badge">${t.badge}</div>
-                <div>
-                  <div class="card-title">${t.title}</div>
-                  <div class="card-sub">${t.instruction.substring(0, 95)}...</div>
-                </div>
+  for (let id in TESTS_DATABASE) {
+    if (!usedIds.has(id)) {
+      const t = TESTS_DATABASE[id];
+      hasOther = true;
+      otherHtml += `
+          <div class="card clickable-card" onclick="openTest('${id}')">
+            <div class="card-inner-glow"></div>
+            <div class="card-header-test" style="margin-bottom: 8px; padding-bottom: 0; border: none;">
+              <div class="card-badge">${t.badge}</div>
+              <div>
+                <div class="card-title">${t.title}</div>
+                <div class="card-sub">${t.instruction.substring(0, 95)}...</div>
               </div>
-            </div>`;
-      }
+            </div>
+          </div>`;
     }
   }
   otherHtml += `</div>`;
@@ -765,6 +766,8 @@ function renderTestCatalog() {
 function renderSoothingCatalog() {
   const container = document.getElementById('soothing-catalog-container');
   container.innerHTML = '';
+  if (typeof SOOTHING_DATABASE === 'undefined') return;
+
   for (let cat in SOOTHING_DATABASE) {
     const c = SOOTHING_DATABASE[cat];
     let html = `<h3 style="color:var(--accent-glow); font-family: 'Merriweather', serif; font-size: 22px; margin: 32px 0 16px; text-align: left;">${c.categoryTitle}</h3><div class="catalog-grid">`;
@@ -842,7 +845,7 @@ function showSoothingFeedback() {
   } else if (currentActiveSoothingId === 'values_card') {
     resContainer.style.display = 'block';
     document.getElementById('feedbackTextarea').value = 
-      `🧭 Моя картка цінностей:\n\nУ стосунках я хочу бути: ${wizardAnswers[0] || '-'}\nУ діяльності для мене важливо: ${wizardAnswers[1] || '-'}\nМоє ставлення до себе: ${wizardAnswers[2] || '-'}\nМій життєвий вектор: ${wizardAnswers[3] || '-'}`;
+      `🧭 Моя картка цінностей:\n\nУ стосунках я хочу būti: ${wizardAnswers[0] || '-'}\nУ діяльності для мене важливо: ${wizardAnswers[1] || '-'}\nМоє ставлення до себе: ${wizardAnswers[2] || '-'}\nМій життєвий вектор: ${wizardAnswers[3] || '-'}`;
   } else {
     resContainer.style.display = 'none';
   }
@@ -1010,7 +1013,7 @@ function renderWizardStep() {
       btn.disabled = tarea.value.trim().length === 0;
     };
     inputsContainer.appendChild(tarea);
-    if(tarea.value.trim().length > 0) btn.disabled = false;
+    if(wizardAnswers[currentWizardStepIdx] && wizardAnswers[currentWizardStepIdx].trim().length > 0) btn.disabled = false;
   } else if (currentActiveSoothingId === 'grounding_54321') {
     const inputCount = 5 - currentWizardStepIdx;
     if (inputCount > 0 && inputCount <= 5) {
@@ -1382,10 +1385,15 @@ let reflectAnswers = [];
 window.updateSlider = function(sliderId, value) {
   const valDisplay = document.getElementById(`val-${sliderId}`);
   if (valDisplay) valDisplay.innerText = value;
+  
   const s = currentReflectSteps[currentReflectStepIdx];
   if (s && s.inputType === 'sliders') {
     if (!reflectAnswers[currentReflectStepIdx]) reflectAnswers[currentReflectStepIdx] = {};
-    reflectAnswers[currentReflectStepIdx][sliderId] = value;
+    reflectAnswers[currentReflectStepIdx][sliderId] = parseInt(value, 10);
+    
+    if (s.visualType === 'triangle') {
+      updateSDTTriangle();
+    }
   }
 }
 
@@ -1440,9 +1448,12 @@ function renderReflectStep() {
   document.getElementById('r-wizardText').innerText = s.text;
   const btn = document.getElementById('r-btnNext');
   const container = document.getElementById('r-wizardInputs');
+  const visualWrapper = document.getElementById('r-visual-wrapper');
 
   btn.innerText = (currentReflectStepIdx === currentReflectSteps.length - 1) ? "Завершити" : "Далі";
   container.innerHTML = '';
+  visualWrapper.innerHTML = '';
+  visualWrapper.style.display = 'none';
   btn.disabled = false;
 
   if (s.inputType === 'text') {
@@ -1456,12 +1467,11 @@ function renderReflectStep() {
       btn.disabled = tarea.value.trim().length === 0;
     };
     container.appendChild(tarea);
-    if (tarea.value.trim().length > 0) btn.disabled = false;
+    if (tarea.value && tarea.value.trim().length > 0) btn.disabled = false;
   } else if (s.inputType === 'sliders') {
-    btn.disabled = false;
     if (!reflectAnswers[currentReflectStepIdx]) {
       reflectAnswers[currentReflectStepIdx] = {};
-      s.sliders.forEach(sl => reflectAnswers[currentReflectStepIdx][sl.id] = sl.min || 0);
+      s.sliders.forEach(sl => reflectAnswers[currentReflectStepIdx][sl.id] = 5);
     }
     
     s.sliders.forEach(sl => {
@@ -1476,7 +1486,53 @@ function renderReflectStep() {
       `;
       container.appendChild(group);
     });
+
+    if (s.visualType === 'triangle') {
+      visualWrapper.style.display = 'flex';
+      updateSDTTriangle();
+    }
   }
+}
+
+function updateSDTTriangle() {
+  const visualWrapper = document.getElementById('r-visual-wrapper');
+  if (!visualWrapper) return;
+
+  const currentAns = reflectAnswers[currentReflectStepIdx] || {};
+  const autonomy = currentAns['sdt_autonomy'] !== undefined ? currentAns['sdt_autonomy'] : 5;
+  const competence = currentAns['sdt_competence'] !== undefined ? currentAns['sdt_competence'] : 5;
+  const relatedness = currentAns['sdt_relatedness'] !== undefined ? currentAns['sdt_relatedness'] : 5;
+
+  const cx = 100;
+  const cy = 110;
+  const rMax = 75;
+
+  const getCoords = (val, angleDeg) => {
+    const angleRad = (angleDeg - 90) * Math.PI / 180;
+    const r = (val / 10) * rMax;
+    return { x: cx + r * Math.cos(angleRad), y: cy + r * Math.sin(angleRad) };
+  };
+
+  const pAuth = getCoords(autonomy, 0);
+  const pComp = getCoords(competence, 120);
+  const pRel = getCoords(relatedness, 240);
+  
+  const pAuthMax = getCoords(10, 0);
+  const pCompMax = getCoords(10, 120);
+  const pRelMax = getCoords(10, 240);
+
+  visualWrapper.innerHTML = `
+    <svg width="200" height="220" viewBox="0 0 200 220" style="overflow: visible;">
+      <polygon points="${pAuthMax.x},${pAuthMax.y} ${pCompMax.x},${pCompMax.y} ${pRelMax.x},${pRelMax.y}" fill="none" stroke="var(--border-soft)" stroke-width="1" stroke-dasharray="4"/>
+      <line x1="${cx}" y1="${cy}" x2="${pAuthMax.x}" y2="${pAuthMax.y}" stroke="var(--border-soft)" stroke-width="0.5" />
+      <line x1="${cx}" y1="${cy}" x2="${pCompMax.x}" y2="${pCompMax.y}" stroke="var(--border-soft)" stroke-width="0.5" />
+      <line x1="${cx}" y1="${cy}" x2="${pRelMax.x}" y2="${pRelMax.y}" stroke="var(--border-soft)" stroke-width="0.5" />
+      <polygon points="${pAuth.x},${pAuth.y} ${pComp.x},${pComp.y} ${pRel.x},${pRel.y}" fill="rgba(184, 122, 53, 0.2)" stroke="var(--accent-glow)" stroke-width="2" style="transition: points 0.2s ease;"/>
+      <text x="${pAuthMax.x}" y="${pAuthMax.y - 12}" text-anchor="middle" font-size="12" font-weight="500" fill="var(--text-main)">Автономія</text>
+      <text x="${pCompMax.x + 10}" y="${pCompMax.y + 8}" text-anchor="start" font-size="12" font-weight="500" fill="var(--text-main)">Компетентність</text>
+      <text x="${pRelMax.x - 10}" y="${pRelMax.y + 8}" text-anchor="end" font-size="12" font-weight="500" fill="var(--text-main)">Причетність</text>
+    </svg>
+  `;
 }
 
 function nextReflectStep() {
@@ -1516,7 +1572,7 @@ function copyReflectText() {
   const btn = document.getElementById('r-btnCopy');
   navigator.clipboard.writeText(text).then(() => {
     const orig = btn.innerHTML;
-    btn.innerHTML = '✅ Скопійовано!';
+    btn.innerHTML = '✅ Скопіювано!';
     setTimeout(() => { btn.innerHTML = orig; }, 2000);
   }).catch(() => {});
 }
