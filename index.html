@@ -193,43 +193,41 @@
   .feedback-title { font-family: 'Merriweather', serif; font-size: 26px; color: var(--accent-glow); margin-bottom: 12px; font-weight: 400; }
   .feedback-desc { font-size: 14px; color: var(--text-muted); margin-bottom: 24px; font-weight: 500; }
   
-  ./* Онови цей селектор у стилях */
-/* Велике, стабільне текстове поле без стискання */
-.feedback-result-textarea { 
-  width: 100%; 
-  max-width: 500px; 
-  height: 300px;       /* Задаємо фіксовану висоту за замовчуванням */
-  min-height: 300px;   /* Насильно утримуємо висоту від стискання */
-  margin: 16px auto 8px auto; 
-  background: var(--glass-bg); 
-  border: 1px solid var(--border-soft); 
-  color: var(--text-main); 
-  font-family: inherit; 
-  font-size: 14px; 
-  padding: 16px; 
-  border-radius: 8px; 
-  line-height: 1.6; 
-  resize: none; 
-  display: block; 
-  overflow-y: auto;
-}
+  .feedback-result-textarea { 
+    width: 100%; 
+    max-width: 500px; 
+    height: 300px; 
+    min-height: 300px; 
+    margin: 16px auto 8px auto; 
+    background: var(--glass-bg); 
+    border: 1px solid var(--border-soft); 
+    color: var(--text-main); 
+    font-family: inherit; 
+    font-size: 14px; 
+    padding: 16px; 
+    border-radius: 8px; 
+    line-height: 1.6; 
+    resize: none; 
+    display: block; 
+    overflow-y: auto;
+  }
 
-/* Контейнер під полем для кнопки копіювання */
-.feedback-copy-wrapper {
-  width: 100%;
-  max-width: 500px;
-  margin: 0 auto 20px auto;
-  display: flex;
-  justify-content: flex-end; /* Зміщує кнопку копіювання праворуч */
-}
+  .feedback-copy-wrapper {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto 20px auto;
+    display: flex;
+    justify-content: flex-end; 
+  }
 
-.feedback-copy-wrapper button {
-  padding: 8px 14px;
-  font-size: 11px;
-  border-color: var(--accent-glow);
-  background: transparent;
-  cursor: pointer;
-}
+  .feedback-copy-wrapper button {
+    padding: 8px 14px;
+    font-size: 11px;
+    border-color: var(--accent-glow);
+    background: transparent;
+    cursor: pointer;
+  }
+  
   .resultBox { margin-top: 28px; display: none; border-top: 1px solid var(--border-soft); padding-top: 24px; }
   table { width: 100%; border-collapse: collapse; margin-top: 12px; }
   th, td { padding: 12px 8px; text-align: left; border-bottom: 1px solid var(--border-soft); font-size: 14px; transition: border-color 1.1s ease; }
@@ -426,7 +424,7 @@
           <p>Уся інформація, отримана в процесі сесій, є суворо конфіденційною. Вона не розголошується третім особам, за винятком випадків, передбачених чинним законодавством або професійним етичним кодексом.</p>
 
           <h3>2. Скасування та перенесення зустрічей</h3>
-          <p>Скасувати або перенести заплановану сесію можна не пізніше ніж за 4 години до її початку. Якщо повідомлення про скасування надходить пізніше цього терміну, сесія оплачується у повному обсязі.</p>
+          <p>Скасувати або перенести заплановану сесію можна не пізніше ніж за 4 hours до її початку. Якщо повідомлення про скасування надходить пізніше цього терміну, сесія оплачується у повному обсязі.</p>
 
           <h3>3. Комунікація</h3>
           <p>Месенджери використовуються суто для розв'язання організаційних питань. Психотерапевтична робота між сесіями в текстовому форматі не ведеться.</p>
@@ -535,26 +533,19 @@
         </div>
       </div>
 
-     <div id="reflect-feedback" style="display:none;">
-  <div class="card feedback-box">
-    <div class="card-inner-glow"></div>
-    <div class="feedback-title">Дослідження завершено</div>
-    <div class="feedback-desc">Ти зробив важливу роботу. Цей текст залишається лише для тебе — нікуди не надсилається.</div>
-    
-    <div id="r-feedbackResultContainer" style="display:none;">
-      <textarea id="r-feedbackTextarea" class="feedback-result-textarea" readonly></textarea>
-      <div class="feedback-copy-wrapper">
-        <button onclick="copyReflectText()" id="r-btnCopy">📋 Скопіювати текст</button>
-      </div>
-    </div>
-    
-    <div class="controls" style="justify-content:center; gap:12px;">
-      <button onclick="closeReflect()">Завершити</button>
-      <button class="btn-ghost" onclick="repeatReflect()">Пройти знову</button>
-      <button class="btn-ghost" onclick="showExploreDashboard()">Інші картки</button>
-    </div>
-  </div>
-</div>
+      <div id="reflect-feedback" style="display:none;">
+        <div class="card feedback-box">
+          <div class="card-inner-glow"></div>
+          <div class="feedback-title">Дослідження завершено</div>
+          <div class="feedback-desc">Ти зробив важливу роботу. Цей текст залишається лише для тебе — нікуди не надсилається.</div>
+          
+          <div id="r-feedbackResultContainer" style="display:none;">
+            <textarea id="r-feedbackTextarea" class="feedback-result-textarea" readonly></textarea>
+            <div class="feedback-copy-wrapper">
+              <button onclick="copyReflectText()" id="r-btnCopy">📋 Скопіювати текст</button>
+            </div>
+          </div>
+          
           <div class="controls" style="justify-content:center; gap:12px;">
             <button onclick="closeReflect()">Завершити</button>
             <button class="btn-ghost" onclick="repeatReflect()">Пройти знову</button>
@@ -628,26 +619,27 @@
         </div>
       </div>
 
-     <div id="soothing-feedback" style="display:none;">
-  <div class="card feedback-box">
-    <div class="card-inner-glow"></div>
-    <div class="feedback-title">Вправу завершено</div>
-    <div class="feedback-desc">Оціни свій поточний стан та обери подальшу дію:</div>
-    
-    <div id="feedbackResultContainer" style="display:none;">
-      <textarea id="feedbackTextarea" class="feedback-result-textarea" readonly></textarea>
-      <div class="feedback-copy-wrapper">
-        <button onclick="copyWizardText()" id="btnCopyFeedback">📋 Скопіювати текст</button>
+      <div id="soothing-feedback" style="display:none;">
+        <div class="card feedback-box">
+          <div class="card-inner-glow"></div>
+          <div class="feedback-title">Вправу завершено</div>
+          <div class="feedback-desc">Оціни свій поточний стан та обери подальшу дію:</div>
+          
+          <div id="feedbackResultContainer" style="display:none;">
+            <textarea id="feedbackTextarea" class="feedback-result-textarea" readonly></textarea>
+            <div class="feedback-copy-wrapper">
+              <button onclick="copyWizardText()" id="btnCopyFeedback">📋 Скопіювати текст</button>
+            </div>
+          </div>
+
+          <div class="controls" style="justify-content: center; gap: 12px;">
+            <button onclick="closeSoothing()">Мені стало краще</button>
+            <button class="btn-ghost" onclick="repeatCurrentSoothing()">Повторити ще раз</button>
+            <button class="btn-ghost" onclick="closeSoothing()">Інші техніки</button>
+          </div>
+        </div>
       </div>
     </div>
-
-    <div class="controls" style="justify-content: center; gap: 12px;">
-      <button onclick="closeSoothing()">Мені стало краще</button>
-      <button class="btn-ghost" onclick="repeatCurrentSoothing()">Повторити ще раз</button>
-      <button class="btn-ghost" onclick="closeSoothing()">Інші техніки</button>
-    </div>
-  </div>
-</div>
   </section>
 
   <div class="card global-footer-card">
@@ -1605,7 +1597,6 @@ function showReflectFeedback() {
     }
   });
 
-  // Вмикаємо відображення контейнера, куди входять textarea та наша зміщена кнопка
   document.getElementById('r-feedbackResultContainer').style.display = 'block';
   document.getElementById('r-feedbackTextarea').value = text.trim();
   document.getElementById('r-btnCopy').innerHTML = '📋 Скопіювати текст';
