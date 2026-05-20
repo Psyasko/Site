@@ -300,7 +300,7 @@
     <a onclick="showSection('home')" id="nav-home" class="active">Головна</a>
     <a onclick="showSection('about')" id="nav-about">Про мене</a>
     <a onclick="showSection('consultations')" id="nav-consultations">Консультації</a>
-    <a onclick="showSection('tests')" id="nav-tests">Тести</a>
+    <a onclick="showSection('tests')" id="nav-tests">Дослідити себе</a>
     <a onclick="showSection('soothing')" id="nav-soothing">Самозаспокоєння</a>
     
     <div class="theme-switcher">
@@ -329,7 +329,7 @@
       <div class="action-grid">
         <div class="action-card-btn" onclick="showSection('consultations')">Записатись на консультацію</div>
         <div class="action-card-btn" onclick="showSection('soothing')">Відновити спокій</div>
-        <div class="action-card-btn" onclick="showSection('tests')">Пройти тести</div>
+        <div class="action-card-btn" onclick="showSection('tests')">Дослідити себе</div>
         <div class="action-card-btn" onclick="showSection('about')">Про мене</div>
       </div>
     </div>
@@ -340,7 +340,7 @@
       <div class="section-label">Спеціалізація</div>
       <h1 class="hero-title">Терапевтичний підхід</h1>
       <div class="hero-desc" style="text-align: left; margin-bottom: 20px;">
-        <p>Я спираюся на сучасні доказові методи психотерапії із чіткою методологічною базою. Практикую в рамках:</p>
+        <p>Я спираюся на сучасні доказові методы психотерапії із чіткою методологічною базою. Практикую в рамках:</p>
         <ul style="padding-left: 20px; margin: 16px 0; line-height: 1.8;">
           <li>Когнітивно-поведінкової терапії (КПТ)</li>
           <li>Терапії прийняття та відповідальності (ACT)</li>
@@ -390,8 +390,8 @@
   </section>
 
   <section id="tests" class="site-section">
-    <div class="section-label">Діагностичний блок</div>
-    <h1 class="hero-title" style="text-align: center;">Психологічні тести</h1>
+    <div class="section-label">Діагностика та рефлексія</div>
+    <h1 class="hero-title" style="text-align: center;">Дослідити себе</h1>
     
     <div id="test-catalog">
       <div class="catalog-grid" id="test-catalog-grid"></div>
@@ -568,7 +568,6 @@
 </div>
 
 <script>
-// --- GLOBAL CONSTANTS & INIT ---
 const YSQ_SCHEMAS = [
   "Емоційна депривація (ED)", "Покинутість / Нестабільність (AB)", "Недовіра / Очікування зловживань (MA)",
   "Соціальна ізоляція / Відчуженість (SI)", "Дефективність / Сором (DS)", "Неуспішність (FA)",
@@ -644,7 +643,6 @@ function renderSoothingCatalog() {
   }
 }
 
-// --- SOOTHING CONTROLLER ---
 let currentCatId = null;
 let currentActiveSoothingId = null;
 let currentSoothingItem = null;
@@ -706,7 +704,7 @@ function showSoothingFeedback() {
   } else if (currentActiveSoothingId === 'values_card') {
     resContainer.style.display = 'block';
     document.getElementById('feedbackTextarea').value = 
-      `🧭 Моя картка цінностей:\n\nУ стосунках я хочу бути: ${wizardAnswers[0] || '-'}\nУ діяльності для мене важливо: ${wizardAnswers[1] || '-'}\nМоє ставлення до себе: ${wizardAnswers[2] || '-'}\nМій життєвий вектор: ${wizardAnswers[3] || '-'}`;
+      `🧭 Моя картка цінностей:\n\nУ стосунках я хочу būti: ${wizardAnswers[0] || '-'}\nУ діяльності для мене важливо: ${wizardAnswers[1] || '-'}\nМоє ставлення до себе: ${wizardAnswers[2] || '-'}\nМій життєвий вектор: ${wizardAnswers[3] || '-'}`;
   } else {
     resContainer.style.display = 'none';
   }
@@ -719,7 +717,6 @@ function repeatCurrentSoothing() {
   openSoothing(currentCatId, currentActiveSoothingId);
 }
 
-// --- BREATHING LOGIC ---
 let isBreathing = false;
 let breathInterval = null;
 let currentPhase = 0;
@@ -781,7 +778,6 @@ function runBreathPhase() {
   currentPhase = (currentPhase + 1) % 4;
 }
 
-// --- PMR LOGIC ---
 let isPMR = false;
 let pmrInterval = null;
 let pmrSteps = [];
@@ -823,11 +819,11 @@ function startPmrPhase() {
   
   if (isTension) {
     document.getElementById('pmrInstruction').innerText = `НАПРУЖИТИ: ${stepData.text}`;
-    document.getElementById('pmrTimer').style.color = "#E63946"; // Red alert
+    document.getElementById('pmrTimer').style.color = "#E63946";
     pmrTimeLeft = currentSoothingItem.tensionDuration || 5;
   } else {
     document.getElementById('pmrInstruction').innerText = "РОЗСЛАБИТИ: Зроби глибокий видих і відпусти усю напругу.";
-    document.getElementById('pmrTimer').style.color = "var(--accent-glow)"; // Calm glow
+    document.getElementById('pmrTimer').style.color = "var(--accent-glow)";
     pmrTimeLeft = currentSoothingItem.relaxationDuration || 10;
   }
   
@@ -850,7 +846,6 @@ function startPmrPhase() {
   }, 1000);
 }
 
-// --- WIZARD LOGIC ---
 let currentWizardSteps = [];
 let currentWizardStepIdx = 0;
 let wizardAnswers = [];
@@ -923,14 +918,13 @@ function copyWizardText() {
   
   navigator.clipboard.writeText(text).then(() => {
     const originalHTML = btnCopy.innerHTML;
-    btnCopy.innerHTML = '✅ Скопійовано!';
+    btnCopy.innerHTML = '✅ Скопіювано!';
     setTimeout(() => { btnCopy.innerHTML = originalHTML; }, 2000);
   }).catch(err => {
     console.error('Не вдалося скопіювати текст: ', err);
   });
 }
 
-// --- TEST LOGIC ---
 let activeTestId = null;
 let currentTestDef = null;
 let activeQuestions = [];
@@ -1037,7 +1031,6 @@ function handleAnswer(qid, val){
 function prevQ(){ if(currentIndex > 0){ currentIndex--; renderQuestion(currentIndex); } }
 function nextQ(){ if(currentIndex < activeQuestions.length - 1){ currentIndex++; renderQuestion(currentIndex); } }
 
-// --- CALCULATIONS ---
 function calculateYSQ(){
   const map = {};
   YSQ_SCHEMAS.forEach(s => map[s] = 0);
@@ -1226,7 +1219,6 @@ function saveResultsToGoogleSheet(resultsData) {
     });
 }
 
-// --- LIGHTBOX LOGIC ---
 function openLightbox(src) {
   const lb = document.getElementById('lightbox');
   const lbImg = document.getElementById('lightboxImg');
