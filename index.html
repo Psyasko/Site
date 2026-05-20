@@ -517,16 +517,23 @@
       </div>
 
       <div id="reflect-feedback" style="display:none;">
-        <div class="card feedback-box">
-          <div class="card-inner-glow"></div>
-          <div class="feedback-title">Дослідження завершено</div>
-          <div class="feedback-desc">Ти зробив важливу роботу. Цей текст залишається лише для тебе — нікуди не надсилається.</div>
-          <div id="r-feedbackResultContainer" style="display:none; margin-bottom:24px;">
-            <textarea id="r-feedbackTextarea" class="feedback-result-textarea" readonly></textarea>
-            <div class="controls" style="justify-content:center; margin-top:10px;">
-              <button onclick="copyReflectText()" id="r-btnCopy" style="font-size:11px; padding:8px 16px;">📋 Скопіювати текст</button>
-            </div>
-          </div>
+  <div class="card feedback-box">
+    <div class="card-inner-glow"></div>
+    <div class="feedback-title">Дослідження завершено</div>
+    <div class="feedback-desc">Ти зробив важливу роботу. Цей текст залишається лише для тебе — нікуди не надсилається.</div>
+    
+    <div id="r-feedbackResultContainer" style="display:none; margin-bottom:24px;">
+      <textarea id="r-feedbackTextarea" class="feedback-result-textarea" readonly></textarea>
+    </div>
+    
+    <div class="controls" style="justify-content:center; gap:12px;">
+      <button onclick="copyReflectText()" id="r-btnCopy" style="border-color: var(--accent-glow);">📋 Скопіювати текст</button>
+      <button onclick="closeReflect()">Завершити</button>
+      <button class="btn-ghost" onclick="repeatReflect()">Пройти знову</button>
+      <button class="btn-ghost" onclick="showExploreDashboard()">Інші картки</button>
+    </div>
+  </div>
+</div>
           <div class="controls" style="justify-content:center; gap:12px;">
             <button onclick="closeReflect()">Завершити</button>
             <button class="btn-ghost" onclick="repeatReflect()">Пройти знову</button>
