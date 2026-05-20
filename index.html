@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Віталій Психолог — Практика психотерапії</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600&family=Cormorant+Garamond:wght@400;500;600&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Montserrat:wght@300;400;500;600&display=swap');
   
   :root[data-theme="sunset"] {
     --bg-color: #181714;
@@ -63,10 +63,10 @@
     width: 100%;
     min-height: 100%;
     background: var(--bg-color);
-    font-family: 'Manrope', sans-serif;
+    font-family: 'Montserrat', sans-serif;
     color: var(--text-main);
     overflow-x: hidden;
-    transition: background-color 0.8s ease, color 0.8s ease;
+    transition: background-color 0.8s cubic-bezier(0.25, 1, 0.5, 1), color 0.8s cubic-bezier(0.25, 1, 0.5, 1);
   }
 
   .warm-noise { 
@@ -85,7 +85,7 @@
   .hero-glow-inner { position: fixed; bottom: -20px; left: 50%; transform: translateX(-50%); width: 260px; height: 80px; background: radial-gradient(ellipse, var(--glow-inner) 0%, transparent 70%); pointer-events: none; z-index: 2; transition: background 0.8s ease; }
 
   .nav { position: relative; z-index: 10; display: flex; justify-content: space-between; align-items: center; padding: 18px 28px; border-bottom: 0.5px solid var(--border-soft); background: var(--glass-bg); transition: border-color 0.8s ease, background 0.8s ease; }
-  .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 19px; color: var(--accent-amber); letter-spacing: 0.08em; font-weight: 600; transition: color 0.8s ease; }
+  .nav-logo { font-family: 'Merriweather', serif; font-size: 19px; color: var(--accent-amber); letter-spacing: 0.08em; font-weight: 700; transition: color 0.8s ease; }
   .nav-links { display: flex; gap: 24px; flex-wrap: wrap; align-items: center; }
   .nav-links a { font-size: 11px; color: var(--text-muted); text-decoration: none; letter-spacing: 0.06em; font-weight: 600; text-transform: uppercase; cursor: pointer; transition: color 0.2s ease; }
   .nav-links a:hover, .nav-links a.active { color: var(--accent-glow); }
@@ -98,15 +98,15 @@
   .site-wrap { position: relative; z-index: 5; max-width: 800px; margin: 0 auto; padding: 40px 24px 60px 24px; display: flex; flex-direction: column; min-height: calc(100vh - 80px); }
   
   @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; }
+    to { opacity: 1; }
   }
   
   .site-section { display: none; }
-  .site-section.active { display: block; animation: fadeIn 0.4s ease forwards; }
+  .site-section.active { display: block; animation: fadeIn 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
 
   .home-centered { text-align: center; display: flex; flex-direction: column; align-items: center; }
-  .hero-title { font-family: 'Cormorant Garamond', serif; font-size: 46px; color: var(--accent-glow); font-weight: 400; line-height: 1.1; margin: 0 0 12px; transition: color 0.8s ease; }
+  .hero-title { font-family: 'Merriweather', serif; font-size: 42px; color: var(--accent-glow); font-weight: 400; line-height: 1.2; margin: 0 0 12px; transition: color 0.8s ease; }
   .hero-desc { font-size: 15px; color: var(--text-muted); max-width: 540px; line-height: 1.7; font-weight: 500; transition: color 0.8s ease; margin-bottom: 16px; }
   .section-label { font-size: 10px; color: var(--text-muted); letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 16px; font-weight: 600; transition: color 0.8s ease; }
 
@@ -128,7 +128,7 @@
   :root[data-theme="dawn"] .photo-dawn { display: block; }
 
   .action-grid { display: flex; gap: 14px; margin-top: 16px; width: 100%; max-width: 750px; justify-content: center; }
-  .action-card-btn { flex: 1; padding: 22px 14px; background: var(--card-bg); border: 1px solid var(--border-soft); border-radius: 8px; color: var(--text-main); font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; cursor: pointer; transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); text-align: center; display: flex; align-items: center; justify-content: center; min-height: 64px; }
+  .action-card-btn { flex: 1; padding: 22px 14px; background: var(--card-bg); border: 1px solid var(--border-soft); border-radius: 8px; color: var(--text-main); font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; cursor: pointer; transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); text-align: center; display: flex; align-items: center; justify-content: center; min-height: 64px; }
   
   :root[data-theme="sunset"] .action-card-btn:hover { background: var(--btn-hover-glow); color: var(--btn-hover-text); border-color: var(--accent-glow); box-shadow: 0 0 24px rgba(184, 122, 53, 0.4), inset 0 0 10px rgba(255, 255, 255, 0.2); transform: translateY(-3px); }
   :root[data-theme="night"] .action-card-btn:hover { background: var(--btn-hover-glow); color: var(--btn-hover-text); border-color: var(--accent-glow); box-shadow: 0 0 26px rgba(122, 156, 224, 0.45), inset 0 0 10px rgba(255, 255, 255, 0.2); transform: translateY(-3px); }
@@ -190,7 +190,7 @@
   .btn-ghost:hover:not(:disabled) { border-color: var(--accent-amber); color: var(--text-main); }
 
   .feedback-box { text-align: center; padding: 20px 0; }
-  .feedback-title { font-family: 'Cormorant Garamond', serif; font-size: 26px; color: var(--accent-glow); margin-bottom: 12px; font-weight: 500; }
+  .feedback-title { font-family: 'Merriweather', serif; font-size: 26px; color: var(--accent-glow); margin-bottom: 12px; font-weight: 400; }
   .feedback-desc { font-size: 14px; color: var(--text-muted); margin-bottom: 24px; font-weight: 500; }
   
   .feedback-result-textarea { width: 100%; max-width: 500px; height: 160px; margin: 16px auto; background: var(--glass-bg); border: 1px solid var(--border-soft); color: var(--text-main); font-family: inherit; font-size: 14px; padding: 16px; border-radius: 8px; line-height: 1.6; resize: none; display: block; }
@@ -198,15 +198,15 @@
   .resultBox { margin-top: 28px; display: none; border-top: 1px solid var(--border-soft); padding-top: 24px; }
   table { width: 100%; border-collapse: collapse; margin-top: 12px; }
   th, td { padding: 12px 8px; text-align: left; border-bottom: 1px solid var(--border-soft); font-size: 14px; transition: border-color 0.8s ease; }
-  th { font-family: 'Cormorant Garamond', serif; font-size: 18px; color: var(--text-muted); font-weight: 600; }
+  th { font-family: 'Merriweather', serif; font-size: 18px; color: var(--text-muted); font-weight: 700; }
   .schema-descriptions { margin-top: 24px; padding: 16px; background: var(--glass-bg); border-radius: 6px; font-size: 14px; line-height: 1.6; color: var(--text-muted); border: 1px solid var(--border-soft); font-weight: 500; transition: background 0.8s ease; }
 
   .contract-text { font-size: 14px; line-height: 1.7; color: var(--text-muted); text-align: left; transition: color 0.8s ease; }
-  .contract-text h3 { font-family: 'Cormorant Garamond', serif; font-size: 20px; color: var(--accent-glow); margin: 24px 0 10px 0; font-weight: 600; transition: color 0.8s ease; }
+  .contract-text h3 { font-family: 'Merriweather', serif; font-size: 20px; color: var(--accent-glow); margin: 24px 0 10px 0; font-weight: 700; transition: color 0.8s ease; }
   .contract-text ul { padding-left: 18px; margin: 8px 0; }
   .contract-text li { margin-bottom: 6px; }
 
-  .price-tag { font-family: 'Cormorant Garamond', serif; font-size: 24px; color: var(--accent-glow); margin-bottom: 20px; transition: color 0.8s ease; }
+  .price-tag { font-family: 'Merriweather', serif; font-size: 24px; color: var(--accent-glow); margin-bottom: 20px; transition: color 0.8s ease; }
 
   .messenger-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-top: 24px; }
   .messenger-btn { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 12px; background: var(--glass-bg); border: 1px solid var(--border-soft); border-radius: 8px; color: var(--text-main); text-decoration: none; font-size: 14px; font-weight: 600; transition: all 0.3s ease; }
@@ -253,7 +253,7 @@
 
   .breathe-widget { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 0; min-height: 320px; position: relative; }
   .breathe-circle { width: 140px; height: 140px; border-radius: 50%; background: radial-gradient(circle, var(--accent-amber) 0%, transparent 70%); box-shadow: 0 0 40px rgba(0,0,0,0.05); border: 1px solid var(--border-soft); display: flex; align-items: center; justify-content: center; position: relative; transition: transform 4s linear, opacity 4s linear, box-shadow 4s linear, background 0.8s ease, border-color 0.8s ease; opacity: 0.6; }
-  .breathe-text { font-family: 'Cormorant Garamond', serif; font-size: 22px; color: var(--accent-glow); font-weight: 600; position: absolute; text-align: center; z-index: 10; transition: opacity 0.5s ease, color 0.8s ease; }
+  .breathe-text { font-family: 'Merriweather', serif; font-size: 22px; color: var(--accent-glow); font-weight: 700; position: absolute; text-align: center; z-index: 10; transition: opacity 0.5s ease, color 0.8s ease; }
   .breathe-counter { margin-top: 40px; font-size: 13px; font-weight: 600; letter-spacing: 0.1em; color: var(--text-muted); text-transform: uppercase; }
   
   .phase-inhale { transform: scale(1.8); opacity: 1; box-shadow: 0 0 60px var(--border-soft); }
@@ -261,7 +261,7 @@
   .phase-exhale { transform: scale(1); opacity: 0.5; box-shadow: 0 0 20px rgba(0,0,0,0.02); }
   .phase-hold2 { transform: scale(1); opacity: 0.4; box-shadow: 0 0 10px rgba(0,0,0,0.01); }
 
-  .pmr-timer-text { font-size: 56px; font-weight: 300; font-family: 'Manrope', sans-serif; margin: 20px 0; color: var(--accent-glow); transition: color 0.3s ease; }
+  .pmr-timer-text { font-size: 56px; font-weight: 300; font-family: 'Montserrat', sans-serif; margin: 20px 0; color: var(--accent-glow); transition: color 0.3s ease; }
 
   .global-footer-card {
     margin-top: auto; 
@@ -271,6 +271,20 @@
     margin-left: auto;
     margin-right: auto;
   }
+
+  /* Slider UI for Cocoon */
+  .slider-group { margin-bottom: 20px; text-align: left; }
+  .slider-group label { display: flex; justify-content: space-between; font-size: 14px; font-weight: 600; color: var(--text-main); margin-bottom: 8px; }
+  .slider-value { color: var(--accent-glow); }
+  input[type="range"] {
+    -webkit-appearance: none; width: 100%; height: 6px; background: var(--glass-bg);
+    border-radius: 4px; outline: none; border: 1px solid var(--border-soft); margin-top: 6px;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none; width: 18px; height: 18px; border-radius: 50%;
+    background: var(--accent-glow); cursor: pointer; transition: transform 0.2s;
+  }
+  input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
 
   @media(max-width: 768px) {
     .nav { padding: 14px 20px; flex-direction: column; gap: 14px; text-align: center; }
@@ -341,7 +355,7 @@
       <div class="section-label">Спеціалізація</div>
       <h1 class="hero-title">Терапевтичний підхід</h1>
       <div class="hero-desc" style="text-align: left; margin-bottom: 20px;">
-        <p>Я спираюся на сучасні доказові методы психотерапії із чіткою методологічною базою. Практикую в рамках:</p>
+        <p>Я спираюся на сучасні доказові методи психотерапії із чіткою методологічною базою. Практикую в рамках:</p>
         <ul style="padding-left: 20px; margin: 16px 0; line-height: 1.8;">
           <li>Когнітивно-поведінкової терапії (КПТ)</li>
           <li>Терапії прийняття та відповідальності (ACT)</li>
@@ -351,7 +365,7 @@
       </div>
 
       <div class="diploma-section">
-        <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 22px; color: var(--accent-glow); font-weight: 500; margin: 0 0 8px 0;">Освіта та сертифікація</h3>
+        <h3 style="font-family: 'Merriweather', serif; font-size: 22px; color: var(--accent-glow); font-weight: 700; margin: 0 0 8px 0;">Освіта та сертифікація</h3>
         <div class="hero-desc" style="margin-bottom: 20px;">Документи, що підтверджують кваліфікацію та проходження підготовки у доказових модальностях.</div>
         <div class="diploma-grid">
           <img src="placeholder1.jpg" alt="Місце під диплом про вищу психологічну освіту" class="diploma-img" onclick="openLightbox(this.src)">
@@ -394,19 +408,26 @@
     <div class="section-label">Діагностика та рефлексія</div>
     <h1 class="hero-title" style="text-align: center;">Дослідити себе</h1>
 
-    <div id="explore-catalog">
-      <div style="margin-bottom: 8px;">
-        <h2 style="font-family:'Cormorant Garamond',serif; font-size:28px; color:var(--accent-glow); font-weight:500; margin:0 0 6px 0;">Об'єктивна діагностика</h2>
-        <p style="font-size:14px; color:var(--text-muted); margin:0 0 4px 0; font-weight:500;">Структуровані методики для оцінки поточного психологічного стану.</p>
+    <div id="explore-dashboard">
+      <div class="action-grid" style="margin-top: 32px; gap: 20px;">
+        <div class="action-card-btn" onclick="openTestCatalog()" style="flex-direction: column; gap: 8px; padding: 32px 20px;">
+          <span style="font-family: 'Merriweather', serif; font-size: 20px; font-weight: 700; color: var(--accent-glow); text-transform: none;">Об'єктивна діагностика</span>
+          <span style="font-size: 12px; color: var(--text-muted); font-weight: 500; text-transform: none; line-height: 1.4;">Погляд на свій стан через призму клінічних маркерів</span>
+        </div>
+        <div class="action-card-btn" onclick="openReflectCatalog()" style="flex-direction: column; gap: 8px; padding: 32px 20px;">
+          <span style="font-family: 'Merriweather', serif; font-size: 20px; font-weight: 700; color: var(--accent-glow); text-transform: none;">Особиста рефлексія</span>
+          <span style="font-size: 12px; color: var(--text-muted); font-weight: 500; text-transform: none; line-height: 1.4;">Приватний простір для дослідження внутрішнього світу</span>
+        </div>
       </div>
-      <div id="test-catalog">
-        <div class="catalog-grid" id="test-catalog-grid"></div>
-      </div>
+    </div>
 
-      <div style="margin-top:40px; padding-top:32px; border-top:1px solid var(--border-soft); margin-bottom:8px;">
-        <h2 style="font-family:'Cormorant Garamond',serif; font-size:28px; color:var(--accent-glow); font-weight:500; margin:0 0 6px 0;">Особиста рефлексія</h2>
-        <p style="font-size:14px; color:var(--text-muted); margin:0 0 4px 0; font-weight:500;">Приватний простір для дослідження цінностей, потреб та вразливостей. Результати нікуди не надсилаються.</p>
-      </div>
+    <div id="test-catalog-view" style="display:none;">
+      <button class="back-btn" onclick="showExploreDashboard()">← Назад до вибору</button>
+      <div id="test-catalog-container"></div>
+    </div>
+
+    <div id="reflect-catalog-view" style="display:none;">
+      <button class="back-btn" onclick="showExploreDashboard()">← Назад до вибору</button>
       <div id="reflect-catalog-container"></div>
     </div>
 
@@ -448,7 +469,7 @@
         </form>
 
         <div class="resultBox" id="resultBox">
-          <h3 style="font-family:'Cormorant Garamond',serif; font-size:24px; color:var(--accent-glow); margin:0 0 12px 0;">Профіль результатів</h3>
+          <h3 style="font-family:'Merriweather',serif; font-size:24px; color:var(--accent-glow); margin:0 0 12px 0;">Профіль результатів</h3>
           <table id="resultTable">
             <thead>
               <tr>
@@ -470,7 +491,7 @@
       <div id="reflect-wizard" style="display:none;">
         <div class="card" style="text-align:center; padding:40px 20px;">
           <div class="card-inner-glow"></div>
-          <h2 id="r-wizardTitle" style="font-family:'Cormorant Garamond',serif; color:var(--accent-glow); font-size:28px; margin-top:0;">Крок 1</h2>
+          <h2 id="r-wizardTitle" style="font-family:'Merriweather',serif; color:var(--accent-glow); font-size:28px; margin-top:0;">Крок 1</h2>
           <div id="r-wizardText" class="question-text" style="justify-content:center; min-height:80px; font-size:18px; font-weight:600; text-align:center;"></div>
           <div id="r-wizardInputs" class="wizard-inputs"></div>
           <div class="controls" style="justify-content:center;">
@@ -493,7 +514,7 @@
           <div class="controls" style="justify-content:center; gap:12px;">
             <button onclick="closeReflect()">Завершити</button>
             <button class="btn-ghost" onclick="repeatReflect()">Пройти знову</button>
-            <button class="btn-ghost" onclick="closeReflect()">Інші картки</button>
+            <button class="btn-ghost" onclick="showExploreDashboard()">Інші картки</button>
           </div>
         </div>
       </div>
@@ -533,7 +554,7 @@
           <div class="card-inner-glow"></div>
           
           <div id="pmrOnboarding" style="margin-bottom: 24px;">
-            <h2 style="font-family:'Cormorant Garamond',serif; color:var(--accent-glow); font-size:26px; margin-top:0;">Прогресивна м'язова релаксація</h2>
+            <h2 style="font-family:'Merriweather',serif; color:var(--accent-glow); font-size:26px; margin-top:0;">Прогресивна м'язова релаксація</h2>
             <p class="hero-desc" style="margin: 0 auto; max-width: 500px; font-size: 15px;">Ця техніка допомагає зняти стрес через фізичне розслаблення. Ми будемо почергово напружувати та відпускати різні зони тіла. Коли таймер стане червоним (5 секунд) — міцно напруж вказану зону. Коли колір зміниться на спокійний (10 секунд) — повністю відпусти напругу і відчуй розслаблення. Сядь зручно, випрями спину. Приготуйся.</p>
             <div class="controls" style="justify-content: center; margin-top: 32px;">
               <button onclick="togglePMR()">Розпочати практику</button>
@@ -541,7 +562,7 @@
           </div>
 
           <div id="pmrMainInterface" style="display:none;">
-            <h2 id="pmrGroupLabel" style="font-family:'Cormorant Garamond',serif; color:var(--accent-glow); font-size:28px; margin-top:0;">М'язова група</h2>
+            <h2 id="pmrGroupLabel" style="font-family:'Merriweather',serif; color:var(--accent-glow); font-size:28px; margin-top:0;">М'язова група</h2>
             <div id="pmrInstruction" class="question-text" style="justify-content:center; min-height:60px; font-weight:600; text-align: center;">Готуємось...</div>
             <div id="pmrTimer" class="pmr-timer-text">00</div>
             <div class="controls" style="justify-content: center;">
@@ -554,7 +575,7 @@
       <div id="soothing-wizard" style="display:none;">
         <div class="card" style="text-align: center; padding: 40px 20px;">
           <div class="card-inner-glow"></div>
-          <h2 style="font-family:'Cormorant Garamond',serif; color:var(--accent-glow); font-size:28px; margin-top:0;" id="wizardTitle">Крок 1</h2>
+          <h2 style="font-family:'Merriweather',serif; color:var(--accent-glow); font-size:28px; margin-top:0;" id="wizardTitle">Крок 1</h2>
           <div class="question-text" style="justify-content:center; min-height:80px; font-size:18px; font-weight:600; text-align: center;" id="wizardText"></div>
           <div id="wizardInputs" class="wizard-inputs"></div>
           <div class="controls" style="justify-content: center;">
@@ -615,10 +636,9 @@
 </div>
 
 <script>
-// --- GLOBAL CONSTANTS & INIT ---
 const YSQ_SCHEMAS = [
   "Емоційна депривація (ED)", "Покинутість / Нестабільність (AB)", "Недовіра / Очікування зловживань (MA)",
-  "Social ізоляція / Відчуженість (SI)", "Дефективність / Сором (DS)", "Неуспішність (FA)",
+  "Соціальна ізоляція / Відчуженість (SI)", "Дефективність / Сором (DS)", "Неуспішність (FA)",
   "Залежність / Некомпетентність (DI)", "Вразливість до шкоди та хвороб (VH)", "Злиття / Нерозвинена ідентичність (EM)",
   "Підкорення (SB)", "Сапопожертва (SS)", "Пошук схвалення (AS)",
   "Негативізм / Песимізм (NP)", "Емоційне пригнічення (EI)", "Жорсткі стандарти / Гіперкритичність (US)",
@@ -647,10 +667,13 @@ function showSection(sectionId) {
   const navLink = document.getElementById('nav-' + sectionId);
   if (navLink) navLink.classList.add('active');
   
-  if (sectionId !== 'tests') {
+  if (sectionId === 'tests') {
+    showExploreDashboard();
+  } else {
     closeTest();
     closeReflect();
   }
+
   if (sectionId !== 'soothing') {
     if (isBreathing) toggleBreathing();
     if (isPMR) stopPMR();
@@ -658,23 +681,85 @@ function showSection(sectionId) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+function showExploreDashboard() {
+  document.getElementById('explore-dashboard').style.display = 'block';
+  document.getElementById('test-catalog-view').style.display = 'none';
+  document.getElementById('reflect-catalog-view').style.display = 'none';
+  document.getElementById('active-test-container').style.display = 'none';
+  document.getElementById('active-reflect-container').style.display = 'none';
+}
+
+function openTestCatalog() {
+  document.getElementById('explore-dashboard').style.display = 'none';
+  document.getElementById('test-catalog-view').style.display = 'block';
+}
+
+function openReflectCatalog() {
+  document.getElementById('explore-dashboard').style.display = 'none';
+  document.getElementById('reflect-catalog-view').style.display = 'block';
+}
+
 function renderTestCatalog() {
-  const grid = document.getElementById('test-catalog-grid');
-  grid.innerHTML = '';
-  for (let id in TESTS_DATABASE) {
-    const t = TESTS_DATABASE[id];
-    grid.innerHTML += `
-      <div class="card clickable-card" onclick="openTest('${id}')">
-        <div class="card-inner-glow"></div>
-        <div class="card-header-test" style="margin-bottom: 8px; padding-bottom: 0; border: none;">
-          <div class="card-badge">${t.badge}</div>
-          <div>
-            <div class="card-title">${t.title}</div>
-            <div class="card-sub">${t.instruction.substring(0, 95)}...</div>
-          </div>
-        </div>
-      </div>`;
+  const container = document.getElementById('test-catalog-container');
+  container.innerHTML = '';
+
+  const testCategories = [
+    { id: 'emotional', title: 'Емоційний стан', tests: ['bdi', 'gad_7'] },
+    { id: 'personality', title: 'Аналіз особистості', tests: ['ysq_s3', 'smq', 'schmishek'] },
+    { id: 'trauma', title: 'Травма та стрес', tests: ['pcl_5', 'aaq_2'] }
+  ];
+
+  let usedIds = new Set();
+
+  testCategories.forEach(cat => {
+    let hasTests = false;
+    let html = `<h3 style="color:var(--accent-glow); font-family: 'Merriweather', serif; font-size: 22px; margin: 32px 0 16px; text-align: left;">${cat.title}</h3><div class="catalog-grid">`;
+    
+    cat.tests.forEach(testId => {
+      if (TESTS_DATABASE && TESTS_DATABASE[testId]) {
+        const t = TESTS_DATABASE[testId];
+        usedIds.add(testId);
+        hasTests = true;
+        html += `
+          <div class="card clickable-card" onclick="openTest('${testId}')">
+            <div class="card-inner-glow"></div>
+            <div class="card-header-test" style="margin-bottom: 8px; padding-bottom: 0; border: none;">
+              <div class="card-badge">${t.badge}</div>
+              <div>
+                <div class="card-title">${t.title}</div>
+                <div class="card-sub">${t.instruction.substring(0, 95)}...</div>
+              </div>
+            </div>
+          </div>`;
+      }
+    });
+    html += `</div>`;
+    if (hasTests) container.innerHTML += html;
+  });
+
+  let otherHtml = `<h3 style="color:var(--accent-glow); font-family: 'Merriweather', serif; font-size: 22px; margin: 32px 0 16px; text-align: left;">Інші методики</h3><div class="catalog-grid">`;
+  let hasOther = false;
+  if (typeof TESTS_DATABASE !== 'undefined') {
+    for (let id in TESTS_DATABASE) {
+      if (!usedIds.has(id)) {
+        const t = TESTS_DATABASE[id];
+        hasOther = true;
+        otherHtml += `
+            <div class="card clickable-card" onclick="openTest('${id}')">
+              <div class="card-inner-glow"></div>
+              <div class="card-header-test" style="margin-bottom: 8px; padding-bottom: 0; border: none;">
+                <div class="card-badge">${t.badge}</div>
+                <div>
+                  <div class="card-title">${t.title}</div>
+                  <div class="card-sub">${t.instruction.substring(0, 95)}...</div>
+                </div>
+              </div>
+            </div>`;
+      }
+    }
   }
+  otherHtml += `</div>`;
+  if (hasOther) container.innerHTML += otherHtml;
 }
 
 function renderSoothingCatalog() {
@@ -682,7 +767,7 @@ function renderSoothingCatalog() {
   container.innerHTML = '';
   for (let cat in SOOTHING_DATABASE) {
     const c = SOOTHING_DATABASE[cat];
-    let html = `<h3 style="color:var(--accent-glow); font-family: 'Cormorant Garamond', serif; font-size: 22px; margin: 32px 0 16px; text-align: left;">${c.categoryTitle}</h3><div class="catalog-grid">`;
+    let html = `<h3 style="color:var(--accent-glow); font-family: 'Merriweather', serif; font-size: 22px; margin: 32px 0 16px; text-align: left;">${c.categoryTitle}</h3><div class="catalog-grid">`;
     c.items.forEach(item => {
       html += `
         <div class="card clickable-card" onclick="openSoothing('${cat}', '${item.id}')">
@@ -696,7 +781,6 @@ function renderSoothingCatalog() {
   }
 }
 
-// --- SOOTHING CONTROLLER ---
 let currentCatId = null;
 let currentActiveSoothingId = null;
 let currentSoothingItem = null;
@@ -771,7 +855,6 @@ function repeatCurrentSoothing() {
   openSoothing(currentCatId, currentActiveSoothingId);
 }
 
-// --- BREATHING LOGIC ---
 let isBreathing = false;
 let breathInterval = null;
 let currentPhase = 0;
@@ -833,7 +916,6 @@ function runBreathPhase() {
   currentPhase = (currentPhase + 1) % 4;
 }
 
-// --- PMR LOGIC ---
 let isPMR = false;
 let pmrInterval = null;
 let pmrSteps = [];
@@ -902,7 +984,6 @@ function startPmrPhase() {
   }, 1000);
 }
 
-// --- WIZARD LOGIC ---
 let currentWizardSteps = [];
 let currentWizardStepIdx = 0;
 let wizardAnswers = [];
@@ -982,7 +1063,6 @@ function copyWizardText() {
   });
 }
 
-// --- TEST LOGIC ---
 let activeTestId = null;
 let currentTestDef = null;
 let activeQuestions = [];
@@ -994,7 +1074,7 @@ function openTest(testId) {
   currentTestDef = TESTS_DATABASE[testId];
   activeQuestions = currentTestDef.questions;
   
-  document.getElementById('explore-catalog').style.display = 'none';
+  document.getElementById('test-catalog-view').style.display = 'none';
   document.getElementById('active-test-container').style.display = 'block';
   document.getElementById('activeTestBadge').innerText = currentTestDef.badge;
   document.getElementById('testInstruction').innerText = currentTestDef.instruction;
@@ -1007,7 +1087,7 @@ function closeTest() {
   activeTestId = null;
   currentTestDef = null;
   document.getElementById('active-test-container').style.display = 'none';
-  document.getElementById('explore-catalog').style.display = 'block';
+  document.getElementById('test-catalog-view').style.display = 'block';
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -1089,7 +1169,6 @@ function handleAnswer(qid, val){
 function prevQ(){ if(currentIndex > 0){ currentIndex--; renderQuestion(currentIndex); } }
 function nextQ(){ if(currentIndex < activeQuestions.length - 1){ currentIndex++; renderQuestion(currentIndex); } }
 
-// --- CALCULATIONS ---
 function calculateYSQ(){
   const map = {};
   YSQ_SCHEMAS.forEach(s => map[s] = 0);
@@ -1278,7 +1357,6 @@ function saveResultsToGoogleSheet(resultsData) {
     });
 }
 
-// --- LIGHTBOX LOGIC ---
 function openLightbox(src) {
   const lb = document.getElementById('lightbox');
   const lbImg = document.getElementById('lightboxImg');
@@ -1301,12 +1379,24 @@ let currentReflectSteps = [];
 let currentReflectStepIdx = 0;
 let reflectAnswers = [];
 
+window.updateSlider = function(sliderId, value) {
+  const valDisplay = document.getElementById(`val-${sliderId}`);
+  if (valDisplay) valDisplay.innerText = value;
+  const s = currentReflectSteps[currentReflectStepIdx];
+  if (s && s.inputType === 'sliders') {
+    if (!reflectAnswers[currentReflectStepIdx]) reflectAnswers[currentReflectStepIdx] = {};
+    reflectAnswers[currentReflectStepIdx][sliderId] = value;
+  }
+}
+
 function renderReflectCatalog() {
   const container = document.getElementById('reflect-catalog-container');
   container.innerHTML = '';
+  if (typeof REFLECT_DATABASE === 'undefined') return;
+
   for (let cat in REFLECT_DATABASE) {
     const c = REFLECT_DATABASE[cat];
-    let html = `<h3 style="color:var(--accent-glow); font-family:'Cormorant Garamond',serif; font-size:22px; margin:32px 0 16px; text-align:left;">${c.categoryTitle}</h3><div class="catalog-grid">`;
+    let html = `<h3 style="color:var(--accent-glow); font-family:'Merriweather',serif; font-size:22px; margin:32px 0 16px; text-align:left;">${c.categoryTitle}</h3><div class="catalog-grid">`;
     c.items.forEach(item => {
       html += `
         <div class="card clickable-card" onclick="openReflect('${cat}','${item.id}')">
@@ -1321,7 +1411,7 @@ function renderReflectCatalog() {
 }
 
 function openReflect(catId, itemId) {
-  document.getElementById('explore-catalog').style.display = 'none';
+  document.getElementById('reflect-catalog-view').style.display = 'none';
   document.getElementById('active-reflect-container').style.display = 'block';
   document.getElementById('reflect-wizard').style.display = 'none';
   document.getElementById('reflect-feedback').style.display = 'none';
@@ -1340,7 +1430,7 @@ function openReflect(catId, itemId) {
 
 function closeReflect() {
   document.getElementById('active-reflect-container').style.display = 'none';
-  document.getElementById('explore-catalog').style.display = 'block';
+  document.getElementById('reflect-catalog-view').style.display = 'block';
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -1367,6 +1457,25 @@ function renderReflectStep() {
     };
     container.appendChild(tarea);
     if (tarea.value.trim().length > 0) btn.disabled = false;
+  } else if (s.inputType === 'sliders') {
+    btn.disabled = false;
+    if (!reflectAnswers[currentReflectStepIdx]) {
+      reflectAnswers[currentReflectStepIdx] = {};
+      s.sliders.forEach(sl => reflectAnswers[currentReflectStepIdx][sl.id] = sl.min || 0);
+    }
+    
+    s.sliders.forEach(sl => {
+      const group = document.createElement('div');
+      group.className = 'slider-group';
+      const val = reflectAnswers[currentReflectStepIdx][sl.id];
+      const maxVal = sl.max || 10;
+      
+      group.innerHTML = `
+        <label>${sl.label} <span class="slider-value"><span id="val-${sl.id}">${val}</span> / ${maxVal}</span></label>
+        <input type="range" min="${sl.min || 0}" max="${maxVal}" value="${val}" oninput="updateSlider('${sl.id}', this.value)">
+      `;
+      container.appendChild(group);
+    });
   }
 }
 
@@ -1387,12 +1496,19 @@ function showReflectFeedback() {
   currentReflectSteps.forEach((step, i) => {
     if (step.inputType === 'text' && reflectAnswers[i]) {
       text += `${step.title}:\n${reflectAnswers[i]}\n\n`;
+    } else if (step.inputType === 'sliders' && reflectAnswers[i]) {
+      text += `${step.title}:\n`;
+      step.sliders.forEach(sl => {
+        const val = reflectAnswers[i][sl.id];
+        text += `• ${sl.label}: ${val} / ${sl.max || 10}\n`;
+      });
+      text += `\n`;
     }
   });
 
   document.getElementById('r-feedbackResultContainer').style.display = 'block';
   document.getElementById('r-feedbackTextarea').value = text.trim();
-  document.getElementById('r-btnCopy').innerHTML = '📋 Скопіювати text';
+  document.getElementById('r-btnCopy').innerHTML = '📋 Скопіювати текст';
 }
 
 function copyReflectText() {
@@ -1400,7 +1516,7 @@ function copyReflectText() {
   const btn = document.getElementById('r-btnCopy');
   navigator.clipboard.writeText(text).then(() => {
     const orig = btn.innerHTML;
-    btn.innerHTML = '✅ Скопіювано!';
+    btn.innerHTML = '✅ Скопійовано!';
     setTimeout(() => { btn.innerHTML = orig; }, 2000);
   }).catch(() => {});
 }
