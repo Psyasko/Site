@@ -197,8 +197,9 @@
 .feedback-result-textarea { 
   width: 100%; 
   max-width: 500px; 
-  height: 280px; /* Збільшено висоту для вільного розміщення тексту */
-  margin: 16px auto; 
+  height: 320px;       /* Базова висота */
+  min-height: 300px;   /* Захист від стискання */
+  margin: 16px auto 8px auto; 
   background: var(--glass-bg); 
   border: 1px solid var(--border-soft); 
   color: var(--text-main); 
@@ -209,7 +210,7 @@
   line-height: 1.6; 
   resize: none; 
   display: block; 
-  overflow-y: auto; /* Акуратний внутрішній скрол, якщо ліміт перевищено */
+  overflow-y: auto;
 }
   .resultBox { margin-top: 28px; display: none; border-top: 1px solid var(--border-soft); padding-top: 24px; }
   table { width: 100%; border-collapse: collapse; margin-top: 12px; }
