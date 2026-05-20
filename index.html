@@ -194,11 +194,12 @@
   .feedback-desc { font-size: 14px; color: var(--text-muted); margin-bottom: 24px; font-weight: 500; }
   
   ./* Онови цей селектор у стилях */
+/* Велике, стабільне текстове поле без стискання */
 .feedback-result-textarea { 
   width: 100%; 
   max-width: 500px; 
-  height: 320px;       /* Базова висота */
-  min-height: 300px;   /* Захист від стискання */
+  height: 300px;       /* Задаємо фіксовану висоту за замовчуванням */
+  min-height: 300px;   /* Насильно утримуємо висоту від стискання */
   margin: 16px auto 8px auto; 
   background: var(--glass-bg); 
   border: 1px solid var(--border-soft); 
@@ -213,19 +214,21 @@
   overflow-y: auto;
 }
 
-/* Спеціальний контейнер для зміщення кнопки копіювання вбік */
+/* Контейнер під полем для кнопки копіювання */
 .feedback-copy-wrapper {
   width: 100%;
   max-width: 500px;
-  margin: 0 auto 24px auto;
+  margin: 0 auto 20px auto;
   display: flex;
-  justify-content: flex-end; /* Зміщує кнопку праворуч */
+  justify-content: flex-end; /* Зміщує кнопку копіювання праворуч */
 }
 
 .feedback-copy-wrapper button {
   padding: 8px 14px;
   font-size: 11px;
   border-color: var(--accent-glow);
+  background: transparent;
+  cursor: pointer;
 }
   .resultBox { margin-top: 28px; display: none; border-top: 1px solid var(--border-soft); padding-top: 24px; }
   table { width: 100%; border-collapse: collapse; margin-top: 12px; }
