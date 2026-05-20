@@ -628,18 +628,20 @@
         </div>
       </div>
 
-      <div id="soothing-feedback" style="display:none;">
+     <div id="soothing-feedback" style="display:none;">
   <div class="card feedback-box">
     <div class="card-inner-glow"></div>
     <div class="feedback-title">Вправу завершено</div>
     <div class="feedback-desc">Оціни свій поточний стан та обери подальшу дію:</div>
     
-    <div id="feedbackResultContainer" style="display:none; margin-bottom: 24px;">
+    <div id="feedbackResultContainer" style="display:none;">
       <textarea id="feedbackTextarea" class="feedback-result-textarea" readonly></textarea>
+      <div class="feedback-copy-wrapper">
+        <button onclick="copyWizardText()" id="btnCopyFeedback">📋 Скопіювати текст</button>
+      </div>
     </div>
 
     <div class="controls" style="justify-content: center; gap: 12px;">
-      <button onclick="copyWizardText()" id="btnCopyFeedback" style="border-color: var(--accent-glow);">📋 Скопіювати текст</button>
       <button onclick="closeSoothing()">Мені стало краще</button>
       <button class="btn-ghost" onclick="repeatCurrentSoothing()">Повторити ще раз</button>
       <button class="btn-ghost" onclick="closeSoothing()">Інші техніки</button>
