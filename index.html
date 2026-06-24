@@ -949,8 +949,8 @@ function renderTestCatalog() {
   if (typeof TESTS_DATABASE === 'undefined') return;
 
   const testCategories = [
-    { id: 'emotional', title: 'Емоційний стан', tests: ['bdi', 'gad_7'] },
-    { id: 'personality', title: 'Аналіз особистості', tests: ['ysq_s3', 'smq', 'schmishek'] },
+    { id: 'emotional', title: 'Емоційний стан', tests: ['phq_9', 'gad_7'] },
+    { id: 'personality', title: 'Схеми та режими', tests: ['ysq_s3', 'smq'] },
     { id: 'trauma', title: 'Травма та стрес', tests: ['pcl_5', 'aaq_2'] }
   ];
 
@@ -1418,14 +1418,22 @@ function prevQ(){ if(currentIndex > 0){ currentIndex--; renderQuestion(currentIn
 function nextQ(){ if(currentIndex < activeQuestions.length - 1){ currentIndex++; renderQuestion(currentIndex); } }
 
 function calculateYSQ(){
-  const map = {};
-  YSQ_SCHEMAS.forEach(s => map[s] = 0);
-  activeQuestions.forEach(q => {
-    const schemaName = YSQ_SCHEMAS[Math.floor((q.id - 1) / 5)];
-    const v = answers[q.id];
-    if(v && schemaName) map[schemaName] += v;
+  const schemaMap = currentTestDef?.scoring?.schemaMap || {};
+  const results = [];
+
+  Object.entries(schemaMap).forEach(([schema, ids]) => {
+    const values = ids.map(id => answers[id]).filter(v => typeof v === 'number');
+    if (!values.length) return;
+    const sum = values.reduce((a, b) => a + b, 0);
+    const mean = sum / values.length;
+    let level = 'Низька вираженість';
+    if (mean >= 4) level = "<span style='color:var(--accent-glow); font-weight:700;'>Висока вираженість</span>";
+    else if (mean >= 3) level = 'Помірна вираженість';
+    else if (mean >= 2) level = 'Легка вираженість';
+    results.push({ schema, sum: mean.toFixed(1), rawSum: sum, items: values.length, htmlLevel: level });
   });
-  return Object.keys(map).map(k => ({ schema: k, sum: map[k] })).sort((a,b)=>b.sum - a.sum);
+
+  return results.sort((a, b) => Number(b.sum) - Number(a.sum));
 }
 
 function calculatePCL5(){
@@ -1439,38 +1447,83 @@ function calculatePCL5(){
     else if (numId <= 14) d += v;
     else e += v;
   }
-  let level = total >= 31 ? "<span style='color:var(--accent-glow); font-weight:700;'>Висока ймовірність ПТСР</span>" : "Нижче клінічного порогу";
+  let level = total >= 31 ? "<span style='color:var(--accent-glow); font-weight:700;'>Вище рекомендованого скринінгового порогу</span>" : "Нижче рекомендованого скринінгового порогу";
   return [
-    { schema: "Загальний бал (ПТСР)", sum: total, htmlLevel: level },
-    { schema: "Кластер B (Вторгнення)", sum: b, htmlLevel: "" },
-    { schema: "Кластер C (Уникнення)", sum: c, htmlLevel: "" },
-    { schema: "Кластер D (Когніції/Настрій)", sum: d, htmlLevel: "" },
-    { schema: "Кластер E (Гіперактивація)", sum: e, htmlLevel: "" }
+    { schema: "Загальний бал", sum: total, htmlLevel: level },
+    { schema: "Кластер B — вторгнення", sum: b, htmlLevel: "" },
+    { schema: "Кластер C — уникнення", sum: c, htmlLevel: "" },
+    { schema: "Кластер D — негативні зміни в думках і настрої", sum: d, htmlLevel: "" },
+    { schema: "Кластер E — збудження та реактивність", sum: e, htmlLevel: "" }
   ];
 }
 
 function calculateSMQ(){
-  let activeModes = [];
-  let total = 0;
-  for (let id in answers) {
-    let v = answers[id];
-    total += v;
-    if (v >= 4) activeModes.push(`№${id} (${v}б)`);
-  }
+  const rows = [];
+  let riskTotal = 0;
+  let resourceTotal = 0;
+  let activeRisk = 0;
+  let activeResource = 0;
+
+  activeQuestions.forEach(q => {
+    const v = answers[q.id] || 0;
+    const isResource = q.modeType === 'resource';
+    if (isResource) {
+      resourceTotal += v;
+      if (v >= 4) activeResource++;
+    } else {
+      riskTotal += v;
+      if (v >= 4) activeRisk++;
+    }
+    rows.push({
+      schema: q.mode || `Пункт ${q.id}`,
+      sum: v,
+      htmlLevel: isResource ? 'Ресурсний режим' : (v >= 4 ? "<span style='color:var(--accent-glow); font-weight:700;'>Виражений режим</span>" : 'Не домінує')
+    });
+  });
+
   return [
-    { schema: "Загальний бал режимів", sum: total, htmlLevel: activeModes.length > 0 ? "Є виражені режими" : "Стабільний стан" },
-    { schema: "Активні режими (від 4 балів)", sum: activeModes.length, htmlLevel: activeModes.join(", ") }
+    { schema: "Сумарний бал проблемних режимів", sum: riskTotal, htmlLevel: activeRisk ? `Виражених режимів: ${activeRisk}` : 'Без вираженого домінування' },
+    { schema: "Сумарний бал ресурсних режимів", sum: resourceTotal, htmlLevel: activeResource ? `Ресурсних режимів: ${activeResource}` : 'Ресурсні режими не виражені' },
+    ...rows
   ];
 }
 
-function calculateGenericScore(thresholds, isAAQ = false){
+function calculateGenericScore(thresholds){
   let score = 0;
   for (let qid in answers) score += answers[qid];
-  let levelStr = thresholds.find(t => score >= t.min && score <= t.max).text;
-  if(isAAQ) levelStr = score > 24 ? "<span style='color:var(--accent-glow); font-weight:700;'>Низька гнучкість / Високе уникнення</span>" : "Нормальна психологічна гнучкість";
+  let levelStr = thresholds.find(t => score >= t.min && score <= t.max)?.text || 'Орієнтовний сумарний бал';
   return [
     { schema: "Загальний бал", sum: score, htmlLevel: levelStr }
   ];
+}
+
+function calculateAAQ2(){
+  let score = 0;
+  for (let qid in answers) score += answers[qid];
+  let level = 'Нижчий рівень психологічної негнучкості';
+  if (score >= 25) level = "<span style='color:var(--accent-glow); font-weight:700;'>Підвищений рівень психологічної негнучкості / уникання</span>";
+  else if (score >= 19) level = 'Помірний рівень психологічної негнучкості / уникання';
+  return [{ schema: "Загальний бал", sum: score, htmlLevel: level }];
+}
+
+function calculatePHQ9(){
+  let score = 0;
+  for (let qid in answers) score += answers[qid];
+  const suicideItem = answers[9] || 0;
+  let level = 'Мінімальний рівень депресивних симптомів';
+  if (score >= 20) level = "<span style='color:var(--accent-glow); font-weight:700;'>Високий рівень депресивних симптомів</span>";
+  else if (score >= 15) level = 'Помірно високий рівень депресивних симптомів';
+  else if (score >= 10) level = 'Помірний рівень депресивних симптомів';
+  else if (score >= 5) level = 'Легкий рівень депресивних симптомів';
+  const rows = [{ schema: "Загальний бал", sum: score, htmlLevel: level }];
+  if (suicideItem > 0) {
+    rows.push({
+      schema: "Пункт про самоушкодження",
+      sum: suicideItem,
+      htmlLevel: "<span style='color:var(--accent-glow); font-weight:700;'>Потребує окремої уваги та розмови з фахівцем</span>"
+    });
+  }
+  return rows;
 }
 
 function getPlainText(value) {
@@ -1721,24 +1774,26 @@ function showResults(){
   if (activeTestId === 'ysq_s3') {
     const results = calculateYSQ();
     results.forEach(r => {
-      let lvl = r.sum >= 25 ? "<span style='color:var(--accent-glow); font-weight:700;'>Високий</span>" : (r.sum >= 20 ? "Середній" : (r.sum >= 10 ? "Легкий" : "—"));
-      if(r.sum > 0) addRow(r.schema, r.sum, lvl);
+      if(Number(r.sum) > 0) addRow(r.schema, r.sum, r.htmlLevel);
     });
-    descBlock.innerHTML = 'Результат згенеровано на основі структурованих шкал Янга. Це не є діагнозом.';
+    descBlock.innerHTML = 'Це схема-орієнтована карта саморефлексії, а не офіційний YSQ-S3 і не діагноз. Бал показує середню вираженість теми за шкалою 1–6.';
   } else if (activeTestId === 'pcl_5') {
     calculatePCL5().forEach(r => addRow(r.schema, r.sum, r.htmlLevel));
-    descBlock.innerHTML = 'Цей результат не є клінічним діагнозом ПТСР, він відображає лише поточну інтенсивність симптомів.';
+    descBlock.innerHTML = 'PCL-5 є скринінговим інструментом. Показник вище порогу не є діагнозом і потребує клінічної оцінки з урахуванням конкретної стресової події.';
   } else if (activeTestId === 'smq') {
     calculateSMQ().forEach(r => addRow(r.schema, r.sum, r.htmlLevel));
-    descBlock.innerHTML = 'Показує поточні активні копінги та стани. Це не є діагнозом.';
+    descBlock.innerHTML = 'Це коротка карта схема-режимів для саморефлексії, а не стандартизований Schema Mode Inventory і не діагноз. Ресурсні режими рахуються окремо від проблемних.';
   } else {
     let results = [];
-    if (activeTestId === 'bdi') results = calculateGenericScore([{min:0,max:13,text:"Мінімальна депресія"},{min:14,max:19,text:"Легка депресія"},{min:20,max:28,text:"Помірна депресія"},{min:29,max:999,text:"<span style='color:var(--accent-glow); font-weight:700;'>Тяжка депресія</span>"}]);
-    if (activeTestId === 'gad_7') results = calculateGenericScore([{min:0,max:4,text:"Мінімальна тривога"},{min:5,max:9,text:"Легка тривога"},{min:10,max:14,text:"Помірна тривога"},{min:15,max:999,text:"<span style='color:var(--accent-glow); font-weight:700;'>Тяжка тривога</span>"}]);
-    if (activeTestId === 'aaq_2') results = calculateGenericScore([{min:0,max:999,text:""}], true);
+    if (activeTestId === 'phq_9') results = calculatePHQ9();
+    if (activeTestId === 'gad_7') results = calculateGenericScore([{min:0,max:4,text:"Мінімальний рівень тривожних симптомів"},{min:5,max:9,text:"Легкий рівень тривожних симптомів"},{min:10,max:14,text:"Помірний рівень тривожних симптомів"},{min:15,max:999,text:"<span style='color:var(--accent-glow); font-weight:700;'>Високий рівень тривожних симптомів</span>"}]);
+    if (activeTestId === 'aaq_2') results = calculateAAQ2();
     if (!results.length) results = calculateGenericScore([{min:0,max:999,text:"Орієнтовний сумарний бал"}]);
     results.forEach(r => addRow(r.schema, r.sum, r.htmlLevel));
-    descBlock.innerHTML = 'Результати призначені виключно для саморефлексії та ознайомлення. Вони не є діагнозом.';
+    if (activeTestId === 'phq_9') descBlock.innerHTML = 'PHQ-9 є скринінговим опитувальником. Результат не є діагнозом. Будь-яка відповідь вище 0 у пункті про самоушкодження потребує окремої уваги та звернення по підтримку.';
+    else if (activeTestId === 'gad_7') descBlock.innerHTML = 'GAD-7 є скринінговим опитувальником тривожних симптомів. Результат не є діагнозом і має обговорюватися з фахівцем у контексті життя людини.';
+    else if (activeTestId === 'aaq_2') descBlock.innerHTML = 'AAQ-II відображає рівень психологічної негнучкості та уникання досвіду. Це не діагноз, а орієнтир для саморефлексії.';
+    else descBlock.innerHTML = 'Результати призначені виключно для саморефлексії та ознайомлення. Вони не є діагнозом.';
   }
 
   currentResultRecord = {
