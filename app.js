@@ -964,32 +964,180 @@ function getRecordKindLabel(record) {
   return record.type === 'reflect' ? 'Особиста рефлексія' : 'Скринінговий опитувальник';
 }
 
+function getRecordChartGroupId(record) {
+  return record.testId || record.reflectId || 'other';
+}
+
+function getRecordChartGroupLabel(record) {
+  return record.badge || record.shortTitle || record.testTitle || record.reflectTitle || getRecordTitle(record);
+}
+
+function getRecordMainScore(record) {
+  const value = Number(record?.results?.[0]?.sum);
+  return Number.isFinite(value) ? value : null;
+}
+
+function getRecordScaleMax(record) {
+  const explicit = Number(record.scaleMax);
+  if (Number.isFinite(explicit) && explicit > 0) return explicit;
+  const id = record.testId || record.reflectId;
+  const mapped = Number(getTestScaleMax(id));
+  return Number.isFinite(mapped) && mapped > 0 ? mapped : 10;
+}
+
+function formatShortDate(timestamp) {
+  const date = new Date(timestamp);
+  if (Number.isNaN(date.getTime())) return '-';
+  return date.toLocaleDateString('uk-UA', { day: '2-digit', month: '2-digit' });
+}
+
+function groupRecordsForCharts(records) {
+  const map = new Map();
+  records.forEach(record => {
+    const score = getRecordMainScore(record);
+    if (score === null) return;
+    const id = getRecordChartGroupId(record);
+    if (!map.has(id)) {
+      map.set(id, {
+        id,
+        label: getRecordChartGroupLabel(record),
+        title: getRecordTitle(record),
+        max: getRecordScaleMax(record),
+        records: []
+      });
+    }
+    map.get(id).records.push(record);
+  });
+  return [...map.values()].map(group => ({
+    ...group,
+    records: group.records.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
+  }));
+}
+
+function buildSparklineSvg(group) {
+  const records = group.records || [];
+  if (records.length < 2) {
+    return `<div class="chart-empty">Для графіка потрібно щонайменше два проходження.</div>`;
+  }
+
+  const width = 620;
+  const height = 122;
+  const padX = 34;
+  const padTop = 14;
+  const padBottom = 28;
+  const plotW = width - padX * 2;
+  const plotH = height - padTop - padBottom;
+  const max = Math.max(Number(group.max) || 10, ...records.map(r => getRecordMainScore(r) || 0), 1);
+  const min = 0;
+
+  const points = records.map((record, idx) => {
+    const score = getRecordMainScore(record) || 0;
+    const x = records.length === 1 ? padX + plotW / 2 : padX + (idx / (records.length - 1)) * plotW;
+    const y = padTop + plotH - ((score - min) / (max - min || 1)) * plotH;
+    return { x, y, score, label: formatShortDate(record.timestamp) };
+  });
+
+  const polyline = points.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
+  const last = points[points.length - 1];
+  const first = points[0];
+  const yMid = padTop + plotH / 2;
+  const xLabels = points.length <= 6 ? points : points.filter((_, i) => i === 0 || i === points.length - 1 || i % Math.ceil(points.length / 5) === 0);
+
+  return `
+    <svg class="mini-chart" viewBox="0 0 ${width} ${height}" role="img" aria-label="Динаміка ${escapeHTML(group.title)}">
+      <line x1="${padX}" y1="${padTop}" x2="${padX}" y2="${padTop + plotH}" class="axis" />
+      <line x1="${padX}" y1="${padTop + plotH}" x2="${padX + plotW}" y2="${padTop + plotH}" class="axis" />
+      <line x1="${padX}" y1="${yMid}" x2="${padX + plotW}" y2="${yMid}" class="grid" />
+      <text x="4" y="${padTop + 4}" class="axis-label">${escapeHTML(max)}</text>
+      <text x="10" y="${padTop + plotH + 4}" class="axis-label">0</text>
+      <polyline points="${polyline}" class="trend-line" />
+      ${points.map(p => `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="3.2" class="trend-dot" /><text x="${p.x.toFixed(1)}" y="${Math.max(10, p.y - 7).toFixed(1)}" class="score-label">${escapeHTML(p.score)}</text>`).join('')}
+      ${xLabels.map(p => `<text x="${p.x.toFixed(1)}" y="${height - 7}" class="date-label" text-anchor="middle">${escapeHTML(p.label)}</text>`).join('')}
+      <text x="${padX + plotW}" y="${padTop + 10}" text-anchor="end" class="chart-range">${escapeHTML(first.score)} → ${escapeHTML(last.score)}</text>
+    </svg>`;
+}
+
+function buildCompactCharts(records) {
+  const groups = groupRecordsForCharts(records);
+  if (!groups.length) return '';
+  return `
+    <section class="charts-section">
+      <h2>Графіки динаміки</h2>
+      ${groups.map(group => `
+        <div class="chart-card">
+          <div class="chart-head">
+            <strong>${escapeHTML(group.title)}</strong>
+            <span>${escapeHTML(group.records.length)} ${group.records.length === 1 ? 'замір' : 'заміри'}</span>
+          </div>
+          ${buildSparklineSvg(group)}
+        </div>`).join('')}
+    </section>`;
+}
+
+function buildSummaryTable(records) {
+  const rows = records.map(record => {
+    const date = new Date(record.timestamp).toLocaleString('uk-UA');
+    const main = record.results?.[0] || {};
+    return `
+      <tr>
+        <td>${escapeHTML(date)}</td>
+        <td>${escapeHTML(getRecordKindLabel(record))}</td>
+        <td>${escapeHTML(getRecordTitle(record))}</td>
+        <td class="num">${escapeHTML(main.sum ?? '-')}</td>
+        <td>${escapeHTML(main.level || '-')}</td>
+      </tr>`;
+  }).join('');
+  return `
+    <section class="summary-section">
+      <h2>Коротка таблиця</h2>
+      <table class="compact-table">
+        <thead><tr><th>Дата</th><th>Тип</th><th>Назва</th><th>Бал</th><th>Рівень</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </section>`;
+}
+
+function buildSingleRecordDetails(record) {
+  const date = new Date(record.timestamp).toLocaleString('uk-UA');
+  const main = record.results?.[0] || {};
+  const numericValues = (record.results || []).map(r => Number(r.sum)).filter(Number.isFinite);
+  const defaultMax = Number(record.scaleMax) || Math.max(...numericValues, 1);
+  const rows = (record.results || []).map(r => {
+    const score = Number(r.sum);
+    const rowMax = Number(r.max) || defaultMax;
+    const percent = getScalePercent(score, rowMax);
+    return `
+      <tr>
+        <td>${escapeHTML(r.schema)}</td>
+        <td class="num">${escapeHTML(r.sum ?? '-')}</td>
+        <td>${escapeHTML(r.level || '-')}</td>
+        <td class="bar-cell"><div class="pdf-bar"><span style="width:${percent}%"></span></div></td>
+      </tr>`;
+  }).join('');
+
+  return `
+    <section class="single-result">
+      <div class="record-meta">${escapeHTML(getRecordKindLabel(record))} · ${escapeHTML(date)}</div>
+      <h2>${escapeHTML(getRecordTitle(record))}</h2>
+      <div class="single-summary">
+        <div><span>Основний бал</span><strong>${escapeHTML(main.sum ?? '-')}</strong></div>
+        <div><span>Рівень</span><strong>${escapeHTML(main.level || '-')}</strong></div>
+      </div>
+      <table class="compact-table detail-table">
+        <thead><tr><th>Показник</th><th>Бал</th><th>Рівень</th><th>Шкала</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </section>`;
+}
+
 function buildPdfDocument(title, records) {
   const safeTitle = escapeHTML(title);
   const now = new Date().toLocaleString('uk-UA');
-  const rowsHtml = records.map(record => {
-    const date = new Date(record.timestamp).toLocaleString('uk-UA');
-    const main = record.results?.[0] || {};
-    const details = (record.results || []).map(r => `
-      <tr>
-        <td>${escapeHTML(r.schema)}</td>
-        <td>${escapeHTML(r.sum ?? '-')}</td>
-        <td>${escapeHTML(r.level || '-')}</td>
-      </tr>`).join('');
-    return `
-      <section class="report-card">
-        <div class="report-meta">${escapeHTML(getRecordKindLabel(record))} · ${escapeHTML(date)}</div>
-        <h2>${escapeHTML(getRecordTitle(record))}</h2>
-        <div class="summary-row">
-          <div><span>Основний бал</span><strong>${escapeHTML(main.sum ?? '-')}</strong></div>
-          <div><span>Рівень</span><strong>${escapeHTML(main.level || '-')}</strong></div>
-        </div>
-        <table>
-          <thead><tr><th>Показник</th><th>Бал</th><th>Рівень</th></tr></thead>
-          <tbody>${details}</tbody>
-        </table>
-      </section>`;
-  }).join('');
+  const sortedRecords = [...records].sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+  const isSingle = sortedRecords.length === 1;
+  const bodyContent = isSingle
+    ? buildSingleRecordDetails(sortedRecords[0])
+    : `${buildCompactCharts(sortedRecords)}${buildSummaryTable(sortedRecords)}`;
 
   return `<!doctype html>
 <html lang="uk">
@@ -997,24 +1145,43 @@ function buildPdfDocument(title, records) {
 <meta charset="utf-8">
 <title>${safeTitle}</title>
 <style>
-  @page { size: A4; margin: 16mm; }
-  body { margin: 0; background: #181714; color: #C8AB85; font-family: Arial, sans-serif; line-height: 1.55; }
-  .report { max-width: 900px; margin: 0 auto; padding: 34px; }
-  .brand { color: #D4A060; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; margin-bottom: 10px; }
-  h1 { color: #D4A060; font-family: Georgia, serif; font-size: 30px; margin: 0 0 8px; font-weight: 400; }
-  .created { color: #827054; font-size: 13px; margin-bottom: 24px; }
-  .report-card { border: 1px solid rgba(180,100,25,.28); background: #201D18; border-radius: 14px; padding: 22px; margin: 0 0 18px; page-break-inside: avoid; }
-  .report-meta { color: #827054; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 8px; }
-  h2 { color: #D4A060; font-family: Georgia, serif; font-size: 22px; margin: 0 0 16px; }
-  .summary-row { display: grid; grid-template-columns: 1fr 2fr; gap: 12px; margin-bottom: 16px; }
-  .summary-row div { border: 1px solid rgba(180,100,25,.25); border-radius: 10px; padding: 12px; }
-  .summary-row span { display:block; color:#827054; font-size:11px; text-transform:uppercase; letter-spacing:.07em; margin-bottom:4px; }
-  .summary-row strong { color:#C8AB85; font-size:18px; }
-  table { width: 100%; border-collapse: collapse; }
-  th, td { border-bottom: 1px solid rgba(180,100,25,.22); text-align: left; padding: 9px 7px; vertical-align: top; font-size: 13px; }
-  th { color: #D4A060; font-family: Georgia, serif; font-size: 14px; }
-  .disclaimer { color:#827054; border-top:1px solid rgba(180,100,25,.28); margin-top:24px; padding-top:14px; font-size:12px; }
-  @media print { body { background: #181714 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; } .report { padding: 0; } }
+  @page { size: A4; margin: 10mm; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #f7f0e6; color: #3d342b; font-family: Arial, sans-serif; line-height: 1.35; font-size: 10.5px; }
+  .report { max-width: 760px; margin: 0 auto; padding: 14px; }
+  .brand { color: #b87a35; font-size: 10px; letter-spacing: .16em; text-transform: uppercase; font-weight: 700; margin-bottom: 4px; }
+  h1 { color: #2f271f; font-family: Georgia, serif; font-size: 20px; margin: 0 0 4px; font-weight: 400; }
+  h2 { color: #8a551f; font-family: Georgia, serif; font-size: 13px; margin: 0 0 8px; }
+  .created { color: #7f6d58; font-size: 9.5px; margin-bottom: 10px; }
+  .top-line { border-top: 2px solid #b87a35; margin: 0 0 10px; opacity: .55; }
+  .charts-section, .summary-section, .single-result { margin-top: 10px; }
+  .chart-card, .single-result { border: 1px solid rgba(184,122,53,.36); background: #fffaf2; border-radius: 8px; padding: 9px 10px; margin-bottom: 8px; page-break-inside: avoid; }
+  .chart-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; color: #4a3d31; margin-bottom: 4px; }
+  .chart-head strong { font-size: 11px; }
+  .chart-head span, .record-meta { color: #8a765f; font-size: 8.5px; text-transform: uppercase; letter-spacing: .06em; font-weight: 700; }
+  .mini-chart { width: 100%; height: 100px; display: block; background: #fbf5ec; border: 1px solid rgba(184,122,53,.18); border-radius: 6px; }
+  .axis { stroke: rgba(61,52,43,.42); stroke-width: 1; }
+  .grid { stroke: rgba(184,122,53,.22); stroke-width: 1; stroke-dasharray: 4 4; }
+  .trend-line { fill: none; stroke: #b87a35; stroke-width: 2.2; stroke-linejoin: round; stroke-linecap: round; }
+  .trend-dot { fill: #d4a060; stroke: #5e3b18; stroke-width: 1; }
+  .axis-label, .date-label, .chart-range, .score-label { fill: #6f5b45; font-size: 9px; font-family: Arial, sans-serif; }
+  .score-label { font-size: 8px; font-weight: 700; fill: #3d342b; }
+  .chart-empty { border: 1px dashed rgba(184,122,53,.35); border-radius: 6px; padding: 12px; color: #7f6d58; font-size: 10px; background: #fbf5ec; }
+  .compact-table { width: 100%; border-collapse: collapse; background: #fffaf2; border: 1px solid rgba(184,122,53,.30); border-radius: 8px; overflow: hidden; }
+  .compact-table th, .compact-table td { border-bottom: 1px solid rgba(184,122,53,.20); text-align: left; padding: 5px 6px; vertical-align: top; }
+  .compact-table th { color: #8a551f; font-size: 9px; text-transform: uppercase; letter-spacing: .04em; background: rgba(184,122,53,.08); }
+  .compact-table td { font-size: 9.5px; }
+  .compact-table tr:last-child td { border-bottom: none; }
+  .num { text-align: center !important; font-weight: 700; color: #3d342b; white-space: nowrap; }
+  .single-summary { display: grid; grid-template-columns: 120px 1fr; gap: 7px; margin: 8px 0; }
+  .single-summary div { border: 1px solid rgba(184,122,53,.26); border-radius: 6px; padding: 6px 7px; background: #fbf5ec; }
+  .single-summary span { display:block; color:#8a765f; font-size:8px; text-transform:uppercase; letter-spacing:.06em; margin-bottom:2px; }
+  .single-summary strong { color:#3d342b; font-size:13px; }
+  .bar-cell { width: 110px; }
+  .pdf-bar { width: 100%; height: 7px; border-radius: 999px; background: rgba(184,122,53,.15); overflow: hidden; }
+  .pdf-bar span { display:block; height: 100%; border-radius: inherit; background: #b87a35; }
+  .disclaimer { color:#6f5b45; border-top:1px solid rgba(184,122,53,.30); margin-top:10px; padding-top:7px; font-size:8.7px; }
+  @media print { body { background: #f7f0e6 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; } .report { padding: 0; } .chart-card, .single-result, .compact-table { page-break-inside: avoid; } }
 </style>
 </head>
 <body>
@@ -1022,7 +1189,8 @@ function buildPdfDocument(title, records) {
     <div class="brand">Віталій Психолог</div>
     <h1>${safeTitle}</h1>
     <div class="created">Створено: ${escapeHTML(now)}</div>
-    ${rowsHtml}
+    <div class="top-line"></div>
+    ${bodyContent}
     <div class="disclaimer">Цей звіт призначений для самоспостереження. Він не є діагнозом, не замінює консультацію фахівця і має лише орієнтовний інформаційний характер. Дані сформовані локально у браузері користувача.</div>
   </main>
 </body>
