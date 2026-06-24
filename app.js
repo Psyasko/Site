@@ -450,6 +450,104 @@ let currentIndex = 0;
 let answers = {};
 let currentResultRecord = null;
 let activeTestSource = 'test';
+
+const DIARY_CARDS = {
+  daily: {
+    title: 'Як я сьогодні?',
+    sub: 'Короткий щоденний запис: що вплинуло на стан, що виснажило і що підтримало.',
+    shortTitle: 'День',
+    mainLabel: 'Стан дня',
+    scaleMax: 10,
+    fields: [
+      { id: 'mood', label: 'Загальний стан', type: 'range', min: 0, max: 10, value: 5, left: 'важко', right: 'добре' },
+      { id: 'energy', label: 'Енергія', type: 'range', min: 0, max: 10, value: 5, left: 'немає сил', right: 'достатньо сил' },
+      { id: 'tension', label: 'Напруга', type: 'range', min: 0, max: 10, value: 5, left: 'спокійно', right: 'дуже напружено' },
+      { id: 'influenced', label: 'Що сьогодні найбільше вплинуло на мій стан?', type: 'textarea' },
+      { id: 'drained', label: 'Що мене виснажило?', type: 'textarea' },
+      { id: 'supported', label: 'Що мене підтримало?', type: 'textarea' },
+      { id: 'selfCare', label: 'Що я зробив(ла) для себе?', type: 'textarea' }
+    ],
+    resultRows: [
+      { field: 'mood', label: 'Загальний стан', invert: false },
+      { field: 'energy', label: 'Енергія', invert: false },
+      { field: 'tension', label: 'Напруга', invert: true }
+    ]
+  },
+  emotion: {
+    title: 'Що я зараз відчуваю?',
+    sub: 'Допомагає назвати емоцію, її силу, тілесне відчуття, думку і імпульс до дії.',
+    shortTitle: 'Емоція',
+    mainLabel: 'Інтенсивність емоції',
+    scaleMax: 10,
+    fields: [
+      { id: 'emotion', label: 'Найближча емоція', type: 'select', options: ['тривога', 'злість', 'сум', 'сором', 'провина', 'порожнеча', 'розгубленість', 'спокій', 'радість'] },
+      { id: 'intensity', label: 'Наскільки сильно я це відчуваю?', type: 'range', min: 0, max: 10, value: 5, left: 'ледь помітно', right: 'дуже сильно' },
+      { id: 'body', label: 'Де і як це відчувається в тілі?', type: 'textarea' },
+      { id: 'thought', label: 'Яка думка крутиться поруч із цією емоцією?', type: 'textarea' },
+      { id: 'impulse', label: 'Що хочеться зробити під впливом цієї емоції?', type: 'textarea' }
+    ],
+    resultRows: [
+      { field: 'intensity', label: 'Інтенсивність емоції', invert: true }
+    ]
+  },
+  need: {
+    title: 'Чого мені зараз не вистачає?',
+    sub: 'Проста карта потреб: спокій, підтримка, свобода, близькість, ясність, відпочинок.',
+    shortTitle: 'Потреба',
+    mainLabel: 'Сила незакритої потреби',
+    scaleMax: 10,
+    fields: [
+      { id: 'need', label: 'Що зараз найбільше потрібно?', type: 'select', options: ['спокою', 'підтримки', 'свободи вибору', 'близькості', 'ясності', 'відпочинку', 'визнання', 'контролю', 'безпеки'] },
+      { id: 'intensity', label: 'Наскільки сильно цього бракує?', type: 'range', min: 0, max: 10, value: 5, left: 'трохи', right: 'дуже сильно' },
+      { id: 'context', label: 'У якій ситуації це стало помітно?', type: 'textarea' },
+      { id: 'smallAction', label: 'Яка маленька дія може трохи наблизити мене до цієї потреби?', type: 'textarea' }
+    ],
+    resultRows: [
+      { field: 'intensity', label: 'Сила потреби', invert: true }
+    ]
+  },
+  avoidance: {
+    title: 'Що я зараз уникаю?',
+    sub: 'Коротка ACT-картка: що я відкладаю, що не хочу відчувати і який малий крок можливий.',
+    shortTitle: 'Уникання',
+    mainLabel: 'Сила уникання',
+    scaleMax: 10,
+    fields: [
+      { id: 'avoid', label: 'Що я відкладаю або обходжу стороною?', type: 'textarea' },
+      { id: 'feeling', label: 'Яку емоцію або відчуття я не хочу зустрічати?', type: 'textarea' },
+      { id: 'cost', label: 'Чого мені коштує це уникання?', type: 'textarea' },
+      { id: 'difficulty', label: 'Наскільки важко зробити крок у цей бік?', type: 'range', min: 0, max: 10, value: 5, left: 'можливо', right: 'дуже важко' },
+      { id: 'step', label: 'Який найменший крок на 5 хвилин я можу зробити?', type: 'textarea' }
+    ],
+    resultRows: [
+      { field: 'difficulty', label: 'Складність кроку', invert: true }
+    ]
+  },
+  thought: {
+    title: 'Думка, яка мене зачепила',
+    sub: 'Спрощена КПТ-картка: ситуація, думка, емоція, дія, інший погляд і малий крок.',
+    shortTitle: 'Думка',
+    mainLabel: 'Сила емоційної реакції',
+    scaleMax: 10,
+    fields: [
+      { id: 'situation', label: 'Що сталося?', type: 'textarea' },
+      { id: 'thought', label: 'Яка думка мене зачепила?', type: 'textarea' },
+      { id: 'emotion', label: 'Яку емоцію це викликало?', type: 'textarea' },
+      { id: 'intensity', label: 'Наскільки сильно це зачепило?', type: 'range', min: 0, max: 10, value: 5, left: 'слабко', right: 'дуже сильно' },
+      { id: 'action', label: 'Що я зробив(ла) або хотів(ла) зробити?', type: 'textarea' },
+      { id: 'alternative', label: 'Який інший, трохи м’якший погляд можливий?', type: 'textarea' },
+      { id: 'step', label: 'Який маленький наступний крок?', type: 'textarea' }
+    ],
+    resultRows: [
+      { field: 'intensity', label: 'Сила реакції', invert: true }
+    ]
+  }
+};
+
+function getDiaryCard(id) {
+  return DIARY_CARDS[id] || null;
+}
+
 const TEST_HISTORY_KEY = 'vitaliy_psychologist_local_test_history_v1';
 const REFLECT_HISTORY_KEY = 'vitaliy_psychologist_local_reflect_history_v1';
 
@@ -748,6 +846,18 @@ function getScalePercent(value, maxValue) {
   return Math.max(0, Math.min(100, Math.round((number / maxValue) * 100)));
 }
 
+function renderRecordNotes(record) {
+  if (!record.notes || !record.notes.length) return '';
+  return `
+    <div class="record-notes">
+      ${record.notes.map(note => `
+        <div class="record-note-row">
+          <div class="record-note-label">${escapeHTML(note.label)}</div>
+          <div class="record-note-text">${escapeHTML(note.value || '-')}</div>
+        </div>`).join('')}
+    </div>`;
+}
+
 function renderResultScaleBars(record) {
   const numericValues = record.results.map(r => Number(r.sum)).filter(Number.isFinite);
   const maxValue = Number(record.scaleMax) || Math.max(...numericValues, 1);
@@ -765,7 +875,8 @@ function renderResultScaleBars(record) {
             <div class="scale-bar-track"><div class="scale-bar-fill" style="width:${percent}%"></div></div>
           </div>`;
       }).join('')}
-    </div>`;
+    </div>
+    ${renderRecordNotes(record)}`;
 }
 
 function toggleHistoryDetails(id) {
@@ -813,6 +924,7 @@ function renderTestHistoryCard() {
       <button type="button" class="history-filter-btn ${activeFilter === 'all' ? 'active' : ''}" onclick="setHistoryFilter('all')">Усі</button>
       ${filters.map(([id, label]) => `<button type="button" class="history-filter-btn ${activeFilter === id ? 'active' : ''}" onclick="setHistoryFilter('${escapeHTML(id)}')">${escapeHTML(label)}</button>`).join('')}
     </div>
+    <div class="history-view-section">${buildCompactCharts(filteredHistory)}</div>
     <div class="history-list">
       ${filteredHistory.map(record => {
         const main = record.results[0] || {};
@@ -1127,6 +1239,7 @@ function buildSingleRecordDetails(record) {
         <thead><tr><th>Показник</th><th>Бал</th><th>Рівень</th><th>Шкала</th></tr></thead>
         <tbody>${rows}</tbody>
       </table>
+      ${record.notes && record.notes.length ? `<div class="pdf-notes"><h3>Короткі записи</h3>${record.notes.map(note => `<p><strong>${escapeHTML(note.label)}:</strong> ${escapeHTML(note.value || '-')}</p>`).join('')}</div>` : ''}
     </section>`;
 }
 
@@ -1513,6 +1626,7 @@ function renderReflectHistoryCard() {
       <button type="button" class="history-filter-btn ${activeFilter === 'all' ? 'active' : ''}" onclick="setReflectHistoryFilter('all')">Усі</button>
       ${filters.map(([id, label]) => `<button type="button" class="history-filter-btn ${activeFilter === id ? 'active' : ''}" onclick="setReflectHistoryFilter('${escapeHTML(id)}')">${escapeHTML(label)}</button>`).join('')}
     </div>
+    <div class="history-view-section">${buildCompactCharts(filteredHistory)}</div>
     <div class="history-list">
       ${filteredHistory.map(record => {
         const main = record.results[0] || {};
@@ -1624,6 +1738,19 @@ function renderReflectCatalog() {
     container.innerHTML += html;
   }
 
+
+  const diaryItems = Object.entries(DIARY_CARDS);
+  container.innerHTML += `
+    <h3 style="color:var(--accent-glow); font-family:'Merriweather',serif; font-size:22px; margin:32px 0 16px; text-align:left;">Щоденник</h3>
+    <div class="catalog-grid diary-catalog-grid">
+      ${diaryItems.map(([id, item]) => `
+        <div class="card clickable-card" onclick="openDiary('${escapeHTML(id)}')">
+          <div class="card-inner-glow"></div>
+          <div class="card-title" style="margin-bottom:8px; font-size:18px;">${escapeHTML(item.title)}</div>
+          <div class="card-sub">${escapeHTML(item.sub)}</div>
+        </div>`).join('')}
+    </div>`;
+
   if (typeof TESTS_DATABASE !== 'undefined' && TESTS_DATABASE.smq) {
     const smq = TESTS_DATABASE.smq;
     const count = smq.questions?.length || 0;
@@ -1644,7 +1771,137 @@ function renderReflectCatalog() {
   }
 }
 
+
+let currentDiaryId = null;
+
+function renderDiaryField(card, field) {
+  if (field.type === 'range') {
+    return `
+      <div class="slider-group diary-field" data-field="${escapeHTML(field.id)}">
+        <label>${escapeHTML(field.label)} <span class="slider-value" id="diary-val-${escapeHTML(field.id)}">${escapeHTML(field.value ?? 5)}</span></label>
+        <input type="range" id="diary-${escapeHTML(field.id)}" min="${escapeHTML(field.min ?? 0)}" max="${escapeHTML(field.max ?? 10)}" value="${escapeHTML(field.value ?? 5)}" oninput="updateDiarySlider('${escapeHTML(field.id)}', this.value)">
+        <div class="scale-hint-row"><span class="scale-hint">${escapeHTML(field.left || '')}</span><span class="scale-hint">${escapeHTML(field.right || '')}</span></div>
+      </div>`;
+  }
+  if (field.type === 'select') {
+    return `
+      <div class="input-group diary-field" data-field="${escapeHTML(field.id)}">
+        <label>${escapeHTML(field.label)}</label>
+        <select id="diary-${escapeHTML(field.id)}" class="diary-select">
+          ${(field.options || []).map(opt => `<option value="${escapeHTML(opt)}">${escapeHTML(opt)}</option>`).join('')}
+        </select>
+      </div>`;
+  }
+  return `
+    <div class="input-group diary-field" data-field="${escapeHTML(field.id)}">
+      <label>${escapeHTML(field.label)}</label>
+      <textarea id="diary-${escapeHTML(field.id)}" rows="3" placeholder="Коротко, своїми словами"></textarea>
+    </div>`;
+}
+
+function updateDiarySlider(id, value) {
+  const el = document.getElementById(`diary-val-${id}`);
+  if (el) el.textContent = value;
+}
+
+function openDiary(id) {
+  const card = getDiaryCard(id);
+  if (!card) return;
+  currentDiaryId = id;
+  document.getElementById('reflect-catalog-view').style.display = 'none';
+  document.getElementById('active-reflect-container').style.display = 'block';
+  document.getElementById('reflect-wizard').style.display = 'none';
+  document.getElementById('reflect-feedback').style.display = 'none';
+  const diaryContainer = document.getElementById('diary-card-container');
+  diaryContainer.style.display = 'block';
+  diaryContainer.innerHTML = `
+    <div class="card diary-card-active">
+      <div class="card-inner-glow"></div>
+      <div class="section-label">Щоденник</div>
+      <h2 style="font-family:'Merriweather',serif; color:var(--accent-glow); font-size:28px; margin:0 0 10px 0;">${escapeHTML(card.title)}</h2>
+      <div class="card-sub" style="margin-bottom:22px;">${escapeHTML(card.sub)} Запис збережеться локально тільки на цьому пристрої.</div>
+      <form id="diaryForm" onsubmit="return false;">
+        <div class="diary-fields">${card.fields.map(field => renderDiaryField(card, field)).join('')}</div>
+        <div class="controls">
+          <button type="button" onclick="saveDiaryEntry()">Зберегти запис</button>
+          <button type="button" class="btn-ghost" onclick="closeReflect()">Скасувати</button>
+        </div>
+        <div id="diarySaveStatus" class="status-line"></div>
+      </form>
+    </div>`;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function collectDiaryValues(card) {
+  const values = {};
+  card.fields.forEach(field => {
+    const el = document.getElementById(`diary-${field.id}`);
+    if (!el) return;
+    values[field.id] = field.type === 'range' ? Number(el.value) : el.value.trim();
+  });
+  return values;
+}
+
+function buildDiaryRecord(card, id, values) {
+  const rows = (card.resultRows || []).map(row => {
+    const raw = Number(values[row.field]);
+    const value = Number.isFinite(raw) ? raw : 0;
+    return {
+      schema: row.label,
+      sum: value,
+      level: getScoreLevel(row.invert ? 10 - value : value),
+      htmlLevel: getScoreLevel(row.invert ? 10 - value : value),
+      max: card.scaleMax || 10
+    };
+  });
+  const main = rows[0] || { schema: card.mainLabel || card.title, sum: 0, level: '-', htmlLevel: '-', max: card.scaleMax || 10 };
+  const textFields = card.fields
+    .filter(field => field.type !== 'range')
+    .map(field => ({ label: field.label, value: values[field.id] || '' }))
+    .filter(note => note.value);
+  return {
+    id: `diary-${id}-${Date.now()}`,
+    type: 'diary',
+    timestamp: new Date().toISOString(),
+    reflectId: `diary_${id}`,
+    reflectTitle: card.title,
+    shortTitle: card.shortTitle || 'Щоденник',
+    badge: 'Щоденник',
+    scaleMax: card.scaleMax || 10,
+    results: [
+      { ...main, schema: card.mainLabel || main.schema },
+      ...rows.filter((_, idx) => idx > 0)
+    ],
+    notes: textFields,
+    text: textFields.map(note => `${note.label}:\n${note.value}`).join('\n\n')
+  };
+}
+
+function saveDiaryEntry() {
+  const card = getDiaryCard(currentDiaryId);
+  const status = document.getElementById('diarySaveStatus');
+  if (!card) return;
+  const values = collectDiaryValues(card);
+  const hasText = card.fields.some(field => field.type !== 'range' && values[field.id]);
+  if (!hasText) {
+    if (status) status.textContent = 'Додай хоча б один короткий текстовий запис.';
+    return;
+  }
+  const record = buildDiaryRecord(card, currentDiaryId, values);
+  const history = getReflectHistory();
+  history.push(record);
+  setReflectHistory(history);
+  renderReflectHistoryCard();
+  if (status) status.textContent = 'Запис збережено локально на цьому пристрої.';
+  setTimeout(() => closeReflect(), 650);
+}
+
 function openReflect(catId, itemId) {
+  const diaryContainer = document.getElementById('diary-card-container');
+  if (diaryContainer) {
+    diaryContainer.style.display = 'none';
+    diaryContainer.innerHTML = '';
+  }
   document.getElementById('reflect-catalog-view').style.display = 'none';
   document.getElementById('active-reflect-container').style.display = 'block';
   document.getElementById('reflect-wizard').style.display = 'none';
@@ -1663,6 +1920,11 @@ function openReflect(catId, itemId) {
 }
 
 function closeReflect() {
+  const diaryContainer = document.getElementById('diary-card-container');
+  if (diaryContainer) {
+    diaryContainer.style.display = 'none';
+    diaryContainer.innerHTML = '';
+  }
   document.getElementById('active-reflect-container').style.display = 'none';
   document.getElementById('reflect-catalog-view').style.display = 'block';
   window.scrollTo({ top: 0, behavior: 'smooth' });

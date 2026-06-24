@@ -531,3 +531,41 @@
     .scale-bar-row { grid-template-columns: 1fr; gap: 6px; }
     .scale-bar-track { width: 100%; }
   }
+
+.diary-catalog-grid { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.diary-card-active { width: 100%; max-width: 780px; margin-left: auto; margin-right: auto; }
+.diary-fields { display: grid; gap: 14px; }
+.diary-field { margin: 0; }
+.diary-select {
+  width: 100%; background: var(--glass-bg); border: 1px solid var(--border-soft);
+  padding: 12px 14px; border-radius: 6px; color: var(--text-main); font-size: 14px;
+  outline: none; transition: border-color .2s, color 1.1s ease, background 1.1s ease; font-family: inherit;
+}
+.diary-select:focus { border-color: var(--accent-amber); }
+.record-notes { margin-top: 16px; display: grid; gap: 10px; }
+.record-note-row { padding: 12px; border: 1px solid var(--border-soft); border-radius: 8px; background: var(--glass-bg); }
+.record-note-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: .06em; font-weight: 700; margin-bottom: 6px; }
+.record-note-text { font-size: 14px; color: var(--text-main); line-height: 1.55; white-space: pre-wrap; }
+.history-view-section { margin: 16px 0 18px 0; }
+.history-view-section .charts-section { margin-top: 0; display: grid; gap: 12px; }
+.history-view-section .charts-section h2 { font-family: 'Merriweather', serif; color: var(--accent-glow); font-size: 20px; margin: 4px 0 2px; }
+.history-view-section .chart-card { border: 1px solid var(--border-soft); border-radius: 10px; background: var(--glass-bg); padding: 14px; }
+.history-view-section .chart-head { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; margin-bottom: 8px; }
+.history-view-section .chart-head strong { color: var(--text-main); font-size: 14px; }
+.history-view-section .chart-head span { color: var(--text-muted); font-size: 11px; text-transform: uppercase; letter-spacing: .06em; font-weight: 700; }
+.history-view-section .mini-chart { width: 100%; height: 140px; display: block; background: var(--card-bg); border: 1px solid var(--border-soft); border-radius: 8px; }
+.history-view-section .axis { stroke: var(--border-soft); stroke-width: 1.2; }
+.history-view-section .grid { stroke: var(--border-soft); stroke-width: .8; stroke-dasharray: 4 4; opacity: .8; }
+.history-view-section .trend-line { fill: none; stroke: var(--accent-glow); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.history-view-section .trend-dot { fill: var(--accent-glow); stroke: var(--card-bg); stroke-width: 1.5; }
+.history-view-section .axis-label,
+.history-view-section .date-label,
+.history-view-section .score-label,
+.history-view-section .chart-range { fill: var(--text-muted); font-size: 9px; font-family: 'Montserrat', sans-serif; font-weight: 700; }
+.history-view-section .score-label { fill: var(--text-main); }
+.history-view-section .chart-empty { padding: 16px; border: 1px dashed var(--border-soft); border-radius: 8px; color: var(--text-muted); font-size: 13px; background: var(--glass-bg); }
+
+@media(max-width: 768px) {
+  .history-view-section .mini-chart { height: 120px; }
+  .history-view-section .chart-head { flex-direction: column; gap: 4px; }
+}
