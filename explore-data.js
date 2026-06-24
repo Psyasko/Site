@@ -1,6 +1,6 @@
 const REFLECT_DATABASE = {
   identity_and_needs: {
-    categoryTitle: "Дослідження стану та потерб",
+    categoryTitle: "Дослідження стану та потреб",
     items: [
       {
         id: "cocoon_civilian",
@@ -30,7 +30,7 @@ const REFLECT_DATABASE = {
         steps: [
           {
             title: "Три стовпи психологічного здоров'я",
-            text: "Пересунь повзунки відповідно до того, як ти відчуваєш присутність кожного аспекта нижче:",
+            text: "Пересунь повзунки відповідно до того, як ти відчуваєш присутність кожного аспекту нижче:",
             inputType: "sliders",
             visualType: "triangle",
             sliders: [
