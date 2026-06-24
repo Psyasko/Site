@@ -1,0 +1,19 @@
+{
+  "name": "vitaliy-psychologist-site",
+  "version": "1.0.0",
+  "description": "Personal website for psychologist Vitaliy",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"No tests configured\" && exit 0"
+  },
+  "keywords": [
+    "psychology",
+    "therapy",
+    "website"
+  ],
+  "author": "Psyasko",
+  "license": "ISC",
+  "dependencies": {
+    "@vercel/analytics": "^1.4.1"
+  }
+}
