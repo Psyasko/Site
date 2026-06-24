@@ -15,6 +15,14 @@ window.addEventListener('DOMContentLoaded', () => {
   renderReflectHistoryCard();
 });
 
+function scrollToElementCenter(target) {
+  const el = typeof target === 'string' ? document.querySelector(target) : target;
+  if (!el) return;
+  requestAnimationFrame(() => {
+    el.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
+  });
+}
+
 function changeTheme(val) {
   const themes = ['sunset', 'night', 'dawn'];
   document.documentElement.setAttribute('data-theme', themes[val]);
@@ -59,7 +67,7 @@ function openTestCatalog() {
   document.getElementById('explore-dashboard').style.display = 'none';
   document.getElementById('test-catalog-view').style.display = 'block';
   renderTestCatalog();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  scrollToElementCenter('#test-catalog-view');
 }
 
 
@@ -67,7 +75,7 @@ function openReflectCatalog() {
   document.getElementById('explore-dashboard').style.display = 'none';
   document.getElementById('reflect-catalog-view').style.display = 'block';
   renderReflectHistoryCard();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  scrollToElementCenter('#reflect-catalog-view');
 }
 
 function getTestCatalogMeta(testId) {
@@ -551,6 +559,10 @@ function getDiaryCard(id) {
 const TEST_HISTORY_KEY = 'vitaliy_psychologist_local_test_history_v1';
 const REFLECT_HISTORY_KEY = 'vitaliy_psychologist_local_reflect_history_v1';
 
+let openTestHistoryBlock = null;
+let openReflectHistoryBlock = null;
+const openHistoryCharts = new Set();
+
 function openTest(testId, source = 'test') {
   activeTestId = testId;
   activeTestSource = source;
@@ -568,7 +580,7 @@ function openTest(testId, source = 'test') {
   document.getElementById('testInstruction').innerText = currentTestDef.instruction;
   
   resetTest(true);
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  scrollToElementCenter('#active-test-container');
 }
 
 
@@ -585,7 +597,7 @@ function closeTest() {
     document.getElementById('test-catalog-view').style.display = 'block';
     renderTestHistoryCard();
   }
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  scrollToElementCenter(source === 'reflect' ? '#reflect-catalog-view' : '#test-catalog-view');
 }
 
 function updateProgress() {
@@ -900,14 +912,123 @@ function renderHistoryActions(record, type) {
     </div>`;
 }
 
+function getHistoryBlockId(type, groupId) {
+  return `${type}-history-block-${String(groupId).replace(/[^a-zA-Z0-9_-]/g, '-')}`;
+}
+
+function getHistoryChartKey(type, groupId) {
+  return `${type}:${groupId}`;
+}
+
+function summarizeHistoryGroup(records) {
+  const sorted = [...records].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+  const latest = sorted[0];
+  const main = latest?.results?.[0] || {};
+  const lastDate = latest ? new Date(latest.timestamp).toLocaleDateString('uk-UA') : '-';
+  const score = main.sum ?? '-';
+  const level = main.level || '-';
+  return { latest, lastDate, score, level, count: records.length };
+}
+
+function groupHistoryRecords(records, keyName) {
+  const map = new Map();
+  records.forEach(record => {
+    const id = record[keyName] || 'unknown';
+    if (!map.has(id)) map.set(id, []);
+    map.get(id).push(record);
+  });
+  return [...map.entries()]
+    .map(([id, items]) => {
+      const sorted = items.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+      const latest = sorted[0];
+      return { id, records: sorted, latest, summary: summarizeHistoryGroup(sorted) };
+    })
+    .sort((a, b) => new Date(b.latest?.timestamp || 0) - new Date(a.latest?.timestamp || 0));
+}
+
+function toggleHistoryBlock(type, groupId) {
+  if (type === 'reflect') {
+    openReflectHistoryBlock = openReflectHistoryBlock === groupId ? null : groupId;
+    renderReflectHistoryCard();
+  } else {
+    openTestHistoryBlock = openTestHistoryBlock === groupId ? null : groupId;
+    renderTestHistoryCard();
+  }
+  scrollToElementCenter(`#${CSS.escape(getHistoryBlockId(type, groupId))}`);
+}
+
+function toggleHistoryChart(type, groupId) {
+  const key = getHistoryChartKey(type, groupId);
+  if (openHistoryCharts.has(key)) openHistoryCharts.delete(key);
+  else openHistoryCharts.add(key);
+  if (type === 'reflect') {
+    openReflectHistoryBlock = groupId;
+    renderReflectHistoryCard();
+  } else {
+    openTestHistoryBlock = groupId;
+    renderTestHistoryCard();
+  }
+  scrollToElementCenter(`#${CSS.escape(getHistoryBlockId(type, groupId))}`);
+}
+
+function renderHistoryRecordRows(records, type) {
+  return `
+    <div class="history-record-list">
+      ${records.map(record => {
+        const main = record.results?.[0] || {};
+        const date = new Date(record.timestamp).toLocaleDateString('uk-UA');
+        const title = type === 'reflect'
+          ? (record.reflectTitle || record.shortTitle || '-')
+          : (record.testTitle || record.badge || TESTS_DATABASE?.[record.testId]?.badge || '-');
+        return `
+          <div class="history-record" data-history-id="${escapeHTML(record.id)}">
+            <div class="history-record-main">
+              <div class="history-record-date">${escapeHTML(date)}</div>
+              <div class="history-record-title">${escapeHTML(title)}</div>
+              <div class="history-record-score">${escapeHTML(main.sum ?? '-')}</div>
+              <div class="history-record-level">${escapeHTML(main.level || '-')}</div>
+              ${renderHistoryActions(record, type)}
+            </div>
+            <div class="history-details">${renderResultScaleBars(record)}</div>
+          </div>`;
+      }).join('')}
+    </div>`;
+}
+
+function renderHistoryBlock({ type, groupId, title, records, isOpen }) {
+  const summary = summarizeHistoryGroup(records);
+  const chartKey = getHistoryChartKey(type, groupId);
+  const chartOpen = openHistoryCharts.has(chartKey);
+  const sortedAsc = [...records].sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+  const chartGroup = groupRecordsForCharts(sortedAsc)[0];
+  const pdfFn = type === 'reflect' ? `exportReflectGroupPdf('${escapeHTML(groupId)}')` : `exportTestGroupPdf('${escapeHTML(groupId)}')`;
+  const blockId = getHistoryBlockId(type, groupId);
+  return `
+    <section class="history-block ${isOpen ? 'open' : ''}" id="${escapeHTML(blockId)}">
+      <button type="button" class="history-block-summary" onclick="toggleHistoryBlock('${type}', '${escapeHTML(groupId)}')">
+        <span class="history-block-title">${escapeHTML(title)}</span>
+        <span class="history-block-meta">${summary.count} ${summary.count === 1 ? 'запис' : 'записи'} · останній: ${escapeHTML(summary.lastDate)} · ${escapeHTML(summary.score)}</span>
+        <span class="history-block-chevron">›</span>
+      </button>
+      <div class="history-block-body">
+        <div class="history-block-tools">
+          <button type="button" class="btn-ghost" onclick="toggleHistoryChart('${type}', '${escapeHTML(groupId)}')">${chartOpen ? 'Сховати графік' : 'Показати графік'}</button>
+          <button type="button" class="btn-ghost" onclick="${pdfFn}">PDF динаміки</button>
+        </div>
+        <div class="history-chart-drawer ${chartOpen ? 'open' : ''}">
+          ${chartOpen && chartGroup ? `<div class="history-view-section">${buildSingleChartCard(chartGroup)}</div>` : ''}
+        </div>
+        ${renderHistoryRecordRows(records, type)}
+      </div>
+    </section>`;
+}
+
 function renderTestHistoryCard() {
   const content = document.getElementById('testHistoryContent');
   const controls = document.getElementById('testHistoryControls');
   if (!content || !controls) return;
 
   const history = getTestHistory().sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-  const activeFilter = getActiveHistoryFilter();
-
   if (!history.length) {
     content.className = 'history-panel-empty';
     content.innerHTML = 'Збережених результатів поки немає. Після завершення тесту результат автоматично збережеться локально на цьому пристрої.';
@@ -916,43 +1037,19 @@ function renderTestHistoryCard() {
   }
 
   controls.style.display = 'flex';
-  const filters = getResultFilters(history);
-  const filteredHistory = activeFilter === 'all' ? history : history.filter(record => record.testId === activeFilter);
   content.className = '';
+  const groups = groupHistoryRecords(history, 'testId');
   content.innerHTML = `
-    <div class="history-filter-row">
-      <button type="button" class="history-filter-btn ${activeFilter === 'all' ? 'active' : ''}" onclick="setHistoryFilter('all')">Усі</button>
-      ${filters.map(([id, label]) => `<button type="button" class="history-filter-btn ${activeFilter === id ? 'active' : ''}" onclick="setHistoryFilter('${escapeHTML(id)}')">${escapeHTML(label)}</button>`).join('')}
-    </div>
-    <div class="history-view-section">${buildCompactCharts(filteredHistory)}</div>
-    <div class="history-list">
-      ${filteredHistory.map(record => {
-        const main = record.results[0] || {};
-        const date = new Date(record.timestamp).toLocaleDateString('uk-UA');
-        const badge = record.badge || TESTS_DATABASE?.[record.testId]?.badge || 'TEST';
-        return `
-          <div class="history-item" data-history-id="${escapeHTML(record.id)}">
-            <div class="history-item-main">
-              <div>
-                <div class="history-meta-label">Дата</div>
-                <div class="history-meta-value">${escapeHTML(date)}</div>
-              </div>
-              <div>
-                <div class="history-meta-label">Тест</div>
-                <div class="history-meta-value">${escapeHTML(record.testTitle || badge)}</div>
-              </div>
-              <div>
-                <div class="history-meta-label">Бал</div>
-                <div class="history-meta-value">${escapeHTML(main.sum ?? '-')}</div>
-              </div>
-              <div>
-                <div class="history-meta-label">Рівень</div>
-                <div class="history-meta-value">${escapeHTML(main.level || '-')}</div>
-              </div>
-              ${renderHistoryActions(record, 'test')}
-            </div>
-            <div class="history-details">${renderResultScaleBars(record)}</div>
-          </div>`;
+    <div class="history-block-list">
+      ${groups.map(group => {
+        const title = group.latest?.testTitle || group.latest?.badge || TESTS_DATABASE?.[group.id]?.badge || group.id;
+        return renderHistoryBlock({
+          type: 'test',
+          groupId: group.id,
+          title,
+          records: group.records,
+          isOpen: openTestHistoryBlock === group.id
+        });
       }).join('')}
     </div>`;
 }
@@ -1169,20 +1266,24 @@ function buildSparklineSvg(group) {
     </svg>`;
 }
 
+function buildSingleChartCard(group) {
+  return `
+    <div class="chart-card">
+      <div class="chart-head">
+        <strong>${escapeHTML(group.title)}</strong>
+        <span>${escapeHTML(group.records.length)} ${group.records.length === 1 ? 'замір' : 'заміри'}</span>
+      </div>
+      ${buildSparklineSvg(group)}
+    </div>`;
+}
+
 function buildCompactCharts(records) {
   const groups = groupRecordsForCharts(records);
   if (!groups.length) return '';
   return `
     <section class="charts-section">
       <h2>Графіки динаміки</h2>
-      ${groups.map(group => `
-        <div class="chart-card">
-          <div class="chart-head">
-            <strong>${escapeHTML(group.title)}</strong>
-            <span>${escapeHTML(group.records.length)} ${group.records.length === 1 ? 'замір' : 'заміри'}</span>
-          </div>
-          ${buildSparklineSvg(group)}
-        </div>`).join('')}
+      ${groups.map(buildSingleChartCard).join('')}
     </section>`;
 }
 
@@ -1346,18 +1447,28 @@ function exportReflectRecordPdf(id) {
   if (record) openPdfReport('Звіт окремого результату', [record]);
 }
 
+function exportTestGroupPdf(groupId) {
+  const records = getTestHistory()
+    .filter(record => record.testId === groupId)
+    .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+  if (records.length) openPdfReport(`Динаміка: ${records[0].testTitle || records[0].badge || 'опитувальник'}`, records);
+}
+
+function exportReflectGroupPdf(groupId) {
+  const records = getReflectHistory()
+    .filter(record => record.reflectId === groupId)
+    .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+  if (records.length) openPdfReport(`Динаміка: ${records[0].reflectTitle || records[0].shortTitle || 'самоспостереження'}`, records);
+}
+
 function exportTestHistoryPdf() {
   const history = getTestHistory().sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-  const activeFilter = getActiveHistoryFilter();
-  const records = activeFilter === 'all' ? history : history.filter(record => record.testId === activeFilter);
-  openPdfReport('Динаміка скринінгових опитувальників', records);
+  openPdfReport('Динаміка скринінгових опитувальників', history);
 }
 
 function exportReflectHistoryPdf() {
   const history = getReflectHistory().sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-  const activeFilter = getActiveReflectHistoryFilter();
-  const records = activeFilter === 'all' ? history : history.filter(record => record.reflectId === activeFilter);
-  openPdfReport('Динаміка особистої рефлексії', records);
+  openPdfReport('Динаміка особистої рефлексії', history);
 }
 
 function copyTestResult() {
@@ -1608,8 +1719,6 @@ function renderReflectHistoryCard() {
   if (!content || !controls) return;
 
   const history = getReflectHistory().sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-  const activeFilter = getActiveReflectHistoryFilter();
-
   if (!history.length) {
     content.className = 'history-panel-empty';
     content.innerHTML = 'Збережених результатів поки немає. Після завершення картки або карти режимів результат автоматично збережеться локально на цьому пристрої.';
@@ -1618,42 +1727,19 @@ function renderReflectHistoryCard() {
   }
 
   controls.style.display = 'flex';
-  const filters = getReflectFilters(history);
-  const filteredHistory = activeFilter === 'all' ? history : history.filter(record => record.reflectId === activeFilter);
   content.className = '';
+  const groups = groupHistoryRecords(history, 'reflectId');
   content.innerHTML = `
-    <div class="history-filter-row">
-      <button type="button" class="history-filter-btn ${activeFilter === 'all' ? 'active' : ''}" onclick="setReflectHistoryFilter('all')">Усі</button>
-      ${filters.map(([id, label]) => `<button type="button" class="history-filter-btn ${activeFilter === id ? 'active' : ''}" onclick="setReflectHistoryFilter('${escapeHTML(id)}')">${escapeHTML(label)}</button>`).join('')}
-    </div>
-    <div class="history-view-section">${buildCompactCharts(filteredHistory)}</div>
-    <div class="history-list">
-      ${filteredHistory.map(record => {
-        const main = record.results[0] || {};
-        const date = new Date(record.timestamp).toLocaleDateString('uk-UA');
-        return `
-          <div class="history-item" data-history-id="${escapeHTML(record.id)}">
-            <div class="history-item-main">
-              <div>
-                <div class="history-meta-label">Дата</div>
-                <div class="history-meta-value">${escapeHTML(date)}</div>
-              </div>
-              <div>
-                <div class="history-meta-label">Картка</div>
-                <div class="history-meta-value">${escapeHTML(record.reflectTitle || record.shortTitle || '-')}</div>
-              </div>
-              <div>
-                <div class="history-meta-label">Бал</div>
-                <div class="history-meta-value">${escapeHTML(main.sum ?? '-')}</div>
-              </div>
-              <div>
-                <div class="history-meta-label">Рівень</div>
-                <div class="history-meta-value">${escapeHTML(main.level || '-')}</div>
-              </div>
-              ${renderHistoryActions(record, 'reflect')}
-            </div>
-            <div class="history-details">${renderResultScaleBars(record)}</div>
-          </div>`;
+    <div class="history-block-list">
+      ${groups.map(group => {
+        const title = group.latest?.reflectTitle || group.latest?.shortTitle || group.id;
+        return renderHistoryBlock({
+          type: 'reflect',
+          groupId: group.id,
+          title,
+          records: group.records,
+          isOpen: openReflectHistoryBlock === group.id
+        });
       }).join('')}
     </div>`;
 }
@@ -1829,7 +1915,7 @@ function openDiary(id) {
         <div id="diarySaveStatus" class="status-line"></div>
       </form>
     </div>`;
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  scrollToElementCenter('#active-reflect-container');
 }
 
 function collectDiaryValues(card) {
@@ -1916,7 +2002,7 @@ function openReflect(catId, itemId) {
 
   document.getElementById('reflect-wizard').style.display = 'block';
   renderReflectStep();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  scrollToElementCenter('#active-reflect-container');
 }
 
 function closeReflect() {
@@ -1927,7 +2013,8 @@ function closeReflect() {
   }
   document.getElementById('active-reflect-container').style.display = 'none';
   document.getElementById('reflect-catalog-view').style.display = 'block';
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  renderReflectHistoryCard();
+  scrollToElementCenter('#reflect-catalog-view');
 }
 
 function renderReflectStep() {
