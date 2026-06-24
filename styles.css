@@ -487,6 +487,32 @@
   ::-webkit-scrollbar-thumb { background: var(--accent-amber); border-radius: 999px; border: 2px solid var(--bg-color); }
   ::-webkit-scrollbar-thumb:hover { background: var(--accent-glow); }
 
+
+
+  .test-group-grid { display: grid; gap: 16px; margin-top: 22px; }
+  .test-group-card { padding: 0; overflow: hidden; }
+  .test-group-card summary { list-style: none; cursor: pointer; padding: 22px 24px; display: flex; align-items: center; justify-content: space-between; gap: 18px; }
+  .test-group-card summary::-webkit-details-marker { display: none; }
+  .test-group-title { font-family: 'Merriweather', serif; color: var(--accent-glow); font-size: 20px; line-height: 1.25; margin-bottom: 6px; }
+  .test-group-sub { color: var(--text-muted); font-size: 13px; line-height: 1.55; font-weight: 500; }
+  .test-group-chevron { color: var(--accent-glow); font-size: 18px; transform: rotate(0deg); transition: transform 0.25s ease; }
+  .test-group-card[open] .test-group-chevron { transform: rotate(90deg); }
+  .test-group-content { padding: 0 24px 24px; display: grid; gap: 12px; }
+  .test-mini-card { border: 1px solid var(--border-soft); border-radius: 9px; background: var(--glass-bg); padding: 16px; display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: center; }
+  .test-mini-card:hover { border-color: var(--accent-amber); background: var(--hover-bg); }
+  .test-mini-title { color: var(--accent-glow); font-weight: 700; font-size: 15px; line-height: 1.35; margin-bottom: 5px; }
+  .test-mini-desc { color: var(--text-muted); font-size: 13px; line-height: 1.45; font-weight: 500; }
+  .test-mini-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+  .test-mini-pill { border: 1px solid var(--border-soft); border-radius: 999px; padding: 4px 8px; color: var(--text-muted); font-size: 11px; font-weight: 700; }
+
+  .history-panel { width: min(calc(100vw - 48px), 1040px); max-width: 1040px; position: relative; left: 50%; transform: translateX(-50%); }
+  .history-item-main { grid-template-columns: minmax(105px, 0.65fr) minmax(210px, 1.6fr) minmax(80px, 0.45fr) minmax(120px, 0.8fr) minmax(210px, auto); }
+  .history-item-actions { display: flex; gap: 8px; align-items: center; justify-content: flex-end; flex-wrap: wrap; }
+  .history-item-actions button { padding: 9px 12px; font-size: 12px; }
+  .history-delete-btn { min-width: 38px; border-color: rgba(230, 57, 70, 0.35); color: #d66; font-size: 18px !important; line-height: 1; padding: 8px 11px !important; }
+  .history-delete-btn:hover:not(:disabled) { background: #d66; color: var(--bg-color); border-color: #d66; }
+  .pdf-note { color: var(--text-muted); font-size: 12px; line-height: 1.5; margin-top: 10px; }
+
   @media(max-width: 768px) {
     .nav { padding: 14px 20px; flex-direction: column; gap: 14px; text-align: center; }
     .nav-links { justify-content: center; gap: 16px; }
@@ -497,7 +523,11 @@
     .scale-item label { max-width: 36px; height: 36px; font-size: 13px; }
     .controls button { width: 100%; }
     .back-btn { width: 100%; justify-content: center; }
+    .history-panel { width: 100%; left: auto; transform: none; }
+    .test-mini-card { grid-template-columns: 1fr; }
+    .test-group-card summary { align-items: flex-start; }
     .history-item-main { grid-template-columns: 1fr; gap: 10px; }
+    .history-item-actions { justify-content: flex-start; }
     .scale-bar-row { grid-template-columns: 1fr; gap: 6px; }
     .scale-bar-track { width: 100%; }
   }

@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Віталій Психолог — Практика психотерапії</title>
-<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="styles.css">
 <script src="tests-data.js"></script>
 <script src="soothing-data.js"></script>
 <script src="explore-data.js"></script>
@@ -118,12 +118,13 @@
     <div id="testHistoryCard" class="card history-panel">
       <div class="card-inner-glow"></div>
       <div class="card-title" style="font-size:20px; margin-bottom:6px;">Моя локальна динаміка</div>
-      <div class="card-sub">Історія зберігається тільки в цьому браузері на цьому пристрої. Вона не надсилається власнику сайту або третім сторонам.</div>
+      <div class="card-sub">Історія зберігається автоматично тільки в цьому браузері на цьому пристрої. Вона не надсилається власнику сайту або третім сторонам.</div>
       <div id="testHistoryContent" class="history-panel-empty">Збережених результатів поки немає.</div>
       <div class="controls" id="testHistoryControls" style="display:none;">
+        <button class="btn-ghost" type="button" onclick="exportTestHistoryPdf()">PDF всієї динаміки</button>
+        <button class="btn-ghost" type="button" onclick="exportTestHistory()">Експорт JSON</button>
+        <button class="btn-ghost" type="button" onclick="document.getElementById('importHistoryInput').click()">Імпорт JSON</button>
         <button class="btn-ghost" type="button" onclick="clearTestHistory()">Очистити історію</button>
-        <button class="btn-ghost" type="button" onclick="exportTestHistory()">Експортувати історію</button>
-        <button class="btn-ghost" type="button" onclick="document.getElementById('importHistoryInput').click()">Імпортувати історію</button>
         <input id="importHistoryInput" type="file" accept="application/json,.json" style="display:none" onchange="importTestHistory(event)">
       </div>
     </div>
@@ -144,7 +145,7 @@
     <div id="test-catalog-view" style="display:none;">
       <button class="back-btn" onclick="showExploreDashboard()">← Назад до вибору</button>
       <div class="privacy-note">
-        <strong>Приватність:</strong> відповіді й результати обробляються локально у твоєму браузері. Вони не надсилаються власнику сайту або третім сторонам. Історія зберігається лише на цьому пристрої після ручного збереження. Результати не є діагнозом і мають орієнтовний характер.
+        <strong>Приватність:</strong> відповіді й результати обробляються локально у твоєму браузері. Вони не надсилаються власнику сайту або третім сторонам. Історія зберігається автоматично лише на цьому пристрої після завершення опитувальника. Результати не є діагнозом і мають орієнтовний характер.
       </div>
       <div id="test-catalog-container"></div>
     </div>
@@ -154,12 +155,13 @@
       <div id="reflectHistoryCard" class="card history-panel">
         <div class="card-inner-glow"></div>
         <div class="card-title" style="font-size:20px; margin-bottom:6px;">Динаміка особистої рефлексії</div>
-        <div class="card-sub">Тут можна локально зберігати результати карток Кокуна та базових потреб. Історія залишається тільки в цьому браузері на цьому пристрої.</div>
+        <div class="card-sub">Тут локально зберігаються результати карток Кокуна, базових потреб і короткої карти схема-режимів. Історія залишається тільки в цьому браузері на цьому пристрої.</div>
         <div id="reflectHistoryContent" class="history-panel-empty">Збережених результатів поки немає.</div>
         <div class="controls" id="reflectHistoryControls" style="display:none;">
+          <button class="btn-ghost" type="button" onclick="exportReflectHistoryPdf()">PDF всієї динаміки</button>
+          <button class="btn-ghost" type="button" onclick="exportReflectHistory()">Експорт JSON</button>
+          <button class="btn-ghost" type="button" onclick="document.getElementById('importReflectHistoryInput').click()">Імпорт JSON</button>
           <button class="btn-ghost" type="button" onclick="clearReflectHistory()">Очистити історію</button>
-          <button class="btn-ghost" type="button" onclick="exportReflectHistory()">Експортувати історію</button>
-          <button class="btn-ghost" type="button" onclick="document.getElementById('importReflectHistoryInput').click()">Імпортувати історію</button>
           <input id="importReflectHistoryInput" type="file" accept="application/json,.json" style="display:none" onchange="importReflectHistory(event)">
         </div>
       </div>
@@ -214,10 +216,11 @@
               <button type="button" onclick="copyTestResult()" id="btnCopyTestResult">📋 Скопіювати результат</button>
             </div>
             <div class="controls">
-              <button type="button" onclick="saveCurrentTestResult()" id="btnSaveTestResult">Зберегти на цьому пристрої</button>
-              <button type="button" class="btn-ghost" onclick="showExploreDashboard()">Моя динаміка</button>
-              <button type="button" class="btn-ghost" onclick="clearTestHistory()">Очистити історію</button>
+              <button type="button" onclick="exportCurrentTestResultPdf()">PDF цього результату</button>
+              <button type="button" class="btn-ghost" onclick="openRelevantDynamics()">Моя динаміка</button>
+              <button type="button" class="btn-ghost" onclick="resetTest()">Пройти заново</button>
             </div>
+            <div class="pdf-note">Результат автоматично збережено локально на цьому пристрої.</div>
             <div id="testSaveStatus" class="status-line"></div>
           </div>
         </div>
@@ -254,11 +257,12 @@
           </div>
           
           <div class="controls" style="justify-content:center; gap:12px;">
-            <button onclick="saveCurrentReflectResult()" id="r-btnSave">Зберегти на цьому пристрої</button>
+            <button onclick="exportCurrentReflectResultPdf()">PDF цього результату</button>
             <button class="btn-ghost" onclick="closeReflect()">Завершити</button>
             <button class="btn-ghost" onclick="repeatReflect()">Пройти знову</button>
             <button class="btn-ghost" onclick="openReflectCatalog()">Моя динаміка</button>
           </div>
+          <div class="pdf-note">Результат автоматично збережено локально на цьому пристрої.</div>
           <div id="reflectSaveStatus" class="status-line"></div>
         </div>
       </div>
@@ -356,7 +360,7 @@
     <p style="margin: 0 0 16px 0; font-size: 14px; color: var(--text-muted); font-weight: 500;">Можеш звертатися у відповідних месенджерах. Можу відповісти не одразу.</p>
     <details class="privacy-details">
       <summary>Приватність тестів і самодіагностики</summary>
-      <p>Результати тестів обробляються локально у твоєму браузері й не надсилаються власнику сайту або третім сторонам. Історія результатів може зберігатися лише на цьому пристрої, якщо ти самостійно натиснеш кнопку збереження після проходження тесту.</p>
+      <p>Результати тестів обробляються локально у твоєму браузері й не надсилаються власнику сайту або третім сторонам. Історія результатів автоматично зберігається лише на цьому пристрої після завершення тесту.</p>
       <p>Ти можеш очистити локальну історію у будь-який момент у розділі «Дослідити себе». Результати опитувальників не є діагнозом, не замінюють консультацію спеціаліста і мають лише орієнтовний інформаційний характер.</p>
     </details>
 

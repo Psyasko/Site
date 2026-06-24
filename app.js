@@ -58,8 +58,10 @@ function showExploreDashboard() {
 function openTestCatalog() {
   document.getElementById('explore-dashboard').style.display = 'none';
   document.getElementById('test-catalog-view').style.display = 'block';
+  renderTestCatalog();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+
 
 function openReflectCatalog() {
   document.getElementById('explore-dashboard').style.display = 'none';
@@ -68,66 +70,74 @@ function openReflectCatalog() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+function getTestCatalogMeta(testId) {
+  const test = TESTS_DATABASE?.[testId];
+  const count = test?.questions?.length || 0;
+  const minutesMap = { phq_9: 3, gad_7: 3, pcl_5: 6, aaq_2: 3, ysq_s3: 15 };
+  const descMap = {
+    phq_9: 'Короткий скринінг депресивних симптомів за останні два тижні.',
+    gad_7: 'Короткий скринінг тривожних симптомів за останні два тижні.',
+    pcl_5: 'Орієнтовна оцінка реакцій на важку або стресову подію за останній місяць.',
+    aaq_2: 'Оцінка психологічної негнучкості та уникання внутрішнього досвіду.',
+    ysq_s3: 'Авторська схема-орієнтована карта для дослідження стійких життєвих патернів.'
+  };
+  return {
+    count,
+    minutes: minutesMap[testId] || Math.max(2, Math.ceil(count / 6)),
+    desc: descMap[testId] || 'Короткий опитувальник для самоспостереження.'
+  };
+}
+
+function renderTestMiniCard(testId) {
+  const t = TESTS_DATABASE[testId];
+  if (!t) return '';
+  const meta = getTestCatalogMeta(testId);
+  return `
+    <div class="test-mini-card">
+      <div class="card-badge">${escapeHTML(t.badge)}</div>
+      <div>
+        <div class="test-mini-title">${escapeHTML(t.title)}</div>
+        <div class="test-mini-desc">${escapeHTML(meta.desc)}</div>
+        <div class="test-mini-meta">
+          <span class="test-mini-pill">${meta.count} питань</span>
+          <span class="test-mini-pill">≈ ${meta.minutes} хв</span>
+          <span class="test-mini-pill">локально</span>
+        </div>
+      </div>
+      <button type="button" onclick="openTest('${escapeHTML(testId)}', 'test')">Почати</button>
+    </div>`;
+}
+
 function renderTestCatalog() {
   const container = document.getElementById('test-catalog-container');
   container.innerHTML = '';
   if (typeof TESTS_DATABASE === 'undefined') return;
 
-  const testCategories = [
-    { id: 'emotional', title: 'Емоційний стан', tests: ['phq_9', 'gad_7'] },
-    { id: 'personality', title: 'Схеми та режими', tests: ['ysq_s3', 'smq'] },
-    { id: 'trauma', title: 'Травма та стрес', tests: ['pcl_5', 'aaq_2'] }
+  const testGroups = [
+    { id: 'anxiety', title: 'Для оцінки тривоги', sub: 'Короткі скринінги тривожного напруження, занепокоєння та внутрішньої напруги.', tests: ['gad_7'] },
+    { id: 'mood', title: 'Для оцінки настрою', sub: 'Орієнтовна оцінка пригніченості, втрати інтересу та депресивних симптомів.', tests: ['phq_9'] },
+    { id: 'stress', title: 'Для реакцій на стрес', sub: 'Самоспостереження за симптомами після важких або стресових подій.', tests: ['pcl_5'] },
+    { id: 'flexibility', title: 'Для психологічної гнучкості', sub: 'Оцінка уникання емоцій, думок і болісного внутрішнього досвіду.', tests: ['aaq_2'] },
+    { id: 'schemas', title: 'Для глибинних життєвих схем', sub: 'Дослідження повторюваних переконань, емоційних тем і життєвих патернів.', tests: ['ysq_s3'] }
   ];
 
-  let usedIds = new Set();
-
-  testCategories.forEach(cat => {
-    let hasTests = false;
-    let html = `<h3 style="color:var(--accent-glow); font-family: 'Merriweather', serif; font-size: 22px; margin: 32px 0 16px; text-align: left;">${cat.title}</h3><div class="catalog-grid">`;
-    
-    cat.tests.forEach(testId => {
-      if (TESTS_DATABASE[testId]) {
-        const t = TESTS_DATABASE[testId];
-        usedIds.add(testId);
-        hasTests = true;
-        html += `
-          <div class="card clickable-card" onclick="openTest('${testId}')">
-            <div class="card-inner-glow"></div>
-            <div class="card-header-test" style="margin-bottom: 8px; padding-bottom: 0; border: none;">
-              <div class="card-badge">${t.badge}</div>
-              <div>
-                <div class="card-title">${t.title}</div>
-                <div class="card-sub">${t.instruction.substring(0, 95)}...</div>
-              </div>
+  container.innerHTML = `<div class="test-group-grid">
+    ${testGroups.map((group, idx) => {
+      const cards = group.tests.map(renderTestMiniCard).filter(Boolean).join('');
+      if (!cards) return '';
+      return `
+        <details class="card test-group-card" ${idx === 0 ? 'open' : ''}>
+          <summary>
+            <div>
+              <div class="test-group-title">${escapeHTML(group.title)}</div>
+              <div class="test-group-sub">${escapeHTML(group.sub)}</div>
             </div>
-          </div>`;
-      }
-    });
-    html += `</div>`;
-    if (hasTests) container.innerHTML += html;
-  });
-
-  let otherHtml = `<h3 style="color:var(--accent-glow); font-family: 'Merriweather', serif; font-size: 22px; margin: 32px 0 16px; text-align: left;">Інші методики</h3><div class="catalog-grid">`;
-  let hasOther = false;
-  for (let id in TESTS_DATABASE) {
-    if (!usedIds.has(id)) {
-      const t = TESTS_DATABASE[id];
-      hasOther = true;
-      otherHtml += `
-          <div class="card clickable-card" onclick="openTest('${id}')">
-            <div class="card-inner-glow"></div>
-            <div class="card-header-test" style="margin-bottom: 8px; padding-bottom: 0; border: none;">
-              <div class="card-badge">${t.badge}</div>
-              <div>
-                <div class="card-title">${t.title}</div>
-                <div class="card-sub">${t.instruction.substring(0, 95)}...</div>
-              </div>
-            </div>
-          </div>`;
-    }
-  }
-  otherHtml += `</div>`;
-  if (hasOther) container.innerHTML += otherHtml;
+            <div class="test-group-chevron">›</div>
+          </summary>
+          <div class="test-group-content">${cards}</div>
+        </details>`;
+    }).join('')}
+  </div>`;
 }
 
 function renderSoothingCatalog() {
@@ -439,16 +449,22 @@ let activeQuestions = [];
 let currentIndex = 0;
 let answers = {};
 let currentResultRecord = null;
+let activeTestSource = 'test';
 const TEST_HISTORY_KEY = 'vitaliy_psychologist_local_test_history_v1';
 const REFLECT_HISTORY_KEY = 'vitaliy_psychologist_local_reflect_history_v1';
 
-function openTest(testId) {
+function openTest(testId, source = 'test') {
   activeTestId = testId;
+  activeTestSource = source;
   currentTestDef = TESTS_DATABASE[testId];
   activeQuestions = currentTestDef.questions;
   currentResultRecord = null;
+  currentReflectResultRecord = null;
   
   document.getElementById('test-catalog-view').style.display = 'none';
+  document.getElementById('reflect-catalog-view').style.display = 'none';
+  document.getElementById('explore-dashboard').style.display = 'none';
+  document.getElementById('active-reflect-container').style.display = 'none';
   document.getElementById('active-test-container').style.display = 'block';
   document.getElementById('activeTestBadge').innerText = currentTestDef.badge;
   document.getElementById('testInstruction').innerText = currentTestDef.instruction;
@@ -457,11 +473,20 @@ function openTest(testId) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+
 function closeTest() {
+  const source = activeTestSource;
   activeTestId = null;
   currentTestDef = null;
+  activeTestSource = 'test';
   document.getElementById('active-test-container').style.display = 'none';
-  document.getElementById('test-catalog-view').style.display = 'block';
+  if (source === 'reflect') {
+    document.getElementById('reflect-catalog-view').style.display = 'block';
+    renderReflectHistoryCard();
+  } else {
+    document.getElementById('test-catalog-view').style.display = 'block';
+    renderTestHistoryCard();
+  }
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -751,6 +776,19 @@ function toggleHistoryDetails(id) {
   if (btn) btn.textContent = item.classList.contains('open') ? 'Сховати' : 'Деталі';
 }
 
+function renderHistoryActions(record, type) {
+  const safeId = escapeHTML(record.id);
+  const detailFn = `toggleHistoryDetails('${safeId}')`;
+  const pdfFn = type === 'reflect' ? `exportReflectRecordPdf('${safeId}')` : `exportTestRecordPdf('${safeId}')`;
+  const deleteFn = type === 'reflect' ? `deleteReflectHistoryItem('${safeId}')` : `deleteTestHistoryItem('${safeId}')`;
+  return `
+    <div class="history-item-actions">
+      <button type="button" class="btn-ghost history-details-toggle" onclick="${detailFn}">Деталі</button>
+      <button type="button" class="btn-ghost" onclick="${pdfFn}">PDF</button>
+      <button type="button" class="btn-ghost history-delete-btn" title="Видалити цей результат" onclick="${deleteFn}">×</button>
+    </div>`;
+}
+
 function renderTestHistoryCard() {
   const content = document.getElementById('testHistoryContent');
   const controls = document.getElementById('testHistoryControls');
@@ -761,7 +799,7 @@ function renderTestHistoryCard() {
 
   if (!history.length) {
     content.className = 'history-panel-empty';
-    content.innerHTML = 'Збережених результатів поки немає. Після проходження тесту можна зберегти результат на цьому пристрої й бачити власну динаміку.';
+    content.innerHTML = 'Збережених результатів поки немає. Після завершення тесту результат автоматично збережеться локально на цьому пристрої.';
     controls.style.display = 'none';
     return;
   }
@@ -799,7 +837,7 @@ function renderTestHistoryCard() {
                 <div class="history-meta-label">Рівень</div>
                 <div class="history-meta-value">${escapeHTML(main.level || '-')}</div>
               </div>
-              <button type="button" class="btn-ghost history-details-toggle" onclick="toggleHistoryDetails('${escapeHTML(record.id)}')">Деталі</button>
+              ${renderHistoryActions(record, 'test')}
             </div>
             <div class="history-details">${renderResultScaleBars(record)}</div>
           </div>`;
@@ -807,10 +845,21 @@ function renderTestHistoryCard() {
     </div>`;
 }
 
-function saveCurrentTestResult() {
+function saveCurrentTestResult(silent = false) {
   const status = document.getElementById('testSaveStatus');
   if (!currentResultRecord) {
-    if (status) status.textContent = 'Немає результату для збереження.';
+    if (status && !silent) status.textContent = 'Немає результату для збереження.';
+    return;
+  }
+
+  if (activeTestSource === 'reflect') {
+    currentReflectResultRecord = buildReflectRecordFromTestResult(currentResultRecord);
+    const history = getReflectHistory();
+    const exists = history.some(item => item.id === currentReflectResultRecord.id);
+    if (!exists) history.push(currentReflectResultRecord);
+    setReflectHistory(history);
+    renderReflectHistoryCard();
+    if (status) status.textContent = exists ? 'Цей результат уже збережений локально.' : 'Результат автоматично збережено локально на цьому пристрої.';
     return;
   }
 
@@ -820,9 +869,7 @@ function saveCurrentTestResult() {
   setTestHistory(history);
   renderTestHistoryCard();
 
-  if (status) {
-    status.textContent = exists ? 'Цей результат уже збережений на цьому пристрої.' : 'Результат збережено на цьому пристрої.';
-  }
+  if (status) status.textContent = exists ? 'Цей результат уже збережений локально.' : 'Результат автоматично збережено локально на цьому пристрої.';
 }
 
 function clearTestHistory() {
@@ -869,6 +916,167 @@ function importTestHistory(event) {
     }
   };
   reader.readAsText(file);
+}
+
+
+function deleteTestHistoryItem(id) {
+  if (!confirm('Видалити цей результат із локальної історії?')) return;
+  setTestHistory(getTestHistory().filter(item => item.id !== id));
+  renderTestHistoryCard();
+}
+
+function deleteReflectHistoryItem(id) {
+  if (!confirm('Видалити цей результат із локальної історії?')) return;
+  setReflectHistory(getReflectHistory().filter(item => item.id !== id));
+  renderReflectHistoryCard();
+}
+
+function getTestScaleMax(testId) {
+  const map = { phq_9: 27, gad_7: 21, pcl_5: 80, aaq_2: 49, ysq_s3: 6, smq: 6 };
+  return map[testId] || TESTS_DATABASE?.[testId]?.scaleMax || 10;
+}
+
+function openRelevantDynamics() {
+  if (activeTestSource === 'reflect') openReflectCatalog();
+  else showExploreDashboard();
+}
+
+function buildReflectRecordFromTestResult(record) {
+  return {
+    id: `reflect-${record.testId}-${Date.now()}`,
+    type: 'reflect',
+    timestamp: record.timestamp,
+    reflectId: record.testId,
+    reflectTitle: record.testTitle,
+    shortTitle: record.testId === 'smq' ? 'Режими' : (record.testTitle || 'Рефлексія'),
+    badge: record.badge || 'MODES',
+    scaleMax: record.scaleMax || getTestScaleMax(record.testId),
+    results: record.results,
+    text: buildTestResultText(record)
+  };
+}
+
+function getRecordTitle(record) {
+  return record.testTitle || record.reflectTitle || record.shortTitle || 'Результат';
+}
+
+function getRecordKindLabel(record) {
+  return record.type === 'reflect' ? 'Особиста рефлексія' : 'Скринінговий опитувальник';
+}
+
+function buildPdfDocument(title, records) {
+  const safeTitle = escapeHTML(title);
+  const now = new Date().toLocaleString('uk-UA');
+  const rowsHtml = records.map(record => {
+    const date = new Date(record.timestamp).toLocaleString('uk-UA');
+    const main = record.results?.[0] || {};
+    const details = (record.results || []).map(r => `
+      <tr>
+        <td>${escapeHTML(r.schema)}</td>
+        <td>${escapeHTML(r.sum ?? '-')}</td>
+        <td>${escapeHTML(r.level || '-')}</td>
+      </tr>`).join('');
+    return `
+      <section class="report-card">
+        <div class="report-meta">${escapeHTML(getRecordKindLabel(record))} · ${escapeHTML(date)}</div>
+        <h2>${escapeHTML(getRecordTitle(record))}</h2>
+        <div class="summary-row">
+          <div><span>Основний бал</span><strong>${escapeHTML(main.sum ?? '-')}</strong></div>
+          <div><span>Рівень</span><strong>${escapeHTML(main.level || '-')}</strong></div>
+        </div>
+        <table>
+          <thead><tr><th>Показник</th><th>Бал</th><th>Рівень</th></tr></thead>
+          <tbody>${details}</tbody>
+        </table>
+      </section>`;
+  }).join('');
+
+  return `<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<title>${safeTitle}</title>
+<style>
+  @page { size: A4; margin: 16mm; }
+  body { margin: 0; background: #181714; color: #C8AB85; font-family: Arial, sans-serif; line-height: 1.55; }
+  .report { max-width: 900px; margin: 0 auto; padding: 34px; }
+  .brand { color: #D4A060; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; margin-bottom: 10px; }
+  h1 { color: #D4A060; font-family: Georgia, serif; font-size: 30px; margin: 0 0 8px; font-weight: 400; }
+  .created { color: #827054; font-size: 13px; margin-bottom: 24px; }
+  .report-card { border: 1px solid rgba(180,100,25,.28); background: #201D18; border-radius: 14px; padding: 22px; margin: 0 0 18px; page-break-inside: avoid; }
+  .report-meta { color: #827054; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 8px; }
+  h2 { color: #D4A060; font-family: Georgia, serif; font-size: 22px; margin: 0 0 16px; }
+  .summary-row { display: grid; grid-template-columns: 1fr 2fr; gap: 12px; margin-bottom: 16px; }
+  .summary-row div { border: 1px solid rgba(180,100,25,.25); border-radius: 10px; padding: 12px; }
+  .summary-row span { display:block; color:#827054; font-size:11px; text-transform:uppercase; letter-spacing:.07em; margin-bottom:4px; }
+  .summary-row strong { color:#C8AB85; font-size:18px; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { border-bottom: 1px solid rgba(180,100,25,.22); text-align: left; padding: 9px 7px; vertical-align: top; font-size: 13px; }
+  th { color: #D4A060; font-family: Georgia, serif; font-size: 14px; }
+  .disclaimer { color:#827054; border-top:1px solid rgba(180,100,25,.28); margin-top:24px; padding-top:14px; font-size:12px; }
+  @media print { body { background: #181714 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; } .report { padding: 0; } }
+</style>
+</head>
+<body>
+  <main class="report">
+    <div class="brand">Віталій Психолог</div>
+    <h1>${safeTitle}</h1>
+    <div class="created">Створено: ${escapeHTML(now)}</div>
+    ${rowsHtml}
+    <div class="disclaimer">Цей звіт призначений для самоспостереження. Він не є діагнозом, не замінює консультацію фахівця і має лише орієнтовний інформаційний характер. Дані сформовані локально у браузері користувача.</div>
+  </main>
+</body>
+</html>`;
+}
+
+function openPdfReport(title, records) {
+  if (!records || !records.length) return;
+  const win = window.open('', '_blank');
+  if (!win) {
+    alert('Браузер заблокував вікно для PDF. Дозволь відкриття спливаючих вікон для цього сайту.');
+    return;
+  }
+  win.document.open();
+  win.document.write(buildPdfDocument(title, records));
+  win.document.close();
+  win.focus();
+  setTimeout(() => win.print(), 450);
+}
+
+function exportCurrentTestResultPdf() {
+  if (activeTestSource === 'reflect' && currentReflectResultRecord) {
+    openPdfReport('Звіт для самоспостереження', [currentReflectResultRecord]);
+    return;
+  }
+  if (currentResultRecord) openPdfReport('Звіт для самоспостереження', [currentResultRecord]);
+}
+
+function exportCurrentReflectResultPdf() {
+  if (currentReflectResultRecord) openPdfReport('Звіт для самоспостереження', [currentReflectResultRecord]);
+}
+
+function exportTestRecordPdf(id) {
+  const record = getTestHistory().find(item => item.id === id);
+  if (record) openPdfReport('Звіт окремого результату', [record]);
+}
+
+function exportReflectRecordPdf(id) {
+  const record = getReflectHistory().find(item => item.id === id);
+  if (record) openPdfReport('Звіт окремого результату', [record]);
+}
+
+function exportTestHistoryPdf() {
+  const history = getTestHistory().sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+  const activeFilter = getActiveHistoryFilter();
+  const records = activeFilter === 'all' ? history : history.filter(record => record.testId === activeFilter);
+  openPdfReport('Динаміка скринінгових опитувальників', records);
+}
+
+function exportReflectHistoryPdf() {
+  const history = getReflectHistory().sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+  const activeFilter = getActiveReflectHistoryFilter();
+  const records = activeFilter === 'all' ? history : history.filter(record => record.reflectId === activeFilter);
+  openPdfReport('Динаміка особистої рефлексії', records);
 }
 
 function copyTestResult() {
@@ -929,6 +1137,8 @@ function showResults(){
     testTitle: currentTestDef?.title || activeTestId,
     badge: currentTestDef?.badge || 'TEST',
     timestamp: new Date().toISOString(),
+    scaleMax: getTestScaleMax(activeTestId),
+    type: activeTestSource === 'reflect' ? 'reflect' : 'test',
     results: renderedRows
   };
 
@@ -939,6 +1149,7 @@ function showResults(){
   if (resultTextArea) resultTextArea.value = resultText;
   if (resultActions) resultActions.style.display = 'block';
   if (status) status.textContent = '';
+  saveCurrentTestResult(true);
 
   document.getElementById('resultBox').style.display = 'block';
   document.getElementById('progressInner').style.width = '100%';
@@ -1120,7 +1331,7 @@ function renderReflectHistoryCard() {
 
   if (!history.length) {
     content.className = 'history-panel-empty';
-    content.innerHTML = 'Збережених результатів поки немає. Після проходження картки можна зберегти результат і бачити власну динаміку стану або базових потреб.';
+    content.innerHTML = 'Збережених результатів поки немає. Після завершення картки або карти режимів результат автоматично збережеться локально на цьому пристрої.';
     controls.style.display = 'none';
     return;
   }
@@ -1151,13 +1362,13 @@ function renderReflectHistoryCard() {
               </div>
               <div>
                 <div class="history-meta-label">Бал</div>
-                <div class="history-meta-value">${escapeHTML(main.sum ?? '-')} / 10</div>
+                <div class="history-meta-value">${escapeHTML(main.sum ?? '-')}</div>
               </div>
               <div>
                 <div class="history-meta-label">Рівень</div>
                 <div class="history-meta-value">${escapeHTML(main.level || '-')}</div>
               </div>
-              <button type="button" class="btn-ghost history-details-toggle" onclick="toggleHistoryDetails('${escapeHTML(record.id)}')">Деталі</button>
+              ${renderHistoryActions(record, 'reflect')}
             </div>
             <div class="history-details">${renderResultScaleBars(record)}</div>
           </div>`;
@@ -1165,10 +1376,10 @@ function renderReflectHistoryCard() {
     </div>`;
 }
 
-function saveCurrentReflectResult() {
+function saveCurrentReflectResult(silent = false) {
   const status = document.getElementById('reflectSaveStatus');
   if (!currentReflectResultRecord) {
-    if (status) status.textContent = 'Немає результату для збереження.';
+    if (status && !silent) status.textContent = 'Немає результату для збереження.';
     return;
   }
   const history = getReflectHistory();
@@ -1176,7 +1387,7 @@ function saveCurrentReflectResult() {
   if (!exists) history.push(currentReflectResultRecord);
   setReflectHistory(history);
   renderReflectHistoryCard();
-  if (status) status.textContent = exists ? 'Цей результат уже збережений на цьому пристрої.' : 'Результат збережено на цьому пристрої.';
+  if (status) status.textContent = exists ? 'Цей результат уже збережений локально.' : 'Результат автоматично збережено локально на цьому пристрої.';
 }
 
 function clearReflectHistory() {
@@ -1232,17 +1443,36 @@ function renderReflectCatalog() {
 
   for (let cat in REFLECT_DATABASE) {
     const c = REFLECT_DATABASE[cat];
-    let html = `<h3 style="color:var(--accent-glow); font-family:'Merriweather',serif; font-size:22px; margin:32px 0 16px; text-align:left;">${c.categoryTitle}</h3><div class="catalog-grid">`;
+    let html = `<h3 style="color:var(--accent-glow); font-family:'Merriweather',serif; font-size:22px; margin:32px 0 16px; text-align:left;">${escapeHTML(c.categoryTitle)}</h3><div class="catalog-grid">`;
     c.items.forEach(item => {
       html += `
-        <div class="card clickable-card" onclick="openReflect('${cat}','${item.id}')">
+        <div class="card clickable-card" onclick="openReflect('${escapeHTML(cat)}','${escapeHTML(item.id)}')">
           <div class="card-inner-glow"></div>
-          <div class="card-title" style="margin-bottom:8px; font-size:18px;">${item.title}</div>
-          <div class="card-sub">${item.sub}</div>
+          <div class="card-title" style="margin-bottom:8px; font-size:18px;">${escapeHTML(item.title)}</div>
+          <div class="card-sub">${escapeHTML(item.sub)}</div>
         </div>`;
     });
     html += `</div>`;
     container.innerHTML += html;
+  }
+
+  if (typeof TESTS_DATABASE !== 'undefined' && TESTS_DATABASE.smq) {
+    const smq = TESTS_DATABASE.smq;
+    const count = smq.questions?.length || 0;
+    container.innerHTML += `
+      <h3 style="color:var(--accent-glow); font-family:'Merriweather',serif; font-size:22px; margin:32px 0 16px; text-align:left;">Схема-режими</h3>
+      <div class="catalog-grid">
+        <div class="card clickable-card" onclick="openTest('smq', 'reflect')">
+          <div class="card-inner-glow"></div>
+          <div class="card-header-test" style="margin-bottom:8px; padding-bottom:0; border:none;">
+            <div class="card-badge">${escapeHTML(smq.badge || 'MODES')}</div>
+            <div>
+              <div class="card-title" style="font-size:18px;">${escapeHTML(smq.title)}</div>
+              <div class="card-sub">Коротка карта для саморефлексії: ${count} тверджень, приблизно 4 хвилини. Результат збережеться у динаміці особистої рефлексії.</div>
+            </div>
+          </div>
+        </div>
+      </div>`;
   }
 }
 
@@ -1398,6 +1628,7 @@ function showReflectFeedback() {
   document.getElementById('r-btnCopy').innerHTML = '📋 Скопіювати текст';
   const reflectStatus = document.getElementById('reflectSaveStatus');
   if (reflectStatus) reflectStatus.textContent = '';
+  saveCurrentReflectResult(true);
 }
 
 function copyReflectText() {
