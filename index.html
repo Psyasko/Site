@@ -572,7 +572,7 @@
           <li>Терапії прийняття та відповідальності (ACT)</li>
           <li>Схема-терапії</li>
         </ul>
-        <p>Робота орієнтована на розвиток психологічної гнучкості, усвідомлення глибинних паттернів поведінки та формування твоєї повної терапевтичної автономії.</p>
+        <p>Робота орієнтована на розвиток психологічної гнучкості, усвідомлення глибинних патернів поведінки та формування твоєї повної терапевтичної автономії.</p>
       </div>
 
       <div class="diploma-section">
@@ -597,7 +597,7 @@
         
         <div class="contract-text">
           <h3>Короткий терапевтичний контракт</h3>
-          <p>Для формування безпечного та прогнозованого середовища нашої взаємодії діють наступні правила:</p>
+          <p>Для формування безпечного та прогнозованого середовища нашої взаємодії діють такі правила:</p>
 
           <h3>1. Конфіденційність</h3>
           <p>Уся інформація, отримана в процесі сесій, є суворо конфіденційною. Вона не розголошується третім особам, за винятком випадків, передбачених чинним законодавством або професійним етичним кодексом.</p>
@@ -655,6 +655,18 @@
 
     <div id="reflect-catalog-view" style="display:none;">
       <button class="back-btn" onclick="showExploreDashboard()">← Назад до вибору</button>
+      <div id="reflectHistoryCard" class="card history-panel">
+        <div class="card-inner-glow"></div>
+        <div class="card-title" style="font-size:20px; margin-bottom:6px;">Динаміка особистої рефлексії</div>
+        <div class="card-sub">Тут можна локально зберігати результати карток Кокуна та базових потреб. Історія залишається тільки в цьому браузері на цьому пристрої.</div>
+        <div id="reflectHistoryContent" class="history-panel-empty">Збережених результатів поки немає.</div>
+        <div class="controls" id="reflectHistoryControls" style="display:none;">
+          <button class="btn-ghost" type="button" onclick="clearReflectHistory()">Очистити історію</button>
+          <button class="btn-ghost" type="button" onclick="exportReflectHistory()">Експортувати історію</button>
+          <button class="btn-ghost" type="button" onclick="document.getElementById('importReflectHistoryInput').click()">Імпортувати історію</button>
+          <input id="importReflectHistoryInput" type="file" accept="application/json,.json" style="display:none" onchange="importReflectHistory(event)">
+        </div>
+      </div>
       <div id="reflect-catalog-container"></div>
     </div>
 
@@ -746,10 +758,12 @@
           </div>
           
           <div class="controls" style="justify-content:center; gap:12px;">
-            <button onclick="closeReflect()">Завершити</button>
+            <button onclick="saveCurrentReflectResult()" id="r-btnSave">Зберегти на цьому пристрої</button>
+            <button class="btn-ghost" onclick="closeReflect()">Завершити</button>
             <button class="btn-ghost" onclick="repeatReflect()">Пройти знову</button>
-            <button class="btn-ghost" onclick="showExploreDashboard()">Інші картки</button>
+            <button class="btn-ghost" onclick="openReflectCatalog()">Моя динаміка</button>
           </div>
+          <div id="reflectSaveStatus" class="status-line"></div>
         </div>
       </div>
     </div>
@@ -843,7 +857,7 @@
 
   <div class="card global-footer-card">
     <div class="card-inner-glow"></div>
-    <p style="margin: 0 0 16px 0; font-size: 14px; color: var(--text-muted); font-weight: 500;">Можете звертатись у відповідних месенджерах. Можу відповісти не одразу.</p>
+    <p style="margin: 0 0 16px 0; font-size: 14px; color: var(--text-muted); font-weight: 500;">Можеш звертатися у відповідних месенджерах. Можу відповісти не одразу.</p>
     <details class="privacy-details">
       <summary>Приватність тестів і самодіагностики</summary>
       <p>Результати тестів обробляються локально у твоєму браузері й не надсилаються власнику сайту або третім сторонам. Історія результатів може зберігатися лише на цьому пристрої, якщо ти самостійно натиснеш кнопку збереження після проходження тесту.</p>
@@ -851,19 +865,19 @@
     </details>
 
     <div class="messenger-grid" style="margin-top: 0;">
-      <a href="https://t.me/" target="_blank" class="messenger-btn">
+      <a href="https://t.me/psyasko" target="_blank" class="messenger-btn">
         <svg class="messenger-icon" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.94z"/></svg>
         Telegram
       </a>
-      <a href="viber://chat?number=" target="_blank" class="messenger-btn">
+      <a href="viber://chat?number=%2B380636249066" target="_blank" class="messenger-btn">
         <svg class="messenger-icon" viewBox="0 0 24 24"><path d="M21.572 10.364c-.11-.599-.272-1.186-.482-1.751C19.743 4.887 16.143 2.12 12.186 2.003h-.372c-3.957.117-7.557 2.884-8.904 6.61-.21.565-.372 1.152-.482 1.751C2.33 11.237 2 12.186 2 13.17c0 4.248 3.444 7.692 7.692 7.692h.016c.304 0 .611-.027.915-.08a7.653 7.653 0 004.755 1.218 7.68 7.68 0 005.132-1.957 7.734 7.734 0 002.39-5.599c.005-.138.005-.276.005-.413V13.17c0-.984-.33-1.933-.428-2.806zm-9.386 7.618H9.692a5.706 5.706 0 01-5.692-5.692c0-.77.158-1.517.452-2.203.204-.476.452-.924.733-1.332C6.467 6.368 9.07 4.545 12 4.545h.186c2.93 0 5.533 1.823 6.815 4.21.281.408.529.856.733 1.332.294.686.452 1.433.452 2.203v.861c0 1.33-.428 2.612-1.206 3.655a5.679 5.679 0 01-4.486 2.037l-2.308-1.153a.998.998 0 00-.894 0l-1.312.656.406-.326a2.983 2.983 0 001.077-2.28v-.091a1 1 0 10-2 0v.09a.99.99 0 01-.36.757l-.366.293zM12 7.692c-2.484 0-4.5 2.016-4.5 4.5S9.516 16.692 12 16.692s4.5-2.016 4.5-4.5-2.016-4.5-4.5-4.5zm0 7A2.502 2.502 0 019.5 12 2.502 2.502 0 0112 9.5a2.502 2.502 0 012.5 2.5A2.502 2.502 0 0112 14.692z"/></svg>
         Viber
       </a>
-      <a href="https://wa.me/" target="_blank" class="messenger-btn">
+      <a href="https://wa.me/380636249066" target="_blank" class="messenger-btn">
         <svg class="messenger-icon" viewBox="0 0 24 24"><path d="M20.665 3.33a11.996 11.996 0 00-8.665-3.33A12 12 0 00.322 17.653L0 24l6.495-1.704A11.965 11.965 0 0012 24c6.627 0 12-5.373 12-12 0-3.21-1.25-6.22-3.335-8.67zM12 21.996a9.96 9.96 0 01-5.086-1.385l-.364-.216-3.778.991.998-3.682-.236-.375A9.962 9.962 0 012.004 12C2.004 6.486 6.486 2.004 12 2.004c5.514 0 10 4.486 10 9.996 0 5.51-4.486 10-10 10zm5.495-7.512c-.301-.151-1.784-.881-2.062-.981-.278-.101-.482-.151-.683.151-.201.302-.781.981-.957 1.182-.176.201-.352.226-.653.076-1.391-.692-2.457-1.32-3.398-3.076-.176-.302.046-.423.238-.686.151-.202.302-.352.452-.553.151-.202.201-.352.301-.553.101-.201.051-.377-.025-.528-.076-.151-.683-1.648-.936-2.253-.247-.591-.497-.512-.683-.522-.176-.01-.377-.01-.578-.01s-.528.076-.804.377c-.276.302-1.055 1.031-1.055 2.515 0 1.484 1.08 2.918 1.231 3.119.151.201 2.126 3.245 5.148 4.549 1.956.845 2.651.921 3.551.782.748-.116 2.235-.91 2.536-1.787.302-.877.302-1.625.201-1.787-.1-.161-.352-.251-.653-.402z"/></svg>
         WhatsApp
       </a>
-      <a href="https://signal.me/" target="_blank" class="messenger-btn">
+      <a href="https://signal.me/#p/+380636249066" target="_blank" class="messenger-btn">
          <svg class="messenger-icon" viewBox="0 0 24 24"><path d="M12 0a12 12 0 1012 12A12.013 12.013 0 0012 0zm5.112 16.59c-.456.456-1.127.721-1.78.736h-.066c-.663 0-1.32-.266-1.782-.727l-1.284-1.284a2.535 2.535 0 01-.741-1.794V9.664a2.52 2.52 0 012.52-2.52h3.857a2.52 2.52 0 012.52 2.52v3.858a2.538 2.538 0 01-.74 1.792zM12.923 9.664a1.05 1.05 0 00-1.05 1.05v3.858a1.05 1.05 0 00.308.742l1.284 1.284c.198.198.461.307.741.307.275 0 .533-.105.73-.301a1.054 1.054 0 00.308-.744V9.664a1.05 1.05 0 00-1.05-1.05h-1.27z"/></svg>
         Signal
       </a>
@@ -890,6 +904,7 @@ window.addEventListener('DOMContentLoaded', () => {
   renderSoothingCatalog();
   renderReflectCatalog();
   renderTestHistoryCard();
+  renderReflectHistoryCard();
 });
 
 function changeTheme(val) {
@@ -929,6 +944,7 @@ function showExploreDashboard() {
   document.getElementById('active-test-container').style.display = 'none';
   document.getElementById('active-reflect-container').style.display = 'none';
   renderTestHistoryCard();
+  renderReflectHistoryCard();
 }
 
 function openTestCatalog() {
@@ -940,6 +956,7 @@ function openTestCatalog() {
 function openReflectCatalog() {
   document.getElementById('explore-dashboard').style.display = 'none';
   document.getElementById('reflect-catalog-view').style.display = 'block';
+  renderReflectHistoryCard();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -1315,6 +1332,7 @@ let currentIndex = 0;
 let answers = {};
 let currentResultRecord = null;
 const TEST_HISTORY_KEY = 'vitaliy_psychologist_local_test_history_v1';
+const REFLECT_HISTORY_KEY = 'vitaliy_psychologist_local_reflect_history_v1';
 
 function openTest(testId) {
   activeTestId = testId;
@@ -1599,12 +1617,13 @@ function getScalePercent(value, maxValue) {
 
 function renderResultScaleBars(record) {
   const numericValues = record.results.map(r => Number(r.sum)).filter(Number.isFinite);
-  const maxValue = Math.max(...numericValues, 1);
+  const maxValue = Number(record.scaleMax) || Math.max(...numericValues, 1);
   return `
     <div class="scale-bars">
       ${record.results.map(r => {
         const score = Number(r.sum);
-        const percent = getScalePercent(score, maxValue);
+        const rowMax = Number(r.max) || maxValue;
+        const percent = getScalePercent(score, rowMax);
         return `
           <div class="scale-bar-row">
             <div class="scale-bar-name">${escapeHTML(r.schema)}</div>
@@ -1883,6 +1902,7 @@ let currentReflectItem = null;
 let currentReflectSteps = [];
 let currentReflectStepIdx = 0;
 let reflectAnswers = [];
+let currentReflectResultRecord = null;
 
 window.updateSlider = function(sliderId, value) {
   const valDisplay = document.getElementById(`val-${sliderId}`);
@@ -1897,6 +1917,204 @@ window.updateSlider = function(sliderId, value) {
       updateSDTTriangle();
     }
   }
+}
+
+
+function getReflectHistory() {
+  try {
+    return JSON.parse(localStorage.getItem(REFLECT_HISTORY_KEY) || '[]');
+  } catch (_) {
+    return [];
+  }
+}
+
+function setReflectHistory(history) {
+  localStorage.setItem(REFLECT_HISTORY_KEY, JSON.stringify(history));
+}
+
+function getReflectFilters(history) {
+  const map = new Map();
+  history.forEach(record => {
+    if (record.reflectId) map.set(record.reflectId, record.shortTitle || record.reflectTitle || record.reflectId);
+  });
+  return [...map.entries()].sort((a, b) => a[1].localeCompare(b[1], 'uk'));
+}
+
+function getActiveReflectHistoryFilter() {
+  return document.getElementById('reflectHistoryContent')?.dataset.filter || 'all';
+}
+
+function setReflectHistoryFilter(filter) {
+  const content = document.getElementById('reflectHistoryContent');
+  if (content) content.dataset.filter = filter;
+  renderReflectHistoryCard();
+}
+
+function getScoreLevel(value) {
+  const v = Number(value);
+  if (!Number.isFinite(v)) return '-';
+  if (v <= 3) return 'Низький показник';
+  if (v <= 6) return 'Середній показник';
+  return 'Високий показник';
+}
+
+function getReflectResultRows() {
+  const rows = [];
+  currentReflectSteps.forEach((step, i) => {
+    if (step.inputType !== 'sliders' || !reflectAnswers[i]) return;
+    step.sliders.forEach(sl => {
+      const value = Number(reflectAnswers[i][sl.id]);
+      if (!Number.isFinite(value)) return;
+      rows.push({
+        schema: sl.label,
+        sum: value,
+        level: getScoreLevel(value),
+        htmlLevel: getScoreLevel(value),
+        max: sl.max || 10
+      });
+    });
+  });
+  const average = rows.length ? Number((rows.reduce((acc, row) => acc + Number(row.sum), 0) / rows.length).toFixed(1)) : 0;
+  const mainLabel = currentReflectItemId === 'cocoon_civilian'
+    ? 'Середній показник психоемоційного стану'
+    : currentReflectItemId === 'self_determination'
+      ? 'Середній рівень задоволеності базових потреб'
+      : 'Середній показник';
+  return [
+    { schema: mainLabel, sum: average, level: getScoreLevel(average), htmlLevel: getScoreLevel(average), max: 10 },
+    ...rows
+  ];
+}
+
+function buildReflectResultRecord(text) {
+  const results = getReflectResultRows();
+  return {
+    id: `reflect-${currentReflectItemId}-${Date.now()}`,
+    type: 'reflect',
+    timestamp: new Date().toISOString(),
+    reflectId: currentReflectItemId,
+    reflectTitle: currentReflectItem.title,
+    shortTitle: currentReflectItemId === 'cocoon_civilian' ? 'Кокун' : currentReflectItemId === 'self_determination' ? 'Потреби' : currentReflectItem.title,
+    badge: currentReflectItemId === 'cocoon_civilian' ? 'Кокун' : 'Потреби',
+    scaleMax: 10,
+    results,
+    text
+  };
+}
+
+function renderReflectHistoryCard() {
+  const content = document.getElementById('reflectHistoryContent');
+  const controls = document.getElementById('reflectHistoryControls');
+  if (!content || !controls) return;
+
+  const history = getReflectHistory().sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+  const activeFilter = getActiveReflectHistoryFilter();
+
+  if (!history.length) {
+    content.className = 'history-panel-empty';
+    content.innerHTML = 'Збережених результатів поки немає. Після проходження картки можна зберегти результат і бачити власну динаміку стану або базових потреб.';
+    controls.style.display = 'none';
+    return;
+  }
+
+  controls.style.display = 'flex';
+  const filters = getReflectFilters(history);
+  const filteredHistory = activeFilter === 'all' ? history : history.filter(record => record.reflectId === activeFilter);
+  content.className = '';
+  content.innerHTML = `
+    <div class="history-filter-row">
+      <button type="button" class="history-filter-btn ${activeFilter === 'all' ? 'active' : ''}" onclick="setReflectHistoryFilter('all')">Усі</button>
+      ${filters.map(([id, label]) => `<button type="button" class="history-filter-btn ${activeFilter === id ? 'active' : ''}" onclick="setReflectHistoryFilter('${escapeHTML(id)}')">${escapeHTML(label)}</button>`).join('')}
+    </div>
+    <div class="history-list">
+      ${filteredHistory.map(record => {
+        const main = record.results[0] || {};
+        const date = new Date(record.timestamp).toLocaleDateString('uk-UA');
+        return `
+          <div class="history-item" data-history-id="${escapeHTML(record.id)}">
+            <div class="history-item-main">
+              <div>
+                <div class="history-meta-label">Дата</div>
+                <div class="history-meta-value">${escapeHTML(date)}</div>
+              </div>
+              <div>
+                <div class="history-meta-label">Картка</div>
+                <div class="history-meta-value">${escapeHTML(record.reflectTitle || record.shortTitle || '-')}</div>
+              </div>
+              <div>
+                <div class="history-meta-label">Бал</div>
+                <div class="history-meta-value">${escapeHTML(main.sum ?? '-')} / 10</div>
+              </div>
+              <div>
+                <div class="history-meta-label">Рівень</div>
+                <div class="history-meta-value">${escapeHTML(main.level || '-')}</div>
+              </div>
+              <button type="button" class="btn-ghost history-details-toggle" onclick="toggleHistoryDetails('${escapeHTML(record.id)}')">Деталі</button>
+            </div>
+            <div class="history-details">${renderResultScaleBars(record)}</div>
+          </div>`;
+      }).join('')}
+    </div>`;
+}
+
+function saveCurrentReflectResult() {
+  const status = document.getElementById('reflectSaveStatus');
+  if (!currentReflectResultRecord) {
+    if (status) status.textContent = 'Немає результату для збереження.';
+    return;
+  }
+  const history = getReflectHistory();
+  const exists = history.some(item => item.id === currentReflectResultRecord.id);
+  if (!exists) history.push(currentReflectResultRecord);
+  setReflectHistory(history);
+  renderReflectHistoryCard();
+  if (status) status.textContent = exists ? 'Цей результат уже збережений на цьому пристрої.' : 'Результат збережено на цьому пристрої.';
+}
+
+function clearReflectHistory() {
+  if (!confirm('Очистити локальну історію рефлексії на цьому пристрої?')) return;
+  localStorage.removeItem(REFLECT_HISTORY_KEY);
+  renderReflectHistoryCard();
+  const status = document.getElementById('reflectSaveStatus');
+  if (status) status.textContent = 'Локальну історію рефлексії очищено.';
+}
+
+function exportReflectHistory() {
+  const history = getReflectHistory();
+  if (!history.length) return;
+  const blob = new Blob([JSON.stringify(history, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `reflect-history-${new Date().toISOString().slice(0, 10)}.json`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+function importReflectHistory(event) {
+  const file = event.target.files?.[0];
+  event.target.value = '';
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const imported = JSON.parse(reader.result);
+      if (!Array.isArray(imported)) throw new Error('Invalid history format');
+      const current = getReflectHistory();
+      const byId = new Map(current.map(item => [item.id, item]));
+      imported.forEach(item => {
+        if (item && item.id && item.timestamp && Array.isArray(item.results)) byId.set(item.id, item);
+      });
+      setReflectHistory([...byId.values()].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)));
+      renderReflectHistoryCard();
+    } catch (_) {
+      alert('Не вдалося імпортувати історію. Перевір файл JSON.');
+    }
+  };
+  reader.readAsText(file);
 }
 
 function renderReflectCatalog() {
@@ -2064,9 +2282,14 @@ function showReflectFeedback() {
     }
   });
 
+  const resultText = text.trim();
+  currentReflectResultRecord = buildReflectResultRecord(resultText);
+
   document.getElementById('r-feedbackResultContainer').style.display = 'block';
-  document.getElementById('r-feedbackTextarea').value = text.trim();
+  document.getElementById('r-feedbackTextarea').value = resultText;
   document.getElementById('r-btnCopy').innerHTML = '📋 Скопіювати текст';
+  const reflectStatus = document.getElementById('reflectSaveStatus');
+  if (reflectStatus) reflectStatus.textContent = '';
 }
 
 function copyReflectText() {
