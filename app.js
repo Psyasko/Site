@@ -57,6 +57,8 @@ function showExploreDashboard() {
   document.getElementById('explore-dashboard').style.display = 'block';
   document.getElementById('test-catalog-view').style.display = 'none';
   document.getElementById('reflect-catalog-view').style.display = 'none';
+  const dynamicsView = document.getElementById('dynamics-catalog-view');
+  if (dynamicsView) dynamicsView.style.display = 'none';
   document.getElementById('active-test-container').style.display = 'none';
   document.getElementById('active-reflect-container').style.display = 'none';
   renderTestHistoryCard();
@@ -64,6 +66,9 @@ function showExploreDashboard() {
 }
 
 function openTestCatalog() {
+  const dynamicsView = document.getElementById('dynamics-catalog-view');
+  if (dynamicsView) dynamicsView.style.display = 'none';
+  document.getElementById('reflect-catalog-view').style.display = 'none';
   document.getElementById('explore-dashboard').style.display = 'none';
   document.getElementById('test-catalog-view').style.display = 'block';
   renderTestCatalog();
@@ -72,10 +77,23 @@ function openTestCatalog() {
 
 
 function openReflectCatalog() {
+  const dynamicsView = document.getElementById('dynamics-catalog-view');
+  if (dynamicsView) dynamicsView.style.display = 'none';
+  document.getElementById('test-catalog-view').style.display = 'none';
   document.getElementById('explore-dashboard').style.display = 'none';
   document.getElementById('reflect-catalog-view').style.display = 'block';
   renderReflectHistoryCard();
   scrollToElementCenter('#reflect-catalog-view');
+}
+
+function openDynamicsCatalog() {
+  document.getElementById('explore-dashboard').style.display = 'none';
+  document.getElementById('test-catalog-view').style.display = 'none';
+  document.getElementById('reflect-catalog-view').style.display = 'none';
+  const dynamicsView = document.getElementById('dynamics-catalog-view');
+  if (dynamicsView) dynamicsView.style.display = 'block';
+  renderTestHistoryCard();
+  scrollToElementCenter('#dynamics-catalog-view');
 }
 
 function getTestCatalogMeta(testId) {
@@ -573,6 +591,8 @@ function openTest(testId, source = 'test') {
   
   document.getElementById('test-catalog-view').style.display = 'none';
   document.getElementById('reflect-catalog-view').style.display = 'none';
+  const dynamicsView = document.getElementById('dynamics-catalog-view');
+  if (dynamicsView) dynamicsView.style.display = 'none';
   document.getElementById('explore-dashboard').style.display = 'none';
   document.getElementById('active-reflect-container').style.display = 'none';
   document.getElementById('active-test-container').style.display = 'block';
@@ -1147,7 +1167,7 @@ function getTestScaleMax(testId) {
 
 function openRelevantDynamics() {
   if (activeTestSource === 'reflect') openReflectCatalog();
-  else showExploreDashboard();
+  else openDynamicsCatalog();
 }
 
 function buildReflectRecordFromTestResult(record) {
