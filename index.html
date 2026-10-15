@@ -1,420 +1,514 @@
 <!DOCTYPE html>
-<html lang="uk">
+<html lang="uk" data-light="sunset">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Віталій Психолог — Практика психотерапії</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Віталій Ясковець — психолог</title>
+<meta name="description" content="Психолог Віталій Ясковець. Консультації за методами КПТ, ACT і схема-терапії. Вправи для заспокоєння та опитувальники для самостійного проходження.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Віталій Ясковець — психолог">
+<meta property="og:description" content="Консультації за методами КПТ, ACT і схема-терапії. Вправи для заспокоєння та опитувальники.">
+<meta name="theme-color" content="#15110D">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="assets/fonts/cormorant-garamond-cyrillic-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/manrope-cyrillic-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<script>
+  // тема ставиться до першого малювання, щоб не було спалаху
+  (function () {
+    var m = 'sunset';
+    try { var s = localStorage.getItem('light-mode'); if (s === 'sunset' || s === 'night' || s === 'dawn') m = s; } catch (e) {}
+    document.documentElement.setAttribute('data-light', m);
+  })();
+</script>
 <link rel="stylesheet" href="styles.css">
-<script src="tests-data.js"></script>
-<script src="soothing-data.js"></script>
-<script src="explore-data.js"></script>
+<script defer src="tests-data.js"></script>
+<script defer src="soothing-data.js"></script>
+<script defer src="explore-data.js"></script>
+<script defer src="app.js"></script>
+<script defer src="ui.js"></script>
 </head>
 <body>
 
-<div class="warm-noise"></div>
-<div class="grain-overlay"></div>
-<div class="hero-glow-outer"></div>
-<div class="hero-glow-inner"></div>
+<a class="skip-link" href="#main">Перейти до вмісту</a>
 
-<nav class="nav">
-  <div class="nav-logo">Віталій Психолог</div>
-  <div class="nav-links">
-    <a onclick="showSection('home')" id="nav-home" class="active">Головна</a>
-    <a onclick="showSection('about')" id="nav-about">Про мене</a>
-    <a onclick="showSection('consultations')" id="nav-consultations">Консультації</a>
-    <a onclick="showSection('tests')" id="nav-tests">Дослідити себе</a>
-    <a onclick="showSection('soothing')" id="nav-soothing">Самозаспокоєння</a>
-    
-    <div class="theme-switcher">
-      <button class="theme-btn active" id="theme-btn-0" onclick="changeTheme(0)" title="Захід сонця">🌇</button>
-      <button class="theme-btn" id="theme-btn-1" onclick="changeTheme(1)" title="Ніч">🌌</button>
-      <button class="theme-btn" id="theme-btn-2" onclick="changeTheme(2)" title="Світанок">🌅</button>
+<div class="room" aria-hidden="true">
+  <div class="shade"></div>
+  <div class="rays"></div>
+  <div class="patch"><span></span><span></span><span></span><span></span></div>
+  <canvas class="dust"></canvas>
+  <div class="grain"></div>
+</div>
+
+<header class="nav" id="nav">
+  <a href="#home" class="brand">Віталій Ясковець<small>психолог</small></a>
+  <nav class="nav-links" aria-label="Розділи сайту">
+    <a href="#about" data-nav="about">Про мене</a>
+    <a href="#consultations" data-nav="consultations">Консультації</a>
+    <a href="#tests" data-nav="tests">Опитувальники</a>
+    <a href="#soothing" data-nav="soothing">Вправи</a>
+  </nav>
+  <div class="nav-tools">
+    <div class="light-switch" role="group" aria-label="Світло">
+      <button type="button" aria-pressed="true" data-mode="sunset" title="Захід" aria-label="Захід">
+        <svg viewBox="0 0 24 24"><path class="fill" d="M5.5 15a6.5 6.5 0 0 1 13 0z"/><path d="M2.5 15h19M6 18.5h12M9 21.5h6"/></svg>
+      </button>
+      <button type="button" aria-pressed="false" data-mode="night" title="Ніч" aria-label="Ніч">
+        <svg viewBox="0 0 24 24"><path d="M19.5 14.5A8 8 0 1 1 9.5 4.5a6.5 6.5 0 0 0 10 10z"/><path d="M18 3v3.5M16.25 4.75h3.5"/></svg>
+      </button>
+      <button type="button" aria-pressed="false" data-mode="dawn" title="Світанок" aria-label="Світанок">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></svg>
+      </button>
     </div>
+    <button type="button" class="menu-btn" aria-expanded="false" aria-controls="mobileMenu" aria-label="Відкрити меню"><span></span><span></span></button>
   </div>
-</nav>
+</header>
 
-<div class="site-wrap">
+<div class="mobile-menu" id="mobileMenu" hidden>
+  <a href="#home" data-nav="home">Головна</a>
+  <a href="#about" data-nav="about">Про мене</a>
+  <a href="#consultations" data-nav="consultations">Консультації</a>
+  <a href="#tests" data-nav="tests">Опитувальники</a>
+  <a href="#soothing" data-nav="soothing">Вправи</a>
+</div>
 
+<main id="main">
+
+  <!-- ================= ГОЛОВНА ================= -->
   <section id="home" class="site-section active">
-    <div class="home-centered">
-      <h1 class="hero-title">Віталій Психолог</h1>
-      <div class="hero-desc">
-        Особистий сайт психолога Віталія. Простір дослідження себе.
+    <div class="hero wrap">
+      <figure class="portrait">
+        <img class="ph-sunset" src="assets/photo-sunset.webp" alt="Віталій Ясковець" width="900" height="1352" fetchpriority="high">
+        <img class="ph-night" src="assets/photo-night.webp" alt="" width="900" height="1352">
+        <img class="ph-dawn" src="assets/photo-dawn.webp" alt="" width="900" height="1352">
+      </figure>
+      <div class="hero-copy">
+        <p class="eyebrow reveal d1">КПТ · ACT · Схема-терапія</p>
+        <h1 class="hero-title reveal d2">Віталій<br><em>Ясковець</em></h1>
+        <p class="h-sub reveal d3">Психолог. Працюю з тривогою, стресом, виснаженням.</p>
+        <p class="lead reveal d3">Консультації онлайн. На сайті також є вправи для заспокоєння й опитувальники, які можна пройти самостійно.</p>
+        <div class="cta reveal d4">
+          <a href="#consultations" class="btn-sun">Записатися на консультацію</a>
+          <a href="#soothing" class="link-quiet">Вправи для заспокоєння <span aria-hidden="true">→</span></a>
+        </div>
       </div>
+    </div>
 
-      <div class="theme-photo-container">
-        <img src="assets/photo-sunset.jpg" alt="Захід сонця" class="theme-photo photo-sunset">
-        <img src="assets/photo-night.jpg" alt="Ніч" class="theme-photo photo-night">
-        <img src="assets/photo-dawn.jpg" alt="Світанок" class="theme-photo photo-dawn">
+    <div class="wrap block">
+      <div class="section-head reveal">
+        <h2>Що є на сайті</h2>
+        <p>Усе, що ти тут заповнюєш, залишається тільки у твоєму браузері.</p>
       </div>
-
-      <div class="action-grid">
-        <div class="action-card-btn" onclick="showSection('consultations')">Записатись на консультацію</div>
-        <div class="action-card-btn" onclick="showSection('soothing')">Відновити спокій</div>
-        <div class="action-card-btn" onclick="showSection('tests')">Дослідити себе</div>
-        <div class="action-card-btn" onclick="showSection('about')">Про мене</div>
+      <div class="path-list">
+        <a href="#soothing" class="path reveal">
+          <span class="path-num">01</span>
+          <span class="path-title">Допомогти собі зараз</span>
+          <span class="path-desc">Покрокові вправи на випадок, коли накриває тривога або паніка.</span>
+          <span class="path-arrow" aria-hidden="true">→</span>
+        </a>
+        <a href="#tests" class="path reveal">
+          <span class="path-num">02</span>
+          <span class="path-title">Опитувальники й щоденник</span>
+          <span class="path-desc">PHQ-9, GAD-7, PCL-5 та інші. Результати й графік змін зберігаються на твоєму пристрої.</span>
+          <span class="path-arrow" aria-hidden="true">→</span>
+        </a>
+        <a href="#consultations" class="path reveal">
+          <span class="path-num">03</span>
+          <span class="path-title">Умови й вартість</span>
+          <span class="path-desc">Правила співпраці й ціна сесії.</span>
+          <span class="path-arrow" aria-hidden="true">→</span>
+        </a>
+        <a href="#about" class="path reveal">
+          <span class="path-num">04</span>
+          <span class="path-title">Про мене</span>
+          <span class="path-desc">Підхід, освіта й документи.</span>
+          <span class="path-arrow" aria-hidden="true">→</span>
+        </a>
       </div>
     </div>
   </section>
 
+  <!-- ================= ПРО МЕНЕ ================= -->
   <section id="about" class="site-section">
-    <div class="home-centered">
-      <div class="section-label">Спеціалізація</div>
-      <h1 class="hero-title">Терапевтичний підхід</h1>
-      <div class="hero-desc" style="text-align: left; margin-bottom: 20px;">
+    <div class="wrap">
+      <header class="page-head">
+        <p class="eyebrow">Про мене</p>
+        <h1 class="page-title">Терапевтичний підхід</h1>
+      </header>
+
+      <div class="about-body prose">
         <p>Я спираюся на сучасні доказові методи психотерапії із чіткою методологічною базою. Практикую в рамках:</p>
-        <ul style="padding-left: 20px; margin: 16px 0; line-height: 1.8;">
-          <li>Когнітивно-поведінкової терапії (КПТ)</li>
-          <li>Терапії прийняття та відповідальності (ACT)</li>
-          <li>Схема-терапії</li>
+        <ul class="method-list">
+          <li><span class="method-abbr">КПТ</span><span class="method-name">Когнітивно-поведінкова терапія</span></li>
+          <li><span class="method-abbr">ACT</span><span class="method-name">Терапія прийняття та відповідальності</span></li>
+          <li><span class="method-abbr">ST</span><span class="method-name">Схема-терапія</span></li>
         </ul>
         <p>Робота орієнтована на розвиток психологічної гнучкості, усвідомлення глибинних патернів поведінки та формування твоєї повної терапевтичної автономії.</p>
       </div>
 
-      <div class="diploma-section">
-        <h3 style="font-family: 'Merriweather', serif; font-size: 22px; color: var(--accent-glow); font-weight: 700; margin: 0 0 8px 0;">Освіта та сертифікація</h3>
-        <div class="hero-desc" style="margin-bottom: 20px;">Документи, що підтверджують кваліфікацію та проходження підготовки у доказових модальностях.</div>
-        <div class="diploma-grid diploma-grid-expanded">
-          <img src="assets/placeholder1.jpg" alt="Сертифікат навчання" class="diploma-img" onclick="openLightbox(this.src)">
-          <img src="assets/placeholder2.jpg" alt="Сертифікат навчання" class="diploma-img" onclick="openLightbox(this.src)">
-          <div class="diploma-placeholder-card">
-            <div class="diploma-placeholder-icon">ACT</div>
-            <div class="diploma-placeholder-title">Терапія прийняття та відповідальності</div>
-            <div class="diploma-placeholder-status">навчання в процесі</div>
-          </div>
-          <div class="diploma-placeholder-card">
-            <div class="diploma-placeholder-icon">КПТ</div>
-            <div class="diploma-placeholder-title">Когнітивно-поведінкова терапія</div>
-            <div class="diploma-placeholder-status">навчання в процесі</div>
-          </div>
-          <div class="diploma-placeholder-card">
-            <div class="diploma-placeholder-icon">Диплом</div>
-            <div class="diploma-placeholder-title">Університетська освіта</div>
-            <div class="diploma-placeholder-status">місце під диплом</div>
-          </div>
-          <div class="diploma-placeholder-card">
-            <div class="diploma-placeholder-icon">Документ</div>
-            <div class="diploma-placeholder-title">Додатковий університетський документ</div>
-            <div class="diploma-placeholder-status">місце під документ</div>
+      <div class="edu block" id="edu">
+        <div class="section-head">
+          <h2>Освіта</h2>
+          <p>Натисни на документ, щоб відкрити його повністю.</p>
+        </div>
+        <div class="edu-grid">
+          <button type="button" class="doc-feature" data-doc="assets/docs/diploma.webp" data-cap="Диплом магістра з відзнакою · Університет імені Альфреда Нобеля, 2020">
+            <span class="doc-frame"><img src="assets/docs/diploma.webp" alt="Диплом магістра психології" loading="lazy" width="571" height="784"></span>
+            <span class="doc-meta">
+              <span class="doc-year">2020</span>
+              <span class="doc-title">Магістр психології, диплом з відзнакою</span>
+              <span class="doc-org">Університет імені Альфреда Нобеля. Програма «Консультування та реабілітаційна робота»</span>
+            </span>
+          </button>
+          <div class="doc-list">
+            <button type="button" class="doc-row" data-doc="assets/docs/ott.webp" data-cap="«Основи травматерапії» · Міжнародний інститут післядипломної освіти, 2026">
+              <span class="doc-thumb"><img src="assets/docs/ott.webp" alt="" loading="lazy"></span>
+              <span class="doc-year">2026</span>
+              <span class="doc-text"><span class="doc-title">Основи травматерапії</span><span class="doc-org">Міжнародний інститут післядипломної освіти · 32 год</span></span>
+            </button>
+            <button type="button" class="doc-row" data-doc="assets/docs/ushynskyi.webp" data-cap="Свідоцтво про підвищення кваліфікації · ПНПУ імені К. Д. Ушинського, 2026">
+              <span class="doc-thumb"><img src="assets/docs/ushynskyi.webp" alt="" loading="lazy"></span>
+              <span class="doc-year">2026</span>
+              <span class="doc-text"><span class="doc-title">Супровід людей з травматичним досвідом: техніки ACT</span><span class="doc-org">ПНПУ імені К. Д. Ушинського · підвищення кваліфікації, 120 год</span></span>
+            </button>
+            <button type="button" class="doc-row" data-doc="assets/docs/prometheus.webp" data-cap="«Травматичний досвід і ПТСР: інструментарій для психотерапевта» · Prometheus, 2026">
+              <span class="doc-thumb"><img src="assets/docs/prometheus.webp" alt="" loading="lazy"></span>
+              <span class="doc-year">2026</span>
+              <span class="doc-text"><span class="doc-title">Травматичний досвід і ПТСР: інструментарій для психотерапевта</span><span class="doc-org">Prometheus</span></span>
+            </button>
+            <button type="button" class="doc-row" data-doc="assets/docs/boryviter.webp" data-cap="«Практична психологія» · Військова школа «Боривітер», 2024">
+              <span class="doc-thumb"><img src="assets/docs/boryviter.webp" alt="" loading="lazy"></span>
+              <span class="doc-year">2024</span>
+              <span class="doc-text"><span class="doc-title">Практична психологія</span><span class="doc-org">Військова школа «Боривітер»</span></span>
+            </button>
           </div>
         </div>
       </div>
     </div>
   </section>
 
+  <!-- ================= КОНСУЛЬТАЦІЇ ================= -->
   <section id="consultations" class="site-section">
-    <div class="home-centered">
-      <div class="section-label">Умови співпраці</div>
-      <h1 class="hero-title">Правила та сеттінг</h1>
-      <div class="card" style="width: 100%; max-width: 700px;">
-        <div class="card-inner-glow"></div>
-        <div class="price-tag">Вартість сесії: 900 грн / 60–75 хвилин</div>
-        
-        <div class="contract-text">
-          <h3>Короткий терапевтичний контракт</h3>
-          <p>Для формування безпечного та прогнозованого середовища нашої взаємодії діють такі правила:</p>
+    <div class="wrap">
+      <header class="page-head">
+        <p class="eyebrow">Умови співпраці</p>
+        <h1 class="page-title">Правила та сеттінг</h1>
+      </header>
 
-          <h3>1. Конфіденційність</h3>
-          <p>Уся інформація, отримана в процесі сесій, є суворо конфіденційною. Вона не розголошується третім особам, за винятком випадків, передбачених чинним законодавством або професійним етичним кодексом.</p>
+      <div class="consult-grid">
+        <aside class="price-card card">
+          <div class="card-inner-glow"></div>
+          <p class="price-label">Вартість сесії</p>
+          <p class="price-value">900 <span>грн</span></p>
+          <p class="price-note">60–75 хвилин</p>
+          <a href="https://t.me/psyasko" target="_blank" rel="noopener" class="btn-sun">Записатися в Telegram</a>
+          <a href="#contacts" class="link-quiet js-to-contacts">Інші месенджери <span aria-hidden="true">↓</span></a>
+        </aside>
 
-          <h3>2. Скасування та перенесення зустрічей</h3>
-          <p>Скасувати або перенести заплановану сесію можна не пізніше ніж за 4 години до її початку. Якщо повідомлення про скасування надходить пізніше цього терміну, сесія оплачується у повному обсязі.</p>
-
-          <h3>3. Комунікація</h3>
-          <p>Месенджери використовуються суто для розв'язання організаційних питань. Психотерапевтична робота між сесіями в текстовому форматі не ведеться.</p>
-
-          <h3>4. Ціна</h3>
-          <p>Право рішення щодо зміни ціни на надані послуги залишається за психологом із попередженням мінімум за одну сесію до зміни.</p>
+        <div class="contract">
+          <p class="contract-intro">Короткий терапевтичний контракт. Для формування безпечного та прогнозованого середовища нашої взаємодії діють такі правила:</p>
+          <ol class="rule-list">
+            <li>
+              <span class="rule-num">01</span>
+              <div><h3>Конфіденційність</h3>
+              <p>Уся інформація, отримана в процесі сесій, є суворо конфіденційною. Вона не розголошується третім особам, за винятком випадків, передбачених чинним законодавством або професійним етичним кодексом.</p></div>
+            </li>
+            <li>
+              <span class="rule-num">02</span>
+              <div><h3>Скасування та перенесення зустрічей</h3>
+              <p>Скасувати або перенести заплановану сесію можна не пізніше ніж за 4 години до її початку. Якщо повідомлення про скасування надходить пізніше цього терміну, сесія оплачується у повному обсязі.</p></div>
+            </li>
+            <li>
+              <span class="rule-num">03</span>
+              <div><h3>Комунікація</h3>
+              <p>Месенджери використовуються суто для розв'язання організаційних питань. Психотерапевтична робота між сесіями в текстовому форматі не ведеться.</p></div>
+            </li>
+            <li>
+              <span class="rule-num">04</span>
+              <div><h3>Ціна</h3>
+              <p>Право рішення щодо зміни ціни на надані послуги залишається за психологом із попередженням мінімум за одну сесію до зміни.</p></div>
+            </li>
+          </ol>
         </div>
       </div>
     </div>
   </section>
 
+  <!-- ================= ОПИТУВАЛЬНИКИ ================= -->
   <section id="tests" class="site-section">
-    <div class="section-label">Діагностика та рефлексія</div>
-    <h1 class="hero-title" style="text-align: center;">Дослідити себе</h1>
+    <div class="wrap">
+      <header class="page-head">
+        <p class="eyebrow">Самоспостереження</p>
+        <h1 class="page-title">Опитувальники й щоденник</h1>
+      </header>
 
-    <div id="explore-dashboard">
-      <div class="action-grid" style="margin-top: 32px; gap: 20px;">
-        <div class="action-card-btn" onclick="openTestCatalog()" style="flex-direction: column; gap: 8px; padding: 32px 20px;">
-          <span style="font-family: 'Merriweather', serif; font-size: 20px; font-weight: 700; color: var(--accent-glow); text-transform: none;">Об'єктивна діагностика</span>
-          <span style="font-size: 12px; color: var(--text-muted); font-weight: 500; text-transform: none; line-height: 1.4;">Погляд на свій стан через призму клінічних маркерів</span>
-        </div>
-        <div class="action-card-btn" onclick="openReflectCatalog()" style="flex-direction: column; gap: 8px; padding: 32px 20px;">
-          <span style="font-family: 'Merriweather', serif; font-size: 20px; font-weight: 700; color: var(--accent-glow); text-transform: none;">Особиста рефлексія</span>
-          <span style="font-size: 12px; color: var(--text-muted); font-weight: 500; text-transform: none; line-height: 1.4;">Приватний простір для дослідження внутрішнього світу</span>
-        </div>
-        <div class="action-card-btn" onclick="openDynamicsCatalog()" style="flex-direction: column; gap: 8px; padding: 32px 20px;">
-          <span style="font-family: 'Merriweather', serif; font-size: 20px; font-weight: 700; color: var(--accent-glow); text-transform: none;">Моя динаміка тестувань</span>
-          <span style="font-size: 12px; color: var(--text-muted); font-weight: 500; text-transform: none; line-height: 1.4;">Історія проходжень, графіки змін і збережені результати</span>
-        </div>
-      </div>
-    </div>
-
-    <div id="dynamics-catalog-view" style="display:none;">
-      <button class="back-btn" onclick="showExploreDashboard()">← Назад до вибору</button>
-      <div id="testHistoryCard" class="card history-panel">
-        <div class="card-inner-glow"></div>
-        <div class="card-title" style="font-size:20px; margin-bottom:6px;">Моя динаміка тестувань</div>
-        <div class="card-sub">Історія зберігається автоматично тільки в цьому браузері на цьому пристрої. Вона не надсилається власнику сайту або третім сторонам. Для побудови графіка потрібно щонайменше два записи одного типу. Один запис зберігається як перший замір.</div>
-        <div id="testHistoryContent" class="history-panel-empty">Збережених результатів поки немає.</div>
-        <div class="controls" id="testHistoryControls" style="display:none;">
-          <button class="btn-ghost" type="button" onclick="exportTestHistoryPdf()">PDF всієї динаміки</button>
-          <button class="btn-ghost" type="button" onclick="exportTestHistory()">Експорт JSON</button>
-          <button class="btn-ghost" type="button" onclick="document.getElementById('importHistoryInput').click()">Імпорт JSON</button>
-          <button class="btn-ghost" type="button" onclick="clearTestHistory()">Очистити історію</button>
-          <input id="importHistoryInput" type="file" accept="application/json,.json" style="display:none" onchange="importTestHistory(event)">
+      <div id="explore-dashboard">
+        <div class="path-list">
+          <button type="button" class="path" onclick="openTestCatalog()">
+            <span class="path-num">01</span>
+            <span class="path-title">Скринінгові опитувальники</span>
+            <span class="path-desc">Короткі стандартизовані шкали. Результат орієнтовний і не є діагнозом.</span>
+            <span class="path-arrow" aria-hidden="true">→</span>
+          </button>
+          <button type="button" class="path" onclick="openReflectCatalog()">
+            <span class="path-num">02</span>
+            <span class="path-title">Особиста рефлексія</span>
+            <span class="path-desc">Приватний простір для дослідження внутрішнього світу.</span>
+            <span class="path-arrow" aria-hidden="true">→</span>
+          </button>
+          <button type="button" class="path" onclick="openDynamicsCatalog()">
+            <span class="path-num">03</span>
+            <span class="path-title">Моя динаміка</span>
+            <span class="path-desc">Історія проходжень, графіки змін і збережені результати.</span>
+            <span class="path-arrow" aria-hidden="true">→</span>
+          </button>
         </div>
       </div>
-    </div>
 
-    <div id="test-catalog-view" style="display:none;">
-      <button class="back-btn" onclick="showExploreDashboard()">← Назад до вибору</button>
-      <div class="privacy-note">
-        <strong>Приватність:</strong> відповіді й результати обробляються локально у твоєму браузері. Вони не надсилаються власнику сайту або третім сторонам. Історія зберігається автоматично лише на цьому пристрої після завершення опитувальника. Результати не є діагнозом і мають орієнтовний характер.
-      </div>
-      <div id="test-catalog-container"></div>
-    </div>
-
-    <div id="reflect-catalog-view" style="display:none;">
-      <button class="back-btn" onclick="showExploreDashboard()">← Назад до вибору</button>
-      <div id="reflectHistoryCard" class="card history-panel">
-        <div class="card-inner-glow"></div>
-        <div class="card-title" style="font-size:20px; margin-bottom:6px;">Динаміка особистої рефлексії</div>
-        <div class="card-sub">Тут локально зберігаються результати карток Кокуна, базових потреб і короткої карти схема-режимів. Історія залишається тільки в цьому браузері на цьому пристрої.</div>
-        <div id="reflectHistoryContent" class="history-panel-empty">Збережених результатів поки немає.</div>
-        <div class="controls" id="reflectHistoryControls" style="display:none;">
-          <button class="btn-ghost" type="button" onclick="exportReflectHistoryPdf()">PDF всієї динаміки</button>
-          <button class="btn-ghost" type="button" onclick="exportReflectHistory()">Експорт JSON</button>
-          <button class="btn-ghost" type="button" onclick="document.getElementById('importReflectHistoryInput').click()">Імпорт JSON</button>
-          <button class="btn-ghost" type="button" onclick="clearReflectHistory()">Очистити історію</button>
-          <input id="importReflectHistoryInput" type="file" accept="application/json,.json" style="display:none" onchange="importReflectHistory(event)">
+      <div id="dynamics-catalog-view" class="sub-view" style="display:none;">
+        <button type="button" class="back-btn" onclick="showExploreDashboard()">← Назад до вибору</button>
+        <div id="testHistoryCard" class="card history-panel">
+          <div class="card-inner-glow"></div>
+          <h2 class="panel-title">Моя динаміка тестувань</h2>
+          <p class="card-sub">Історія зберігається автоматично тільки в цьому браузері на цьому пристрої. Вона не надсилається власнику сайту або третім сторонам. Для побудови графіка потрібно щонайменше два записи одного типу. Один запис зберігається як перший замір.</p>
+          <div id="testHistoryContent" class="history-panel-empty">Збережених результатів поки немає.</div>
+          <div class="controls" id="testHistoryControls" style="display:none;">
+            <button class="btn-ghost" type="button" onclick="exportTestHistoryPdf()">PDF всієї динаміки</button>
+            <button class="btn-ghost" type="button" onclick="exportTestHistory()">Експорт JSON</button>
+            <button class="btn-ghost" type="button" onclick="document.getElementById('importHistoryInput').click()">Імпорт JSON</button>
+            <button class="btn-ghost btn-danger" type="button" onclick="clearTestHistory()">Очистити історію</button>
+            <input id="importHistoryInput" type="file" accept="application/json,.json" hidden onchange="importTestHistory(event)">
+          </div>
         </div>
       </div>
-      <div id="reflect-catalog-container"></div>
-    </div>
 
-    <div id="active-test-container">
-      <button class="back-btn" onclick="closeTest()">← Повернутися до каталогу</button>
-      <div class="card">
-        <div class="card-inner-glow"></div>
-        <div class="card-header-test">
-          <div class="card-badge" id="activeTestBadge">TEST</div>
-          <div style="flex:1; margin-right: 20px;">
-            <div class="card-title" id="qCounter">Питання 1</div>
-            <div style="height:4px; background:var(--glass-bg); margin-top:10px; border-radius:2px; overflow:hidden; width:100%;">
-              <div id="progressInner" style="height:100%; background:var(--accent-amber); width:0%; transition:width 0.3s ease;"></div>
+      <div id="test-catalog-view" class="sub-view" style="display:none;">
+        <button type="button" class="back-btn" onclick="showExploreDashboard()">← Назад до вибору</button>
+        <div class="privacy-note">
+          <strong>Приватність:</strong> відповіді й результати обробляються локально у твоєму браузері. Вони не надсилаються власнику сайту або третім сторонам. Історія зберігається автоматично лише на цьому пристрої після завершення опитувальника. Результати не є діагнозом і мають орієнтовний характер.
+        </div>
+        <div id="test-catalog-container"></div>
+      </div>
+
+      <div id="reflect-catalog-view" class="sub-view" style="display:none;">
+        <button type="button" class="back-btn" onclick="showExploreDashboard()">← Назад до вибору</button>
+        <div id="reflectHistoryCard" class="card history-panel">
+          <div class="card-inner-glow"></div>
+          <h2 class="panel-title">Динаміка особистої рефлексії</h2>
+          <p class="card-sub">Тут локально зберігаються результати карток Кокуна, базових потреб і короткої карти схема-режимів. Історія залишається тільки в цьому браузері на цьому пристрої.</p>
+          <div id="reflectHistoryContent" class="history-panel-empty">Збережених результатів поки немає.</div>
+          <div class="controls" id="reflectHistoryControls" style="display:none;">
+            <button class="btn-ghost" type="button" onclick="exportReflectHistoryPdf()">PDF всієї динаміки</button>
+            <button class="btn-ghost" type="button" onclick="exportReflectHistory()">Експорт JSON</button>
+            <button class="btn-ghost" type="button" onclick="document.getElementById('importReflectHistoryInput').click()">Імпорт JSON</button>
+            <button class="btn-ghost btn-danger" type="button" onclick="clearReflectHistory()">Очистити історію</button>
+            <input id="importReflectHistoryInput" type="file" accept="application/json,.json" hidden onchange="importReflectHistory(event)">
+          </div>
+        </div>
+        <div id="reflect-catalog-container"></div>
+      </div>
+
+      <div id="active-test-container" class="sub-view">
+        <button type="button" class="back-btn" onclick="closeTest()">← Повернутися до каталогу</button>
+        <div class="card test-card">
+          <div class="card-inner-glow"></div>
+          <div class="card-header-test">
+            <div class="card-badge" id="activeTestBadge">TEST</div>
+            <div class="test-progress">
+              <div class="card-title" id="qCounter">Питання 1</div>
+              <div class="progress-track"><div id="progressInner" class="progress-fill"></div></div>
             </div>
+            <button type="button" id="btnPrev" class="btn-ghost btn-small" disabled>Назад</button>
           </div>
-          <div>
-            <button id="btnPrev" class="btn-ghost" style="padding:6px 12px; font-size:11px;" disabled>Назад</button>
-          </div>
-        </div>
 
-        <div id="testInstruction" class="test-instruction"></div>
+          <div id="testInstruction" class="test-instruction"></div>
 
-        <form id="quizForm" onsubmit="return false;">
-          <div id="questionArea"></div>
-
-          <div class="controls">
-            <button type="button" id="btnNext">Далі</button>
-            <button type="button" class="btn-ghost" id="btnFinish" style="display:none;">Завершити</button>
-            <button type="button" class="btn-ghost" id="btnReset">Скинути</button>
-          </div>
-        </form>
-
-        <div class="resultBox" id="resultBox">
-          <h3 style="font-family:'Merriweather',serif; font-size:24px; color:var(--accent-glow); margin:0 0 12px 0;">Профіль результатів</h3>
-          <table id="resultTable">
-            <thead>
-              <tr>
-                <th>Показник</th>
-                <th>Бал</th>
-                <th>Рівень</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-          <div class="schema-descriptions" id="schemaDescriptions"></div>
-          <div id="testResultActions" class="result-actions" style="display:none;">
-            <textarea id="testResultText" class="feedback-result-textarea" readonly></textarea>
-            <div class="feedback-copy-wrapper">
-              <button type="button" onclick="copyTestResult()" id="btnCopyTestResult">📋 Скопіювати результат</button>
-            </div>
+          <form id="quizForm" onsubmit="return false;">
+            <div id="questionArea"></div>
             <div class="controls">
-              <button type="button" onclick="exportCurrentTestResultPdf()">PDF цього результату</button>
-              <button type="button" class="btn-ghost" onclick="openRelevantDynamics()">Моя динаміка</button>
-              <button type="button" class="btn-ghost" onclick="resetTest()">Пройти заново</button>
+              <button type="button" id="btnNext">Далі</button>
+              <button type="button" class="btn-ghost" id="btnFinish" style="display:none;">Завершити</button>
+              <button type="button" class="btn-ghost" id="btnReset">Скинути</button>
+            </div>
+          </form>
+
+          <div class="resultBox" id="resultBox">
+            <h3 class="result-title">Профіль результатів</h3>
+            <div class="table-wrap">
+              <table id="resultTable">
+                <thead><tr><th>Показник</th><th>Бал</th><th>Рівень</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+            <div class="schema-descriptions" id="schemaDescriptions"></div>
+            <div id="testResultActions" class="result-actions" style="display:none;">
+              <textarea id="testResultText" class="feedback-result-textarea" readonly aria-label="Текст результату"></textarea>
+              <div class="feedback-copy-wrapper">
+                <button type="button" class="btn-ghost btn-small" onclick="copyTestResult()" id="btnCopyTestResult">📋 Скопіювати результат</button>
+              </div>
+              <div class="controls">
+                <button type="button" onclick="exportCurrentTestResultPdf()">PDF цього результату</button>
+                <button type="button" class="btn-ghost" onclick="openRelevantDynamics()">Моя динаміка</button>
+                <button type="button" class="btn-ghost" onclick="resetTest()">Пройти заново</button>
+              </div>
+              <div class="pdf-note">Результат автоматично збережено локально на цьому пристрої.</div>
+              <div id="testSaveStatus" class="status-line"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="active-reflect-container" class="sub-view" style="display:none;">
+        <button type="button" class="back-btn" onclick="closeReflect()">← Повернутися до каталогу</button>
+
+        <div id="diary-card-container" style="display:none;"></div>
+
+        <div id="reflect-wizard" style="display:none;">
+          <div class="card wizard-card">
+            <div class="card-inner-glow"></div>
+            <h2 id="r-wizardTitle" class="wizard-title">Крок 1</h2>
+            <div id="r-wizardText" class="wizard-text"></div>
+            <div id="r-wizardInputs" class="wizard-inputs"></div>
+            <div id="r-visual-wrapper" class="visual-wrapper" style="display:none;"></div>
+            <div class="controls controls-center">
+              <button type="button" onclick="nextReflectStep()" id="r-btnNext">Далі</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="reflect-feedback" style="display:none;">
+          <div class="card feedback-box">
+            <div class="card-inner-glow"></div>
+            <div class="feedback-title">Дослідження завершено</div>
+            <div class="feedback-desc">Цей текст залишається лише для тебе — нікуди не надсилається.</div>
+            <div id="r-feedbackResultContainer" style="display:none;">
+              <textarea id="r-feedbackTextarea" class="feedback-result-textarea" readonly aria-label="Текст результату"></textarea>
+              <div class="feedback-copy-wrapper">
+                <button type="button" class="btn-ghost btn-small" onclick="copyReflectText()" id="r-btnCopy">📋 Скопіювати текст</button>
+              </div>
+            </div>
+            <div class="controls controls-center">
+              <button type="button" onclick="exportCurrentReflectResultPdf()">PDF цього результату</button>
+              <button type="button" class="btn-ghost" onclick="closeReflect()">Завершити</button>
+              <button type="button" class="btn-ghost" onclick="repeatReflect()">Пройти знову</button>
+              <button type="button" class="btn-ghost" onclick="openReflectCatalog()">Моя динаміка</button>
             </div>
             <div class="pdf-note">Результат автоматично збережено локально на цьому пристрої.</div>
-            <div id="testSaveStatus" class="status-line"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div id="active-reflect-container" style="display:none;">
-      <button class="back-btn" onclick="closeReflect()">← Повернутися до каталогу</button>
-
-      <div id="diary-card-container" style="display:none;"></div>
-
-      <div id="reflect-wizard" style="display:none;">
-        <div class="card" style="text-align:center; padding:40px 20px;">
-          <div class="card-inner-glow"></div>
-          <h2 id="r-wizardTitle" style="font-family:'Merriweather',serif; color:var(--accent-glow); font-size:28px; margin-top:0;">Крок 1</h2>
-          <div id="r-wizardText" class="question-text" style="justify-content:center; min-height:80px; font-size:18px; font-weight:600; text-align:center;"></div>
-          <div id="r-wizardInputs" class="wizard-inputs"></div>
-          <div id="r-visual-wrapper" style="margin-top:20px; display:none; justify-content:center;"></div>
-          <div class="controls" style="justify-content:center;">
-            <button onclick="nextReflectStep()" id="r-btnNext">Далі</button>
+            <div id="reflectSaveStatus" class="status-line"></div>
           </div>
         </div>
       </div>
 
-      <div id="reflect-feedback" style="display:none;">
-        <div class="card feedback-box">
-          <div class="card-inner-glow"></div>
-          <div class="feedback-title">Дослідження завершено</div>
-          <div class="feedback-desc">Була проведена важлива робота. Цей текст залишається лише для тебе — нікуди не надсилається.</div>
-          
-          <div id="r-feedbackResultContainer" style="display:none;">
-            <textarea id="r-feedbackTextarea" class="feedback-result-textarea" readonly></textarea>
-            <div class="feedback-copy-wrapper">
-              <button onclick="copyReflectText()" id="r-btnCopy">📋 Скопіювати текст</button>
-            </div>
-          </div>
-          
-          <div class="controls" style="justify-content:center; gap:12px;">
-            <button onclick="exportCurrentReflectResultPdf()">PDF цього результату</button>
-            <button class="btn-ghost" onclick="closeReflect()">Завершити</button>
-            <button class="btn-ghost" onclick="repeatReflect()">Пройти знову</button>
-            <button class="btn-ghost" onclick="openReflectCatalog()">Моя динаміка</button>
-          </div>
-          <div class="pdf-note">Результат автоматично збережено локально на цьому пристрої.</div>
-          <div id="reflectSaveStatus" class="status-line"></div>
-        </div>
+      <div class="privacy-note privacy-bottom">
+        <strong>Приватність і межі самодослідження:</strong> відповіді, результати опитувальників і записи рефлексії обробляються локально у твоєму браузері. Вони не надсилаються власнику сайту або третім сторонам. Історія автоматично зберігається лише на цьому пристрої після завершення тесту або вправи рефлексії. Результати не є діагнозом, не замінюють консультацію спеціаліста і мають лише орієнтовний інформаційний характер.
       </div>
-    </div>
-
-    <div class="privacy-note" style="margin-top: 30px;">
-      <strong>Приватність і межі самодослідження:</strong> відповіді, результати опитувальників і записи рефлексії обробляються локально у твоєму браузері. Вони не надсилаються власнику сайту або третім сторонам. Історія автоматично зберігається лише на цьому пристрої після завершення тесту або вправи рефлексії. Результати не є діагнозом, не замінюють консультацію спеціаліста і мають лише орієнтовний інформаційний характер.
     </div>
   </section>
 
+  <!-- ================= ВПРАВИ ================= -->
   <section id="soothing" class="site-section">
-    <div class="section-label">Заземлення</div>
-    <h1 class="hero-title" style="text-align: center;">Каталог практик</h1>
-    
-    <div id="soothing-catalog">
-      <div class="hero-desc" style="margin: 0 auto 24px auto; text-align: center;">
-        Базові техніки біологічної та когнітивної саморегуляції для зниження рівня емоційної активації.
-      </div>
-      <div id="soothing-catalog-container"></div>
-    </div>
+    <div class="wrap">
+      <header class="page-head">
+        <p class="eyebrow">Самодопомога</p>
+        <h1 class="page-title">Вправи для заспокоєння</h1>
+        <p class="lead">Базові техніки біологічної та когнітивної саморегуляції для зниження рівня емоційної активації.</p>
+      </header>
 
-    <div id="active-soothing-container">
-      <button class="back-btn" onclick="closeSoothing()">← Повернутися до каталогу</button>
-      
-      <div id="soothing-breathing" style="display:none;">
-        <div class="card" style="text-align: center;">
-          <div class="card-inner-glow"></div>
-          <div class="breathe-widget">
-            <div id="breatheText" class="breathe-text">Готові?</div>
-            <div id="breatheCircle" class="breathe-circle"></div>
-          </div>
-          <div id="breatheCounter" class="breathe-counter"></div>
-          <div class="controls" style="justify-content: center; margin-top: 24px;">
-            <button id="btnBreatheToggle" onclick="toggleBreathing()">Почати вправу</button>
-          </div>
-        </div>
+      <div id="soothing-catalog">
+        <div id="soothing-catalog-container"></div>
       </div>
 
-      <div id="soothing-pmr" style="display:none;">
-        <div class="card" style="text-align: center; padding: 40px 20px;">
-          <div class="card-inner-glow"></div>
-          
-          <div id="pmrOnboarding" style="margin-bottom: 24px;">
-            <h2 style="font-family:'Merriweather',serif; color:var(--accent-glow); font-size:26px; margin-top:0;">Прогресивна м'язова релаксація</h2>
-            <p class="hero-desc" style="margin: 0 auto; max-width: 500px; font-size: 15px;">Ця техніка допомагає зняти стрес через фізичне розслаблення. Ми будемо почергово напружувати та відпускати різні зони тіла. Коли таймер стане червоним (5 секунд) — міцно напруж вказану зону. Коли колір зміниться на спокійний (10 секунд) — повністю відпусти напругу і відчуй розслаблення. Сядь зручно, випрями спину. Приготуйся.</p>
-            <div class="controls" style="justify-content: center; margin-top: 32px;">
-              <button onclick="togglePMR()">Розпочати практику</button>
+      <div id="active-soothing-container" class="sub-view">
+        <button type="button" class="back-btn" onclick="closeSoothing()">← Повернутися до каталогу</button>
+
+        <div id="soothing-breathing" style="display:none;">
+          <div class="card practice-card">
+            <div class="card-inner-glow"></div>
+            <div class="breathe-widget">
+              <div id="breatheCircle" class="breathe-circle"></div>
+              <div id="breatheText" class="breathe-text">Готові?</div>
             </div>
-          </div>
-
-          <div id="pmrMainInterface" style="display:none;">
-            <h2 id="pmrGroupLabel" style="font-family:'Merriweather',serif; color:var(--accent-glow); font-size:28px; margin-top:0;">М'язова група</h2>
-            <div id="pmrInstruction" class="question-text" style="justify-content:center; min-height:60px; font-weight:600; text-align: center;">Готуємось...</div>
-            <div id="pmrTimer" class="pmr-timer-text">00</div>
-            <div class="controls" style="justify-content: center;">
-              <button id="btnPmrToggle" class="btn-ghost" onclick="togglePMR()">Зупинити</button>
+            <div id="breatheCounter" class="breathe-counter"></div>
+            <div class="controls controls-center">
+              <button type="button" id="btnBreatheToggle" onclick="toggleBreathing()">Почати вправу</button>
             </div>
           </div>
         </div>
-      </div>
 
-      <div id="soothing-wizard" style="display:none;">
-        <div class="card" style="text-align: center; padding: 40px 20px;">
-          <div class="card-inner-glow"></div>
-          <h2 style="font-family:'Merriweather',serif; color:var(--accent-glow); font-size:28px; margin-top:0;" id="wizardTitle">Крок 1</h2>
-          <div class="question-text" style="justify-content:center; min-height:80px; font-size:18px; font-weight:600; text-align: center;" id="wizardText"></div>
-          <div id="wizardInputs" class="wizard-inputs"></div>
-          <div class="controls" style="justify-content: center;">
-            <button onclick="nextWizardStep()" id="btnWizardNext">Далі</button>
-          </div>
-        </div>
-      </div>
-
-      <div id="soothing-feedback" style="display:none;">
-        <div class="card feedback-box">
-          <div class="card-inner-glow"></div>
-          <div class="feedback-title">Вправу завершено</div>
-          <div class="feedback-desc">Оціни свій поточний стан та обери подальшу дію:</div>
-          
-          <div id="feedbackResultContainer" style="display:none;">
-            <textarea id="feedbackTextarea" class="feedback-result-textarea" readonly></textarea>
-            <div class="feedback-copy-wrapper">
-              <button onclick="copyWizardText()" id="btnCopyFeedback">📋 Скопіювати текст</button>
+        <div id="soothing-pmr" style="display:none;">
+          <div class="card practice-card">
+            <div class="card-inner-glow"></div>
+            <div id="pmrOnboarding">
+              <h2 class="wizard-title">Прогресивна м'язова релаксація</h2>
+              <p class="wizard-intro">Ця техніка допомагає зняти стрес через фізичне розслаблення. Ми будемо почергово напружувати та відпускати різні зони тіла. Коли таймер стане червоним (5 секунд) — міцно напруж вказану зону. Коли колір зміниться на спокійний (10 секунд) — повністю відпусти напругу і відчуй розслаблення. Сядь зручно, випрями спину. Приготуйся.</p>
+              <div class="controls controls-center">
+                <button type="button" onclick="togglePMR()">Розпочати практику</button>
+              </div>
+            </div>
+            <div id="pmrMainInterface" style="display:none;">
+              <h2 id="pmrGroupLabel" class="wizard-title">М'язова група</h2>
+              <div id="pmrInstruction" class="wizard-text">Готуємось...</div>
+              <div id="pmrTimer" class="pmr-timer-text">00</div>
+              <div class="controls controls-center">
+                <button type="button" id="btnPmrToggle" class="btn-ghost" onclick="togglePMR()">Зупинити</button>
+              </div>
             </div>
           </div>
+        </div>
 
-          <div class="controls" style="justify-content: center; gap: 12px;">
-            <button onclick="closeSoothing()">Мені стало краще</button>
-            <button class="btn-ghost" onclick="repeatCurrentSoothing()">Повторити ще раз</button>
-            <button class="btn-ghost" onclick="closeSoothing()">Інші техніки</button>
+        <div id="soothing-wizard" style="display:none;">
+          <div class="card wizard-card">
+            <div class="card-inner-glow"></div>
+            <h2 class="wizard-title" id="wizardTitle">Крок 1</h2>
+            <div class="wizard-text" id="wizardText"></div>
+            <div id="wizardInputs" class="wizard-inputs"></div>
+            <div class="controls controls-center">
+              <button type="button" onclick="nextWizardStep()" id="btnWizardNext">Далі</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="soothing-feedback" style="display:none;">
+          <div class="card feedback-box">
+            <div class="card-inner-glow"></div>
+            <div class="feedback-title">Вправу завершено</div>
+            <div class="feedback-desc">Оціни свій поточний стан та обери подальшу дію:</div>
+            <div id="feedbackResultContainer" style="display:none;">
+              <textarea id="feedbackTextarea" class="feedback-result-textarea" readonly aria-label="Текст результату"></textarea>
+              <div class="feedback-copy-wrapper">
+                <button type="button" class="btn-ghost btn-small" onclick="copyWizardText()" id="btnCopyFeedback">📋 Скопіювати текст</button>
+              </div>
+            </div>
+            <div class="controls controls-center">
+              <button type="button" onclick="closeSoothing()">Мені стало краще</button>
+              <button type="button" class="btn-ghost" onclick="repeatCurrentSoothing()">Повторити ще раз</button>
+              <button type="button" class="btn-ghost" onclick="closeSoothing()">Інші техніки</button>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </section>
+</main>
 
-  <div class="card global-footer-card">
-    <div class="card-inner-glow"></div>
-    <p class="footer-contact-note">Можеш звертатися у відповідних месенджерах. Можу відповісти не одразу.</p>
-    <div class="messenger-grid" style="margin-top: 0;">
-      <a href="https://t.me/psyasko" target="_blank" class="messenger-btn">
-        <svg class="messenger-icon" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.94z"/></svg>
-        Telegram
-      </a>
-      <a href="viber://chat?number=%2B380636249066" target="_blank" class="messenger-btn">
-        <svg class="messenger-icon" viewBox="0 0 24 24"><path d="M21.572 10.364c-.11-.599-.272-1.186-.482-1.751C19.743 4.887 16.143 2.12 12.186 2.003h-.372c-3.957.117-7.557 2.884-8.904 6.61-.21.565-.372 1.152-.482 1.751C2.33 11.237 2 12.186 2 13.17c0 4.248 3.444 7.692 7.692 7.692h.016c.304 0 .611-.027.915-.08a7.653 7.653 0 004.755 1.218 7.68 7.68 0 005.132-1.957 7.734 7.734 0 002.39-5.599c.005-.138.005-.276.005-.413V13.17c0-.984-.33-1.933-.428-2.806zm-9.386 7.618H9.692a5.706 5.706 0 01-5.692-5.692c0-.77.158-1.517.452-2.203.204-.476.452-.924.733-1.332C6.467 6.368 9.07 4.545 12 4.545h.186c2.93 0 5.533 1.823 6.815 4.21.281.408.529.856.733 1.332.294.686.452 1.433.452 2.203v.861c0 1.33-.428 2.612-1.206 3.655a5.679 5.679 0 01-4.486 2.037l-2.308-1.153a.998.998 0 00-.894 0l-1.312.656.406-.326a2.983 2.983 0 001.077-2.28v-.091a1 1 0 10-2 0v.09a.99.99 0 01-.36.757l-.366.293zM12 7.692c-2.484 0-4.5 2.016-4.5 4.5S9.516 16.692 12 16.692s4.5-2.016 4.5-4.5-2.016-4.5-4.5-4.5zm0 7A2.502 2.502 0 019.5 12 2.502 2.502 0 0112 9.5a2.502 2.502 0 012.5 2.5A2.502 2.502 0 0112 14.692z"/></svg>
-        Viber
-      </a>
-      <a href="https://wa.me/380636249066" target="_blank" class="messenger-btn">
-        <svg class="messenger-icon" viewBox="0 0 24 24"><path d="M20.665 3.33a11.996 11.996 0 00-8.665-3.33A12 12 0 00.322 17.653L0 24l6.495-1.704A11.965 11.965 0 0012 24c6.627 0 12-5.373 12-12 0-3.21-1.25-6.22-3.335-8.67zM12 21.996a9.96 9.96 0 01-5.086-1.385l-.364-.216-3.778.991.998-3.682-.236-.375A9.962 9.962 0 012.004 12C2.004 6.486 6.486 2.004 12 2.004c5.514 0 10 4.486 10 9.996 0 5.51-4.486 10-10 10zm5.495-7.512c-.301-.151-1.784-.881-2.062-.981-.278-.101-.482-.151-.683.151-.201.302-.781.981-.957 1.182-.176.201-.352.226-.653.076-1.391-.692-2.457-1.32-3.398-3.076-.176-.302.046-.423.238-.686.151-.202.302-.352.452-.553.151-.202.201-.352.301-.553.101-.201.051-.377-.025-.528-.076-.151-.683-1.648-.936-2.253-.247-.591-.497-.512-.683-.522-.176-.01-.377-.01-.578-.01s-.528.076-.804.377c-.276.302-1.055 1.031-1.055 2.515 0 1.484 1.08 2.918 1.231 3.119.151.201 2.126 3.245 5.148 4.549 1.956.845 2.651.921 3.551.782.748-.116 2.235-.91 2.536-1.787.302-.877.302-1.625.201-1.787-.1-.161-.352-.251-.653-.402z"/></svg>
-        WhatsApp
-      </a>
-      <a href="https://signal.me/#p/+380636249066" target="_blank" class="messenger-btn">
-         <svg class="messenger-icon" viewBox="0 0 24 24"><path d="M12 0a12 12 0 1012 12A12.013 12.013 0 0012 0zm5.112 16.59c-.456.456-1.127.721-1.78.736h-.066c-.663 0-1.32-.266-1.782-.727l-1.284-1.284a2.535 2.535 0 01-.741-1.794V9.664a2.52 2.52 0 012.52-2.52h3.857a2.52 2.52 0 012.52 2.52v3.858a2.538 2.538 0 01-.74 1.792zM12.923 9.664a1.05 1.05 0 00-1.05 1.05v3.858a1.05 1.05 0 00.308.742l1.284 1.284c.198.198.461.307.741.307.275 0 .533-.105.73-.301a1.054 1.054 0 00.308-.744V9.664a1.05 1.05 0 00-1.05-1.05h-1.27z"/></svg>
-        Signal
-      </a>
+<footer class="site-footer" id="contacts">
+  <div class="wrap foot">
+    <div>
+      <h2>Написати</h2>
+      <p>Відповідаю протягом доби.</p>
+    </div>
+    <div class="messengers">
+      <a href="https://t.me/psyasko" target="_blank" rel="noopener">Telegram</a>
+      <a href="viber://chat?number=%2B380636249066">Viber</a>
+      <a href="https://wa.me/380636249066" target="_blank" rel="noopener">WhatsApp</a>
+      <a href="https://signal.me/#p/+380636249066" target="_blank" rel="noopener">Signal</a>
     </div>
   </div>
+</footer>
+
+<div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-label="Документ" hidden>
+  <figure><img id="lightboxImg" alt=""><figcaption id="lightboxCap"></figcaption></figure>
+  <button type="button" class="lb-close" aria-label="Закрити">Закрити ✕</button>
 </div>
 
-<div id="lightbox" class="lightbox-overlay" onclick="closeLightbox()">
-  <img id="lightboxImg" class="lightbox-img" src="" alt="Zoomed document" onclick="event.stopPropagation()">
-</div>
-
-<script src="app.js"></script>
 </body>
 </html>

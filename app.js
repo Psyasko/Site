@@ -23,21 +23,16 @@ function scrollToElementCenter(target) {
   });
 }
 
-function changeTheme(val) {
-  const themes = ['sunset', 'night', 'dawn'];
-  document.documentElement.setAttribute('data-theme', themes[val]);
-  document.querySelectorAll('.theme-btn').forEach((btn, idx) => {
-    btn.classList.toggle('active', idx === parseInt(val));
-  });
-}
-document.documentElement.setAttribute('data-theme', 'sunset');
+// Тема (захід/ніч/світанок) і маршрутизація за адресою (#about тощо) — у ui.js
 
 function showSection(sectionId) {
-  document.querySelectorAll('.site-section').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
-  document.getElementById(sectionId).classList.add('active');
-  const navLink = document.getElementById('nav-' + sectionId);
-  if (navLink) navLink.classList.add('active');
+  const target = document.getElementById(sectionId);
+  if (!target || !target.classList.contains('site-section')) sectionId = 'home';
+  document.querySelectorAll('.site-section').forEach(s => s.classList.toggle('active', s.id === sectionId));
+  document.querySelectorAll('[data-nav]').forEach(a => {
+    if (a.dataset.nav === sectionId) a.setAttribute('aria-current', 'page');
+    else a.removeAttribute('aria-current');
+  });
   
   if (sectionId === 'tests') {
     showExploreDashboard();
@@ -50,7 +45,7 @@ function showSection(sectionId) {
     if (isBreathing) toggleBreathing();
     if (isPMR) stopPMR();
   }
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  window.scrollTo({ top: 0, behavior: 'instant' });
 }
 
 function showExploreDashboard() {
@@ -173,12 +168,12 @@ function renderSoothingCatalog() {
 
   for (let cat in SOOTHING_DATABASE) {
     const c = SOOTHING_DATABASE[cat];
-    let html = `<h3 style="color:var(--accent-glow); font-family: 'Merriweather', serif; font-size: 22px; margin: 32px 0 16px; text-align: left;">${c.categoryTitle}</h3><div class="catalog-grid">`;
+    let html = `<h3 class="catalog-heading">${c.categoryTitle}</h3><div class="catalog-grid">`;
     c.items.forEach(item => {
       html += `
-        <div class="card clickable-card" onclick="openSoothing('${cat}', '${item.id}')">
+        <div class="card clickable-card" role="button" tabindex="0" onclick="openSoothing('${cat}', '${item.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
           <div class="card-inner-glow"></div>
-          <div class="card-title" style="margin-bottom:8px; font-size: 18px;">${item.title}</div>
+          <div class="card-title">${item.title}</div>
           <div class="card-sub">${item.sub}</div>
         </div>`;
     });
@@ -248,7 +243,7 @@ function showSoothingFeedback() {
   } else if (currentActiveSoothingId === 'values_card') {
     resContainer.style.display = 'block';
     document.getElementById('feedbackTextarea').value = 
-      `🧭 Моя картка цінностей:\n\nУ стосунках я хочу būti: ${wizardAnswers[0] || '-'}\nУ діяльності для мене важливо: ${wizardAnswers[1] || '-'}\nМоє ставлення до себе: ${wizardAnswers[2] || '-'}\nМій життєвий вектор: ${wizardAnswers[3] || '-'}`;
+      `🧭 Моя картка цінностей:\n\nУ стосунках я хочу бути: ${wizardAnswers[0] || '-'}\nУ діяльності для мене важливо: ${wizardAnswers[1] || '-'}\nМоє ставлення до себе: ${wizardAnswers[2] || '-'}\nМій життєвий вектор: ${wizardAnswers[3] || '-'}`;
   } else {
     resContainer.style.display = 'none';
   }
@@ -348,7 +343,7 @@ function stopPMR() {
   isPMR = false;
   clearInterval(pmrInterval);
   document.getElementById('pmrTimer').innerText = "00";
-  document.getElementById('pmrTimer').style.color = "var(--accent-glow)";
+  document.getElementById('pmrTimer').classList.remove('tension');
 }
 
 function startPmrPhase() {
@@ -363,11 +358,11 @@ function startPmrPhase() {
   
   if (isTension) {
     document.getElementById('pmrInstruction').innerText = `НАПРУЖИТИ: ${stepData.text}`;
-    document.getElementById('pmrTimer').style.color = "#E63946";
+    document.getElementById('pmrTimer').classList.add('tension');
     pmrTimeLeft = currentSoothingItem.tensionDuration || 5;
   } else {
     document.getElementById('pmrInstruction').innerText = "РОЗСЛАБИТИ: Зроби глибокий видих і відпусти усю напругу.";
-    document.getElementById('pmrTimer').style.color = "var(--accent-glow)";
+    document.getElementById('pmrTimer').classList.remove('tension');
     pmrTimeLeft = currentSoothingItem.relaxationDuration || 10;
   }
   
@@ -658,13 +653,13 @@ function renderQuestion(index){
       return `
         <input type="radio" id="q${q.id}_v${opt.v}" name="q${q.id}" value="${opt.v}" ${checked} onchange="handleAnswer(${q.id}, ${opt.v})">
         <label for="q${q.id}_v${opt.v}">
-          <div style="flex:1;">${opt.t}</div>
+          <span>${opt.t}</span>
         </label>`;
     }).join('');
 
     const titlePrefix = q.title ? 'Група' : 'Питання';
     const titleText = q.title ? q.title : '';
-    const extraText = q.text ? `<div class="question-text" style="margin-bottom:16px; min-height:auto;">${q.text}</div>` : '';
+    const extraText = q.text ? `<div class="question-text compact">${q.text}</div>` : '';
 
     qArea.innerHTML = `
       <div aria-live="polite">
@@ -708,7 +703,7 @@ function calculateYSQ(){
     const sum = values.reduce((a, b) => a + b, 0);
     const mean = sum / values.length;
     let level = 'Низька вираженість';
-    if (mean >= 4) level = "<span style='color:var(--accent-glow); font-weight:700;'>Висока вираженість</span>";
+    if (mean >= 4) level = "<span class='level-high'>Висока вираженість</span>";
     else if (mean >= 3) level = 'Помірна вираженість';
     else if (mean >= 2) level = 'Легка вираженість';
     results.push({ schema, sum: mean.toFixed(1), rawSum: sum, items: values.length, htmlLevel: level });
@@ -728,7 +723,7 @@ function calculatePCL5(){
     else if (numId <= 14) d += v;
     else e += v;
   }
-  let level = total >= 31 ? "<span style='color:var(--accent-glow); font-weight:700;'>Вище рекомендованого скринінгового порогу</span>" : "Нижче рекомендованого скринінгового порогу";
+  let level = total >= 31 ? "<span class='level-high'>Вище рекомендованого скринінгового порогу</span>" : "Нижче рекомендованого скринінгового порогу";
   return [
     { schema: "Загальний бал", sum: total, htmlLevel: level },
     { schema: "Кластер B — вторгнення", sum: b, htmlLevel: "" },
@@ -758,7 +753,7 @@ function calculateSMQ(){
     rows.push({
       schema: q.mode || `Пункт ${q.id}`,
       sum: v,
-      htmlLevel: isResource ? 'Ресурсний режим' : (v >= 4 ? "<span style='color:var(--accent-glow); font-weight:700;'>Виражений режим</span>" : 'Не домінує')
+      htmlLevel: isResource ? 'Ресурсний режим' : (v >= 4 ? "<span class='level-high'>Виражений режим</span>" : 'Не домінує')
     });
   });
 
@@ -782,7 +777,7 @@ function calculateAAQ2(){
   let score = 0;
   for (let qid in answers) score += answers[qid];
   let level = 'Нижчий рівень психологічної негнучкості';
-  if (score >= 25) level = "<span style='color:var(--accent-glow); font-weight:700;'>Підвищений рівень психологічної негнучкості / уникання</span>";
+  if (score >= 25) level = "<span class='level-high'>Підвищений рівень психологічної негнучкості / уникання</span>";
   else if (score >= 19) level = 'Помірний рівень психологічної негнучкості / уникання';
   return [{ schema: "Загальний бал", sum: score, htmlLevel: level }];
 }
@@ -792,7 +787,7 @@ function calculatePHQ9(){
   for (let qid in answers) score += answers[qid];
   const suicideItem = answers[9] || 0;
   let level = 'Мінімальний рівень депресивних симптомів';
-  if (score >= 20) level = "<span style='color:var(--accent-glow); font-weight:700;'>Високий рівень депресивних симптомів</span>";
+  if (score >= 20) level = "<span class='level-high'>Високий рівень депресивних симптомів</span>";
   else if (score >= 15) level = 'Помірно високий рівень депресивних симптомів';
   else if (score >= 10) level = 'Помірний рівень депресивних симптомів';
   else if (score >= 5) level = 'Легкий рівень депресивних симптомів';
@@ -801,7 +796,7 @@ function calculatePHQ9(){
     rows.push({
       schema: "Пункт про самоушкодження",
       sum: suicideItem,
-      htmlLevel: "<span style='color:var(--accent-glow); font-weight:700;'>Потребує окремої уваги та розмови з фахівцем</span>"
+      htmlLevel: "<span class='level-high'>Потребує окремої уваги та розмови з фахівцем</span>"
     });
   }
   return rows;
@@ -1420,7 +1415,7 @@ function buildPdfDocument(title, records) {
 </head>
 <body>
   <main class="report">
-    <div class="brand">Віталій Психолог</div>
+    <div class="brand">Віталій Ясковець · психолог</div>
     <h1>${safeTitle}</h1>
     <div class="created">Створено: ${escapeHTML(now)}</div>
     <div class="top-line"></div>
@@ -1533,7 +1528,7 @@ function showResults(){
   } else {
     let results = [];
     if (activeTestId === 'phq_9') results = calculatePHQ9();
-    if (activeTestId === 'gad_7') results = calculateGenericScore([{min:0,max:4,text:"Мінімальний рівень тривожних симптомів"},{min:5,max:9,text:"Легкий рівень тривожних симптомів"},{min:10,max:14,text:"Помірний рівень тривожних симптомів"},{min:15,max:999,text:"<span style='color:var(--accent-glow); font-weight:700;'>Високий рівень тривожних симптомів</span>"}]);
+    if (activeTestId === 'gad_7') results = calculateGenericScore([{min:0,max:4,text:"Мінімальний рівень тривожних симптомів"},{min:5,max:9,text:"Легкий рівень тривожних симптомів"},{min:10,max:14,text:"Помірний рівень тривожних симптомів"},{min:15,max:999,text:"<span class='level-high'>Високий рівень тривожних симптомів</span>"}]);
     if (activeTestId === 'aaq_2') results = calculateAAQ2();
     if (!results.length) results = calculateGenericScore([{min:0,max:999,text:"Орієнтовний сумарний бал"}]);
     results.forEach(r => addRow(r.schema, r.sum, r.htmlLevel));
@@ -1578,7 +1573,7 @@ function finish() {
     currentIndex = activeQuestions.findIndex(q => q.id === missing.id);
     renderQuestion(currentIndex);
     const qNum = document.querySelector('.question-num');
-    if (qNum) qNum.innerHTML += ` <span style="color:var(--accent-amber);">* Оберіть відповідь</span>`;
+    if (qNum) qNum.innerHTML += ` <span class="need-answer">* Оберіть відповідь</span>`;
     return;
   }
 
@@ -1592,7 +1587,7 @@ function resetTest(force = false) {
   if (!force && !resetConfirmation) {
     resetConfirmation = true;
     btn.innerText = "Точно видалити?";
-    btn.style.color = "#ff6b6b";
+    btn.style.color = "var(--danger)";
     setTimeout(() => { resetConfirmation = false; btn.innerText = "Скинути"; btn.style.color = ""; }, 3000);
     return;
   }
@@ -1612,18 +1607,28 @@ function resetTest(force = false) {
   btn.style.color = "";
 }
 
-function openLightbox(src) {
+let lightboxReturnFocus = null;
+
+function openLightbox(src, caption = '') {
   const lb = document.getElementById('lightbox');
   const lbImg = document.getElementById('lightboxImg');
+  const lbCap = document.getElementById('lightboxCap');
+  lightboxReturnFocus = document.activeElement;
   lbImg.src = src;
-  lb.style.display = 'flex';
-  setTimeout(() => lb.classList.add('active'), 10);
+  lbImg.alt = caption;
+  if (lbCap) lbCap.textContent = caption;
+  lb.hidden = false;
+  requestAnimationFrame(() => lb.classList.add('open'));
+  const closeBtn = lb.querySelector('.lb-close');
+  if (closeBtn) closeBtn.focus();
 }
 
 function closeLightbox() {
   const lb = document.getElementById('lightbox');
-  lb.classList.remove('active');
-  setTimeout(() => lb.style.display = 'none', 300);
+  if (lb.hidden) return;
+  lb.classList.remove('open');
+  setTimeout(() => { lb.hidden = true; }, 400);
+  if (lightboxReturnFocus) lightboxReturnFocus.focus();
 }
 
 // --- REFLECT LOGIC ---
@@ -1831,12 +1836,12 @@ function renderReflectCatalog() {
 
   for (let cat in REFLECT_DATABASE) {
     const c = REFLECT_DATABASE[cat];
-    let html = `<h3 style="color:var(--accent-glow); font-family:'Merriweather',serif; font-size:22px; margin:32px 0 16px; text-align:left;">${escapeHTML(c.categoryTitle)}</h3><div class="catalog-grid">`;
+    let html = `<h3 class="catalog-heading">${escapeHTML(c.categoryTitle)}</h3><div class="catalog-grid">`;
     c.items.forEach(item => {
       html += `
-        <div class="card clickable-card" onclick="openReflect('${escapeHTML(cat)}','${escapeHTML(item.id)}')">
+        <div class="card clickable-card" role="button" tabindex="0" onclick="openReflect('${escapeHTML(cat)}','${escapeHTML(item.id)}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
           <div class="card-inner-glow"></div>
-          <div class="card-title" style="margin-bottom:8px; font-size:18px;">${escapeHTML(item.title)}</div>
+          <div class="card-title">${escapeHTML(item.title)}</div>
           <div class="card-sub">${escapeHTML(item.sub)}</div>
         </div>`;
     });
@@ -1847,12 +1852,12 @@ function renderReflectCatalog() {
 
   const diaryItems = Object.entries(DIARY_CARDS);
   container.innerHTML += `
-    <h3 style="color:var(--accent-glow); font-family:'Merriweather',serif; font-size:22px; margin:32px 0 16px; text-align:left;">Щоденник</h3>
+    <h3 class="catalog-heading">Щоденник</h3>
     <div class="catalog-grid diary-catalog-grid">
       ${diaryItems.map(([id, item]) => `
-        <div class="card clickable-card" onclick="openDiary('${escapeHTML(id)}')">
+        <div class="card clickable-card" role="button" tabindex="0" onclick="openDiary('${escapeHTML(id)}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
           <div class="card-inner-glow"></div>
-          <div class="card-title" style="margin-bottom:8px; font-size:18px;">${escapeHTML(item.title)}</div>
+          <div class="card-title">${escapeHTML(item.title)}</div>
           <div class="card-sub">${escapeHTML(item.sub)}</div>
         </div>`).join('')}
     </div>`;
@@ -1861,14 +1866,14 @@ function renderReflectCatalog() {
     const smq = TESTS_DATABASE.smq;
     const count = smq.questions?.length || 0;
     container.innerHTML += `
-      <h3 style="color:var(--accent-glow); font-family:'Merriweather',serif; font-size:22px; margin:32px 0 16px; text-align:left;">Схема-режими</h3>
+      <h3 class="catalog-heading">Схема-режими</h3>
       <div class="catalog-grid">
-        <div class="card clickable-card" onclick="openTest('smq', 'reflect')">
+        <div class="card clickable-card" role="button" tabindex="0" onclick="openTest('smq', 'reflect')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
           <div class="card-inner-glow"></div>
-          <div class="card-header-test" style="margin-bottom:8px; padding-bottom:0; border:none;">
+          <div class="card-header-test">
             <div class="card-badge">${escapeHTML(smq.badge || 'MODES')}</div>
             <div>
-              <div class="card-title" style="font-size:18px;">${escapeHTML(smq.title)}</div>
+              <div class="card-title">${escapeHTML(smq.title)}</div>
               <div class="card-sub">Коротка карта для саморефлексії: ${count} тверджень, приблизно 4 хвилини. Результат збережеться у динаміці особистої рефлексії.</div>
             </div>
           </div>
@@ -1924,8 +1929,8 @@ function openDiary(id) {
     <div class="card diary-card-active">
       <div class="card-inner-glow"></div>
       <div class="section-label">Щоденник</div>
-      <h2 style="font-family:'Merriweather',serif; color:var(--accent-glow); font-size:28px; margin:0 0 10px 0;">${escapeHTML(card.title)}</h2>
-      <div class="card-sub" style="margin-bottom:22px;">${escapeHTML(card.sub)} Запис збережеться локально тільки на цьому пристрої.</div>
+      <h2>${escapeHTML(card.title)}</h2>
+      <div class="card-sub">${escapeHTML(card.sub)} Запис збережеться локально тільки на цьому пристрої.</div>
       <form id="diaryForm" onsubmit="return false;">
         <div class="diary-fields">${card.fields.map(field => renderDiaryField(card, field)).join('')}</div>
         <div class="controls">
@@ -2122,7 +2127,7 @@ function updateSDTTriangle() {
       <line x1="${cx}" y1="${cy}" x2="${pAuthMax.x}" y2="${pAuthMax.y}" stroke="var(--border-soft)" stroke-width="0.5" />
       <line x1="${cx}" y1="${cy}" x2="${pCompMax.x}" y2="${pCompMax.y}" stroke="var(--border-soft)" stroke-width="0.5" />
       <line x1="${cx}" y1="${cy}" x2="${pRelMax.x}" y2="${pRelMax.y}" stroke="var(--border-soft)" stroke-width="0.5" />
-      <polygon points="${pAuth.x},${pAuth.y} ${pComp.x},${pComp.y} ${pRel.x},${pRel.y}" fill="rgba(184, 122, 53, 0.2)" stroke="var(--accent-glow)" stroke-width="2" style="transition: points 0.2s ease;"/>
+      <polygon points="${pAuth.x},${pAuth.y} ${pComp.x},${pComp.y} ${pRel.x},${pRel.y}" stroke="var(--accent)" stroke-width="2" style="fill: color-mix(in srgb, var(--accent) 22%, transparent); transition: points 0.2s ease;"/>
       <text x="${pAuthMax.x}" y="${pAuthMax.y - 12}" text-anchor="middle" font-size="12" font-weight="500" fill="var(--text-main)">Автономія</text>
       <text x="${pCompMax.x + 10}" y="${pCompMax.y + 8}" text-anchor="start" font-size="12" font-weight="500" fill="var(--text-main)">Компетентність</text>
       <text x="${pRelMax.x - 10}" y="${pRelMax.y + 8}" text-anchor="end" font-size="12" font-weight="500" fill="var(--text-main)">Причетність</text>
